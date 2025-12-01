@@ -189,10 +189,10 @@ const sigsoftEvents = [
     },
     {
         id: 4,
-        date: 'Feb 2025',
-        title: 'System Design',
+        date: 'Jan 2026',
+        title: 'Microsoft Fabric',
         status: 'upcoming',
-        type: 'Seminar'
+        type: 'Workshop'
     },
     {
         id: 5,
