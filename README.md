@@ -1,16 +1,49 @@
-# React + Vite
+# ACM Website Redesign - Space Theme
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the redesigned ACM student chapter website featuring a "deep-space, glowing-planet" aesthetic. It is a Multi-Page Application (MPA) built with React, Vite, Tailwind CSS, and Three.js.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Immersive Space Theme**: 3D glowing planet, starfield background, and holographic UI elements.
+- **Multi-Page Structure**: Dedicated pages for each chapter:
+  - **SIGSOFT**: `/sigsoft.html` (Green Theme)
+  - **SIG AI**: `/sigai.html` (Cyan Theme)
+  - **ACM MITB**: `/acm-mitb.html` (Dark Blue Theme)
+  - **ACM-W**: `/acm-w.html` (Pink/Purple Theme)
+- **Interactive Elements**:
+  - **Holographic Crew Manifest**: Team members displayed in glassmorphism cards with tilt and glow effects.
+  - **Events Horizon**: Horizontal scrolling timeline for events.
+  - **Chapter Navigation**: Prominent, interactive list of chapters.
+- **Tech Stack**:
+  - **Vite**: Fast build tool and dev server.
+  - **React**: UI library.
+  - **Tailwind CSS**: Utility-first styling.
+  - **Three.js / React Three Fiber**: 3D graphics.
+  - **GSAP**: Advanced animations.
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1.  **Install Dependencies**:
+    ```bash
+    npm install
+    ```
 
-## Expanding the ESLint configuration
+2.  **Run Development Server**:
+    ```bash
+    npm run dev
+    ```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+3.  **Build for Production**:
+    ```bash
+    npm run build
+    ```
+
+## Project Structure
+
+- `src/`: Source code.
+  - `components/`: Reusable components (Hero, Navbar, Footer, Timeline, etc.).
+  - `assets/`: Images and static assets.
+  - `*.jsx`: Entry components for each chapter page (e.g., `SigSoftApp.jsx`).
+  - `main-*.jsx`: Entry points for Vite.
+- `*.html`: HTML entry points for each page.
+- `vite.config.js`: Vite configuration for MPA.
