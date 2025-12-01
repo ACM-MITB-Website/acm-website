@@ -25,18 +25,18 @@ const Loader = ({ onComplete }) => {
 
         // Initial state
         gsap.set(containerRef.current, { yPercent: 0 });
-        gsap.set(logoRef.current, { opacity: 0, y: 50, scale: 0.8 });
+        gsap.set(logoRef.current, { opacity: 0, scale: 0.5 });
 
         // Image carousel effect
         const imageInterval = setInterval(() => {
             setCurrentImage(prev => (prev + 1) % teamImages.length);
-        }, 400); // Change image every 400ms for dynamic effect
+        }, 800); // Change image every 800ms
 
         // Word cycle animation
         words.forEach((word) => {
             const wordSpan = document.createElement('span');
             wordSpan.innerText = word;
-            wordSpan.className = "absolute text-4xl md:text-6xl font-mono font-bold text-white tracking-widest opacity-0 z-20";
+            wordSpan.className = "absolute text-4xl md:text-6xl font-mono font-bold text-white tracking-widest opacity-0";
             textRef.current.appendChild(wordSpan);
 
             tl.to(wordSpan, {
@@ -57,18 +57,17 @@ const Loader = ({ onComplete }) => {
                 });
         });
 
-        // Logo Reveal with enhanced animation
+        // Logo Reveal with text clipping effect
         tl.to(logoRef.current, {
             opacity: 1,
-            y: 0,
             scale: 1,
-            duration: 1.2,
-            ease: "elastic.out(1, 0.5)"
+            duration: 1.5,
+            ease: "elastic.out(1, 0.6)"
         })
             .to(logoRef.current, {
-                scale: 1.05,
-                duration: 1.5,
-                ease: "power1.inOut",
+                scale: 1.02,
+                duration: 2,
+                ease: "sine.inOut",
                 yoyo: true,
                 repeat: 1
             }, "-=0.5")
@@ -78,7 +77,7 @@ const Loader = ({ onComplete }) => {
                 yPercent: -100,
                 duration: 1.2,
                 ease: "power4.inOut",
-                delay: 0.5,
+                delay: 0.3,
                 onComplete: () => {
                     clearInterval(imageInterval);
                 }
@@ -92,100 +91,103 @@ const Loader = ({ onComplete }) => {
 
     return (
         <div ref={containerRef} className="fixed inset-0 z-50 bg-black flex items-center justify-center overflow-hidden">
-            {/* Dynamic Background Images Carousel with Ken Burns Effect */}
-            <div className="absolute inset-0 overflow-hidden">
-                {teamImages.map((image, index) => (
-                    <div
-                        key={index}
-                        className={`absolute inset-0 transition-opacity duration-700 ${currentImage === index ? 'opacity-100' : 'opacity-0'
-                            }`}
-                        style={{
-                            backgroundImage: `url(${image})`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                            animation: currentImage === index ? 'kenBurns 5s ease-in-out infinite alternate' : 'none'
-                        }}
-                    >
-                        {/* Cinematic gradient overlays */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/80"></div>
-                        <div className="absolute inset-0 bg-gradient-to-r from-acm-teal/20 via-transparent to-acm-teal/20"></div>
-
-                        {/* Scanline effect for tech aesthetic */}
-                        <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.3)_50%)] bg-[length:100%_4px] opacity-30 pointer-events-none animate-scan"></div>
-                    </div>
-                ))}
+            {/* Animated gradient background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black">
+                <div className="absolute inset-0 opacity-20">
+                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-acm-teal/30 via-transparent to-cyan-500/30 animate-pulse"></div>
+                </div>
             </div>
 
-            {/* Animated border corners */}
-            <div className="absolute top-8 left-8 w-16 h-16 border-t-2 border-l-2 border-acm-teal opacity-60 animate-pulse"></div>
-            <div className="absolute top-8 right-8 w-16 h-16 border-t-2 border-r-2 border-acm-teal opacity-60 animate-pulse"></div>
-            <div className="absolute bottom-8 left-8 w-16 h-16 border-b-2 border-l-2 border-acm-teal opacity-60 animate-pulse"></div>
-            <div className="absolute bottom-8 right-8 w-16 h-16 border-b-2 border-r-2 border-acm-teal opacity-60 animate-pulse"></div>
+            {/* Subtle grid pattern */}
+            <div className="absolute inset-0 opacity-5" style={{
+                backgroundImage: 'linear-gradient(rgba(6, 182, 212, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.3) 1px, transparent 1px)',
+                backgroundSize: '50px 50px'
+            }}></div>
 
-            {/* Text Container */}
+            {/* Text Container for HELLO/WELCOME/TO */}
             <div ref={textRef} className="relative flex items-center justify-center w-full h-full z-10">
                 {/* Words will be injected here */}
             </div>
 
-            {/* Logo with creative text wrapping effect */}
-            <div ref={logoRef} className="absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none z-10">
+            {/* Logo with image clipping effect */}
+            <div ref={logoRef} className="absolute inset-0 flex flex-col items-center justify-center opacity-0 z-10">
+                {/* Main text with team photos clipped inside */}
                 <div className="relative">
-                    {/* Main text with glitch effect */}
-                    <h1 className="text-6xl md:text-9xl font-black text-white tracking-tighter relative z-10">
+                    {/* The actual text with image clipping */}
+                    <div className="relative">
+                        <h1
+                            className="text-7xl md:text-[12rem] font-black tracking-tighter select-none"
+                            style={{
+                                backgroundImage: `url(${teamImages[currentImage]})`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                backgroundClip: 'text',
+                                WebkitBackgroundClip: 'text',
+                                color: 'transparent',
+                                WebkitTextFillColor: 'transparent',
+                                filter: 'brightness(1.2) contrast(1.1)',
+                                transition: 'background-image 0.8s ease-in-out'
+                            }}
+                        >
+                            ACM MITB
+                        </h1>
+                    </div>
+
+                    {/* Glowing outline for depth */}
+                    <h1
+                        className="absolute top-0 left-0 text-7xl md:text-[12rem] font-black tracking-tighter select-none pointer-events-none"
+                        style={{
+                            color: 'transparent',
+                            WebkitTextStroke: '2px rgba(6, 182, 212, 0.5)',
+                            filter: 'blur(4px)'
+                        }}
+                    >
                         ACM MITB
                     </h1>
 
-                    {/* Glowing outline */}
-                    <h1 className="absolute top-0 left-0 text-6xl md:text-9xl font-black text-acm-teal tracking-tighter opacity-50 blur-lg animate-pulse">
+                    {/* Sharp outline */}
+                    <h1
+                        className="absolute top-0 left-0 text-7xl md:text-[12rem] font-black tracking-tighter select-none pointer-events-none"
+                        style={{
+                            color: 'transparent',
+                            WebkitTextStroke: '1px rgba(6, 182, 212, 0.8)'
+                        }}
+                    >
                         ACM MITB
                     </h1>
+                </div>
 
-                    {/* Subtitle */}
-                    <p className="text-center text-sm md:text-xl font-mono text-acm-teal/80 tracking-[0.3em] mt-4 animate-pulse">
-                        POWERED BY INNOVATION
+                {/* Subtitle with animation */}
+                <div className="mt-6 overflow-hidden">
+                    <p className="text-sm md:text-xl font-mono text-acm-teal/90 tracking-[0.4em] uppercase animate-fade-in">
+                        Innovate • Connect • Excel
                     </p>
+                </div>
+
+                {/* Decorative elements */}
+                <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-acm-teal animate-pulse"></div>
+                    <div className="w-12 h-px bg-gradient-to-r from-transparent via-acm-teal to-transparent"></div>
+                    <div className="w-2 h-2 rounded-full bg-acm-teal animate-pulse" style={{ animationDelay: '0.3s' }}></div>
+                    <div className="w-12 h-px bg-gradient-to-r from-transparent via-acm-teal to-transparent"></div>
+                    <div className="w-2 h-2 rounded-full bg-acm-teal animate-pulse" style={{ animationDelay: '0.6s' }}></div>
                 </div>
             </div>
 
-            {/* Loading bar at bottom */}
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10 z-20">
-                <div className="h-full bg-gradient-to-r from-acm-teal via-cyan-400 to-acm-teal animate-loader-bar"></div>
-            </div>
-
             <style jsx>{`
-                @keyframes kenBurns {
-                    0% {
-                        transform: scale(1) translateX(0) translateY(0);
+                @keyframes fade-in {
+                    from {
+                        opacity: 0;
+                        transform: translateY(10px);
                     }
-                    100% {
-                        transform: scale(1.1) translateX(-2%) translateY(-2%);
-                    }
-                }
-
-                @keyframes scan {
-                    0% {
-                        transform: translateY(-100%);
-                    }
-                    100% {
-                        transform: translateY(100%);
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
                     }
                 }
 
-                @keyframes loader-bar {
-                    0% {
-                        transform: translateX(-100%);
-                    }
-                    100% {
-                        transform: translateX(100%);
-                    }
-                }
-
-                .animate-scan {
-                    animation: scan 8s linear infinite;
-                }
-
-                .animate-loader-bar {
-                    animation: loader-bar 2s ease-in-out infinite;
+                .animate-fade-in {
+                    animation: fade-in 1s ease-out 0.5s both;
                 }
             `}</style>
         </div>
