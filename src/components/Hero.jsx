@@ -4,35 +4,31 @@ import { Stars, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
 import gsap from 'gsap';
 import * as THREE from 'three';
 
-const InteractiveBubble = ({ color, position, scale, logo }) => {
+const InteractiveBubble = ({ color, position, scale }) => {
     const meshRef = useRef();
     const initialPos = new THREE.Vector3(...position);
-    const texture = useLoader(THREE.TextureLoader, logo);
 
     useFrame((state) => {
         const t = state.clock.getElapsedTime();
         const mouse = state.mouse;
 
-        // Free roaming movement (wider range, slower speed)
-        const floatX = Math.sin(t * 0.3 + position[0] * 10) * 2;
-        const floatY = Math.cos(t * 0.2 + position[1] * 10) * 1.5;
-        const floatZ = Math.sin(t * 0.3 + position[2] * 10) * 1;
+        // Free roaming movement
+        const floatX = Math.sin(t * 0.5 + position[0] * 10) * 2;
+        const floatY = Math.cos(t * 0.3 + position[1] * 10) * 1.5;
+        const floatZ = Math.sin(t * 0.4 + position[2] * 10) * 1;
 
         // Mouse interaction
-        // When mouse is close, bubble moves towards it more strongly
         const targetX = mouse.x * 8;
         const targetY = mouse.y * 8;
 
-        // Distance to mouse for "command" effect
         const distToMouse = Math.sqrt(
             Math.pow(targetX - meshRef.current.position.x, 2) +
             Math.pow(targetY - meshRef.current.position.y, 2)
         );
 
-        const mouseInfluence = Math.max(0, 1 - distToMouse / 5); // Stronger when closer
+        const mouseInfluence = Math.max(0, 1 - distToMouse / 5);
 
         if (meshRef.current) {
-            // Lerp current position
             meshRef.current.position.x = THREE.MathUtils.lerp(
                 meshRef.current.position.x,
                 initialPos.x + floatX + (mouse.x * 3 * mouseInfluence),
@@ -49,7 +45,6 @@ const InteractiveBubble = ({ color, position, scale, logo }) => {
                 0.02
             );
 
-            // Rotate bubble slowly
             meshRef.current.rotation.x = t * 0.1;
             meshRef.current.rotation.y = t * 0.15;
         }
@@ -59,13 +54,12 @@ const InteractiveBubble = ({ color, position, scale, logo }) => {
         <Sphere ref={meshRef} args={[scale, 64, 64]} position={position}>
             <MeshDistortMaterial
                 color={color}
-                map={texture}
                 emissive={color}
-                emissiveIntensity={0.2}
-                roughness={0.2}
-                metalness={0.5}
-                distort={0.3} // Reduced distortion to keep logo visible
-                speed={2}
+                emissiveIntensity={0.4}
+                roughness={0.1}
+                metalness={0.9}
+                distort={0.4} // Normal distortion
+                speed={3} // Normal speed
             />
         </Sphere>
     );
@@ -73,9 +67,10 @@ const InteractiveBubble = ({ color, position, scale, logo }) => {
 
 const FloatingBubbles = () => {
     const bubbles = [
-        { color: '#22c55e', position: [-4, 2, -2], scale: 1.6, logo: '/assets/sigsoft-logo.png' }, // Green (SIGSOFT)
-        { color: '#2563eb', position: [4, -2, -3], scale: 1.8, logo: '/assets/sig-ai-logo.png' },  // Blue (SIG AI - using blue bubble)
-        { color: '#d946ef', position: [0, -3, -1], scale: 1.7, logo: '/assets/acm-w-logo.png' }, // Fuchsia (ACM-W)
+        { color: '#22c55e', position: [-4, 2, -2], scale: 1.2 }, // Green (SIGSOFT)
+        { color: '#2563eb', position: [4, -2, -3], scale: 1.5 },  // Blue (ACM MITB)
+        { color: '#d946ef', position: [-3, -3, -4], scale: 1.3 }, // Fuchsia (ACM-W)
+        { color: '#22d3ee', position: [3, 3, -2], scale: 1.4 }    // Cyan (SIG AI)
     ];
 
     return (
