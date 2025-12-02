@@ -1,44 +1,57 @@
 import React, { useEffect, useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { Stars, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
 import gsap from 'gsap';
 import * as THREE from 'three';
 
-const InteractiveBubble = ({ color, position, scale }) => {
+const InteractiveBubble = ({ color, position, scale, logo }) => {
     const meshRef = useRef();
     const initialPos = new THREE.Vector3(...position);
+    const texture = useLoader(THREE.TextureLoader, logo);
 
     useFrame((state) => {
         const t = state.clock.getElapsedTime();
         const mouse = state.mouse;
 
-        // Random floating movement
-        const floatX = Math.sin(t * 0.5 + position[0]) * 0.5;
-        const floatY = Math.cos(t * 0.3 + position[1]) * 0.5;
-        const floatZ = Math.sin(t * 0.4 + position[2]) * 0.5;
+        // Free roaming movement (wider range, slower speed)
+        const floatX = Math.sin(t * 0.3 + position[0] * 10) * 2;
+        const floatY = Math.cos(t * 0.2 + position[1] * 10) * 1.5;
+        const floatZ = Math.sin(t * 0.3 + position[2] * 10) * 1;
 
-        // Mouse interaction (move towards mouse with delay)
-        // Convert mouse (normalized -1 to 1) to world space roughly
-        const targetX = mouse.x * 5;
-        const targetY = mouse.y * 5;
+        // Mouse interaction
+        // When mouse is close, bubble moves towards it more strongly
+        const targetX = mouse.x * 8;
+        const targetY = mouse.y * 8;
+
+        // Distance to mouse for "command" effect
+        const distToMouse = Math.sqrt(
+            Math.pow(targetX - meshRef.current.position.x, 2) +
+            Math.pow(targetY - meshRef.current.position.y, 2)
+        );
+
+        const mouseInfluence = Math.max(0, 1 - distToMouse / 5); // Stronger when closer
 
         if (meshRef.current) {
-            // Lerp current position towards target (initial + float + mouse influence)
+            // Lerp current position
             meshRef.current.position.x = THREE.MathUtils.lerp(
                 meshRef.current.position.x,
-                initialPos.x + floatX + (mouse.x * 2),
-                0.05
+                initialPos.x + floatX + (mouse.x * 3 * mouseInfluence),
+                0.02
             );
             meshRef.current.position.y = THREE.MathUtils.lerp(
                 meshRef.current.position.y,
-                initialPos.y + floatY + (mouse.y * 2),
-                0.05
+                initialPos.y + floatY + (mouse.y * 3 * mouseInfluence),
+                0.02
             );
             meshRef.current.position.z = THREE.MathUtils.lerp(
                 meshRef.current.position.z,
                 initialPos.z + floatZ,
-                0.05
+                0.02
             );
+
+            // Rotate bubble slowly
+            meshRef.current.rotation.x = t * 0.1;
+            meshRef.current.rotation.y = t * 0.15;
         }
     });
 
@@ -46,12 +59,13 @@ const InteractiveBubble = ({ color, position, scale }) => {
         <Sphere ref={meshRef} args={[scale, 64, 64]} position={position}>
             <MeshDistortMaterial
                 color={color}
+                map={texture}
                 emissive={color}
-                emissiveIntensity={0.4}
-                roughness={0.1}
-                metalness={0.9}
-                distort={0.6}
-                speed={3}
+                emissiveIntensity={0.2}
+                roughness={0.2}
+                metalness={0.5}
+                distort={0.3} // Reduced distortion to keep logo visible
+                speed={2}
             />
         </Sphere>
     );
@@ -59,9 +73,9 @@ const InteractiveBubble = ({ color, position, scale }) => {
 
 const FloatingBubbles = () => {
     const bubbles = [
-        { color: '#22c55e', position: [-3, 1, -2], scale: 1.4 }, // Green (SIGSOFT)
-        { color: '#2563eb', position: [3, -1, -3], scale: 1.8 },  // Blue (ACM MITB)
-        { color: '#d946ef', position: [0, -3, -4], scale: 1.5 }, // Fuchsia (ACM-W)
+        { color: '#22c55e', position: [-4, 2, -2], scale: 1.6, logo: '/assets/sigsoft-logo.png' }, // Green (SIGSOFT)
+        { color: '#2563eb', position: [4, -2, -3], scale: 1.8, logo: '/assets/sig-ai-logo.png' },  // Blue (SIG AI - using blue bubble)
+        { color: '#d946ef', position: [0, -3, -1], scale: 1.7, logo: '/assets/acm-w-logo.png' }, // Fuchsia (ACM-W)
     ];
 
     return (
