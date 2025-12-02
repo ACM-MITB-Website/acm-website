@@ -4,39 +4,32 @@ import { Stars, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
 import gsap from 'gsap';
 import * as THREE from 'three';
 
-const GlowingPlanet = () => {
-    const meshRef = useRef();
-
-    useFrame((state) => {
-        const t = state.clock.getElapsedTime();
-        meshRef.current.rotation.y = t * 0.05;
-    });
+const FloatingBubbles = () => {
+    const bubbles = [
+        { color: '#22c55e', position: [-4, 2, -2], scale: 1.2 }, // Green (SIGSOFT)
+        { color: '#2563eb', position: [4, -2, -3], scale: 1.5 },  // Blue (ACM MITB)
+        { color: '#d946ef', position: [-3, -3, -4], scale: 1.3 }, // Fuchsia (ACM-W)
+        { color: '#22d3ee', position: [3, 3, -2], scale: 1.4 }    // Cyan (SIG AI)
+    ];
 
     return (
-        <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
-            <Sphere args={[2.8, 64, 64]} ref={meshRef}>
-                <MeshDistortMaterial
-                    color="#3b0764" // Deep purple base
-                    emissive="#7c3aed" // Violet glow
-                    emissiveIntensity={0.5}
-                    roughness={0.5}
-                    metalness={0.8}
-                    distort={0.3}
-                    speed={1.5}
-                />
-            </Sphere>
-            {/* Atmosphere Glow */}
-            <mesh scale={[3.2, 3.2, 3.2]}>
-                <sphereGeometry args={[1, 64, 64]} />
-                <meshBasicMaterial
-                    color="#00D4FF"
-                    transparent
-                    opacity={0.05}
-                    side={THREE.BackSide}
-                    blending={THREE.AdditiveBlending}
-                />
-            </mesh>
-        </Float>
+        <group>
+            {bubbles.map((bubble, index) => (
+                <Float key={index} speed={1.5} rotationIntensity={0.5} floatIntensity={1}>
+                    <Sphere args={[bubble.scale, 32, 32]} position={bubble.position}>
+                        <MeshDistortMaterial
+                            color={bubble.color}
+                            emissive={bubble.color}
+                            emissiveIntensity={0.2}
+                            roughness={0.2}
+                            metalness={0.8}
+                            distort={0.4}
+                            speed={2}
+                        />
+                    </Sphere>
+                </Float>
+            ))}
+        </group>
     );
 };
 
@@ -81,18 +74,19 @@ const Hero = () => {
                     <pointLight position={[10, 10, 10]} intensity={2} color="#00D4FF" />
                     <pointLight position={[-10, -10, -10]} intensity={1} color="#7C3AED" />
                     <InteractiveStars />
-                    <GlowingPlanet />
+                    <FloatingBubbles />
                 </Canvas>
             </div>
 
             {/* Content Overlay */}
             <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 pointer-events-none">
-                <h1
-                    ref={textRef}
-                    className="text-6xl md:text-8xl font-bold mb-6 tracking-tighter text-white drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]"
-                >
-                    ACM MITB
-                </h1>
+                <div ref={textRef} className="flex justify-center mb-6">
+                    <img
+                        src="/assets/acm-mitb-landing-logo.png"
+                        alt="ACM MITB"
+                        className="h-32 md:h-48 object-contain drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]"
+                    />
+                </div>
                 <p
                     ref={subTextRef}
                     className="text-xl md:text-2xl text-acm-teal max-w-2xl font-light tracking-widest uppercase"
