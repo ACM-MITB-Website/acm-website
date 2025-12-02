@@ -4,30 +4,70 @@ import { Stars, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
 import gsap from 'gsap';
 import * as THREE from 'three';
 
+const InteractiveBubble = ({ color, position, scale }) => {
+    const meshRef = useRef();
+    const initialPos = new THREE.Vector3(...position);
+
+    useFrame((state) => {
+        const t = state.clock.getElapsedTime();
+        const mouse = state.mouse;
+
+        // Random floating movement
+        const floatX = Math.sin(t * 0.5 + position[0]) * 0.5;
+        const floatY = Math.cos(t * 0.3 + position[1]) * 0.5;
+        const floatZ = Math.sin(t * 0.4 + position[2]) * 0.5;
+
+        // Mouse interaction (move towards mouse with delay)
+        // Convert mouse (normalized -1 to 1) to world space roughly
+        const targetX = mouse.x * 5;
+        const targetY = mouse.y * 5;
+
+        if (meshRef.current) {
+            // Lerp current position towards target (initial + float + mouse influence)
+            meshRef.current.position.x = THREE.MathUtils.lerp(
+                meshRef.current.position.x,
+                initialPos.x + floatX + (mouse.x * 2),
+                0.05
+            );
+            meshRef.current.position.y = THREE.MathUtils.lerp(
+                meshRef.current.position.y,
+                initialPos.y + floatY + (mouse.y * 2),
+                0.05
+            );
+            meshRef.current.position.z = THREE.MathUtils.lerp(
+                meshRef.current.position.z,
+                initialPos.z + floatZ,
+                0.05
+            );
+        }
+    });
+
+    return (
+        <Sphere ref={meshRef} args={[scale, 64, 64]} position={position}>
+            <MeshDistortMaterial
+                color={color}
+                emissive={color}
+                emissiveIntensity={0.4}
+                roughness={0.1}
+                metalness={0.9}
+                distort={0.6}
+                speed={3}
+            />
+        </Sphere>
+    );
+};
+
 const FloatingBubbles = () => {
     const bubbles = [
-        { color: '#22c55e', position: [-4, 2, -2], scale: 1.2 }, // Green (SIGSOFT)
-        { color: '#2563eb', position: [4, -2, -3], scale: 1.5 },  // Blue (ACM MITB)
-        { color: '#d946ef', position: [-3, -3, -4], scale: 1.3 }, // Fuchsia (ACM-W)
-        { color: '#22d3ee', position: [3, 3, -2], scale: 1.4 }    // Cyan (SIG AI)
+        { color: '#22c55e', position: [-3, 1, -2], scale: 1.4 }, // Green (SIGSOFT)
+        { color: '#2563eb', position: [3, -1, -3], scale: 1.8 },  // Blue (ACM MITB)
+        { color: '#d946ef', position: [0, -3, -4], scale: 1.5 }, // Fuchsia (ACM-W)
     ];
 
     return (
         <group>
             {bubbles.map((bubble, index) => (
-                <Float key={index} speed={1.5} rotationIntensity={0.5} floatIntensity={1}>
-                    <Sphere args={[bubble.scale, 32, 32]} position={bubble.position}>
-                        <MeshDistortMaterial
-                            color={bubble.color}
-                            emissive={bubble.color}
-                            emissiveIntensity={0.2}
-                            roughness={0.2}
-                            metalness={0.8}
-                            distort={0.4}
-                            speed={2}
-                        />
-                    </Sphere>
-                </Float>
+                <InteractiveBubble key={index} {...bubble} />
             ))}
         </group>
     );
@@ -87,12 +127,7 @@ const Hero = () => {
                         className="h-32 md:h-48 object-contain drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]"
                     />
                 </div>
-                <p
-                    ref={subTextRef}
-                    className="text-xl md:text-2xl text-acm-teal max-w-2xl font-light tracking-widest uppercase"
-                >
-                    Innovating the Cosmos of Code
-                </p>
+
             </div>
 
             {/* Scroll Indicator */}
