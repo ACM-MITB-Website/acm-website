@@ -12,54 +12,47 @@ const InteractiveBubble = ({ color, position, scale }) => {
         const t = state.clock.getElapsedTime();
         const mouse = state.mouse;
 
-        // Free roaming movement
-        const floatX = Math.sin(t * 0.5 + position[0] * 10) * 2;
-        const floatY = Math.cos(t * 0.3 + position[1] * 10) * 1.5;
-        const floatZ = Math.sin(t * 0.4 + position[2] * 10) * 1;
+        // 1. Breathing Effect (Smooth scaling)
+        // Different phase for each bubble based on position
+        const breathe = Math.sin(t * 0.5 + position[0]) * 0.1 + 1;
+        meshRef.current.scale.set(scale * breathe, scale * breathe, scale * breathe);
 
-        // Mouse interaction
-        const targetX = mouse.x * 8;
-        const targetY = mouse.y * 8;
+        // 2. Premium Float (Slower, more complex)
+        const floatX = Math.sin(t * 0.2 + position[0]) * 0.5;
+        const floatY = Math.cos(t * 0.15 + position[1]) * 0.5;
+        const floatZ = Math.sin(t * 0.1 + position[2]) * 0.2;
 
-        const distToMouse = Math.sqrt(
-            Math.pow(targetX - meshRef.current.position.x, 2) +
-            Math.pow(targetY - meshRef.current.position.y, 2)
-        );
+        // 3. Parallax Mouse Interaction
+        // Instead of attracting, move slightly opposite or with mouse based on depth to create 3D feel
+        // Deeper bubbles move less, closer ones move more
+        const parallaxFactor = 0.5 + (position[2] + 5) * 0.1; // Estimate depth influence
 
-        const mouseInfluence = Math.max(0, 1 - distToMouse / 5);
+        const targetX = initialPos.x + floatX + (mouse.x * parallaxFactor * 2);
+        const targetY = initialPos.y + floatY + (mouse.y * parallaxFactor * 2);
+        const targetZ = initialPos.z + floatZ;
 
         if (meshRef.current) {
-            meshRef.current.position.x = THREE.MathUtils.lerp(
-                meshRef.current.position.x,
-                initialPos.x + floatX + (mouse.x * 3 * mouseInfluence),
-                0.02
-            );
-            meshRef.current.position.y = THREE.MathUtils.lerp(
-                meshRef.current.position.y,
-                initialPos.y + floatY + (mouse.y * 3 * mouseInfluence),
-                0.02
-            );
-            meshRef.current.position.z = THREE.MathUtils.lerp(
-                meshRef.current.position.z,
-                initialPos.z + floatZ,
-                0.02
-            );
+            // Very smooth lerp for "heavy" feel
+            meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.03);
+            meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.03);
+            meshRef.current.position.z = THREE.MathUtils.lerp(meshRef.current.position.z, targetZ, 0.03);
 
-            meshRef.current.rotation.x = t * 0.1;
-            meshRef.current.rotation.y = t * 0.15;
+            // Subtle rotation
+            meshRef.current.rotation.x = t * 0.05;
+            meshRef.current.rotation.y = t * 0.08;
         }
     });
 
     return (
-        <Sphere ref={meshRef} args={[scale, 64, 64]} position={position}>
+        <Sphere ref={meshRef} args={[1, 64, 64]} position={position}>
             <MeshDistortMaterial
                 color={color}
                 emissive={color}
-                emissiveIntensity={0.4}
-                roughness={0.1}
-                metalness={0.9}
-                distort={0.4} // Normal distortion
-                speed={3} // Normal speed
+                emissiveIntensity={0.3}
+                roughness={0.2}
+                metalness={0.8}
+                distort={0.3} // Subtle distortion
+                speed={1.5} // Slow, fluid distortion
             />
         </Sphere>
     );
