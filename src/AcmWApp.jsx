@@ -54,7 +54,7 @@ const About = () => {
     return (
         <section className="py-10 px-4 md:px-20 max-w-7xl mx-auto">
             <h2 className="text-sm font-mono text-fuchsia-500 tracking-widest mb-8">ABOUT US</h2>
-            <p className="text-2xl md:text-4xl text-white/80 leading-relaxed font-light">
+            <p className="text-lg md:text-2xl text-white/80 leading-relaxed font-light">
                 We are the <span className="text-fuchsia-500 font-bold">ACM Women's Chapter</span>.
                 Our mission is to support, celebrate, and advocate for women in computing.
                 We provide resources, mentorship, and a supportive community for women in technology.

@@ -54,7 +54,7 @@ const About = () => {
     return (
         <section className="py-10 px-4 md:px-20 max-w-7xl mx-auto">
             <h2 className="text-sm font-mono text-green-500 tracking-widest mb-8">ABOUT US</h2>
-            <p className="text-2xl md:text-4xl text-white/80 leading-relaxed font-light">
+            <p className="text-lg md:text-2xl text-white/80 leading-relaxed font-light">
                 We are the <span className="text-green-500 font-bold">Special Interest Group on Software Engineering</span>.
                 Our mission is to advance the art and science of software development through workshops, hackathons, and open-source contributions.
                 We bridge the gap between academic theory and industrial practice.

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Calendar, CheckCircle, Clock } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -71,7 +70,7 @@ const Timeline = ({ title = "EVENTS HORIZON", data = defaultEvents }) => {
         }, triggerRef);
 
         return () => ctx.revert();
-    }, [data]); // Added dependency on data
+    }, [data]);
 
     return (
         <section ref={triggerRef} id="timeline" className="relative h-[70vh] overflow-hidden">
@@ -101,6 +100,11 @@ const Timeline = ({ title = "EVENTS HORIZON", data = defaultEvents }) => {
                             <div className={`mt-4 inline-block px-3 py-1 rounded-full text-sm font-mono border ${event.status === 'upcoming' ? 'border-acm-teal/30 text-acm-teal' : 'border-white/10 text-gray-600'}`}>
                                 {event.type}
                             </div>
+
+                            {/* Description */}
+                            <p className={`mt-4 text-sm leading-relaxed ${event.status === 'upcoming' ? 'text-gray-400' : 'text-gray-600'}`}>
+                                {event.description}
+                            </p>
                         </div>
                     </div>
                 ))}

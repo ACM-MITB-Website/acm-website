@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Stars, Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
 import gsap from 'gsap';
@@ -54,7 +54,7 @@ const About = () => {
     return (
         <section className="py-10 px-4 md:px-20 max-w-7xl mx-auto">
             <h2 className="text-sm font-mono text-blue-600 tracking-widest mb-8">ABOUT US</h2>
-            <p className="text-2xl md:text-4xl text-white/80 leading-relaxed font-light">
+            <p className="text-lg md:text-2xl text-white/80 leading-relaxed font-light">
                 We are the <span className="text-blue-600 font-bold">Association for Computing Machinery</span> Student Chapter at MIT Bengaluru.
                 We are a community of students passionate about computing, dedicated to advancing technology and fostering innovation on campus.
             </p>
@@ -64,16 +64,13 @@ const About = () => {
 
 const Team = () => {
     const members = [
-        { name: 'Gururaj H.L.', role: 'Faculty Sponsor', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John' },
-        { name: 'Shreyas J', role: 'Faculty Sponsor', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jane' },
-        { name: 'Shivansh Gautam', role: 'Chair', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michael' },
-        { name: 'Medha Udupa', role: 'Vice Chair', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=EmilyD' },
-        { name: 'S. P. Bharath', role: 'Web Master', image: '/assets/sp-bharath.jpg' },
-        { name: 'Ryan', role: 'Executive Member', image: '/assets/ryan.jpg' },
-        { name: 'Saanvie', role: 'Executive Member', image: '/assets/saanvie.jpg' },
-        { name: 'Lisa Anderson', role: 'Publicity', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=LisaA' },
-        { name: 'Robert Thomas', role: 'Events', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=RobertT' },
-        { name: 'Jennifer Jackson', role: 'Social Media', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jennifer' },
+        { id: 1, name: 'Gururaj H.L.', role: 'President', image: '/assets/team/default-avatar.png' },
+        { id: 2, name: 'Shreyas J', role: 'Vice President', image: '/assets/team/default-avatar.png' },
+        { id: 3, name: 'Shivansh Gautam', role: 'Technical Lead', image: '/assets/team/default-avatar.png' },
+        { id: 4, name: 'Medha Udupa', role: 'Events Coordinator', image: '/assets/team/default-avatar.png' },
+        { id: 5, name: 'S. P. Bharath', role: 'Treasurer', image: '/assets/team/bharath.jpg' },
+        { id: 6, name: 'Ryan', role: 'Marketing Head', image: '/assets/team/ryan.jpg' },
+        { id: 7, name: 'Saanvie', role: 'Design Lead', image: '/assets/team/saanvie.jpg' },
     ];
 
     useEffect(() => {
@@ -98,7 +95,7 @@ const Team = () => {
                 card.removeEventListener('mousemove', handleMouseMove);
             });
         };
-    }, []);
+    }, [members]);
 
     return (
         <section className="py-10 px-4 md:px-20 max-w-7xl mx-auto">

@@ -54,7 +54,7 @@ const About = () => {
     return (
         <section className="py-10 px-4 md:px-20 max-w-7xl mx-auto">
             <h2 className="text-sm font-mono text-cyan-400 tracking-widest mb-8">ABOUT US</h2>
-            <p className="text-2xl md:text-4xl text-white/80 leading-relaxed font-light">
+            <p className="text-lg md:text-2xl text-white/80 leading-relaxed font-light">
                 We are the <span className="text-cyan-400 font-bold">Special Interest Group on Artificial Intelligence</span>.
                 Our mission is to explore the frontiers of machine learning, deep learning, and cognitive computing.
                 We aim to demystify AI and foster a community of ethical innovators.
