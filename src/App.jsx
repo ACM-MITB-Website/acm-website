@@ -28,9 +28,9 @@ const App = () => {
             <PopupBanner />
             <Navbar />
             <Hero />
-            <Sponsors />
             <Hub />
             <Timeline />
+            <Sponsors />
             <Footer />
         </div>
     );

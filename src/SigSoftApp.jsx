@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Linkedin } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
 import { Stars, Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
 import gsap from 'gsap';
@@ -70,15 +71,15 @@ const About = () => {
 
 const Team = () => {
     const members = [
-        { name: 'Shane Chellam', role: 'Chair', image: '/assets/shane-chellam.jpg' },
-        { name: 'Fadil Ahmed', role: 'Vice Chair', image: '/assets/fadil-ahmed.jpg' },
-        { name: 'Sai Tej Gadiyaram', role: 'General Secretary', image: '/assets/sai-tej-gadiyaram.jpg' },
-        { name: 'Thushar Maiyya', role: 'Executive Secretary', image: '/assets/thushar-maiyya.jpg' },
-        { name: 'Ananya Gupta', role: 'Treasurer', image: '/assets/ananya-gupta.jpg' },
-        { name: 'Anchit Goel', role: 'Web Master', image: '/assets/anchit-goel.jpg' },
-        { name: 'Ashwin S. Gupta', role: 'Executive Member', image: '/assets/ashwin-gupta.jpg' },
-        { name: 'Naman Aggarwal', role: 'Executive Member', image: '/assets/naman-agarwal.jpg' },
-        { name: 'Farhad Jaffrey', role: 'Executive Member', image: '/assets/farhad.jpg' },
+        { name: 'Shane Chellam', role: 'Chair', image: '/assets/shane-chellam.jpg', linkedin: '#' },
+        { name: 'Fadil Ahmed', role: 'Vice Chair', image: '/assets/fadil-ahmed.jpg', linkedin: '#' },
+        { name: 'Sai Tej Gadiyaram', role: 'General Secretary', image: '/assets/sai-tej-gadiyaram.jpg', linkedin: '#' },
+        { name: 'Thushar Maiyya', role: 'Executive Secretary', image: '/assets/thushar-maiyya.jpg', linkedin: '#' },
+        { name: 'Ananya Gupta', role: 'Treasurer', image: '/assets/ananya-gupta.jpg', linkedin: '#' },
+        { name: 'Anchit Goel', role: 'Web Master', image: '/assets/anchit-goel.jpg', linkedin: '#' },
+        { name: 'Ashwin S. Gupta', role: 'Executive Member', image: '/assets/ashwin-gupta.jpg', linkedin: '#' },
+        { name: 'Naman Aggarwal', role: 'Executive Member', image: '/assets/naman-agarwal.jpg', linkedin: '#' },
+        { name: 'Farhad Jaffrey', role: 'Executive Member', image: '/assets/farhad.jpg', linkedin: '#' },
     ];
 
     useEffect(() => {
@@ -152,11 +153,21 @@ const Team = () => {
                             </div>
                             <p className="text-xs font-mono text-gray-400 uppercase tracking-wider">{member.role}</p>
 
-                            {/* Tech Decoration */}
-                            <div className="mt-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
-                                <div className="h-1 w-8 bg-green-500/50 rounded-full"></div>
-                                <div className="h-1 w-2 bg-white/30 rounded-full"></div>
-                                <div className="h-1 w-2 bg-white/30 rounded-full"></div>
+                            {/* Tech Decoration & Socials */}
+                            <div className="mt-4 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+                                <div className="flex space-x-1">
+                                    <div className="h-1 w-8 bg-green-500/50 rounded-full"></div>
+                                    <div className="h-1 w-2 bg-white/30 rounded-full"></div>
+                                    <div className="h-1 w-2 bg-white/30 rounded-full"></div>
+                                </div>
+                                <a
+                                    href={member.linkedin}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-gray-400 hover:text-green-500 transition-colors transform hover:scale-110"
+                                >
+                                    <Linkedin size={18} />
+                                </a>
                             </div>
                         </div>
 

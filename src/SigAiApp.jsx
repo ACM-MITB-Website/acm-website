@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Linkedin } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
 import { Stars, Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
 import gsap from 'gsap';
@@ -20,7 +21,7 @@ const SigAiHero = () => {
     return (
         <section className="relative h-[60vh] w-full overflow-hidden flex items-center justify-center pt-20">
             <div className="absolute inset-0 z-0">
-                <Canvas camera={{ position: [0, 0, 8] }}>
+                {/* <Canvas camera={{ position: [0, 0, 8] }}>
                     <ambientLight intensity={0.2} />
                     <pointLight position={[10, 10, 10]} intensity={2} color="#22d3ee" />
                     <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade speed={1} />
@@ -37,7 +38,7 @@ const SigAiHero = () => {
                             />
                         </Sphere>
                     </Float>
-                </Canvas>
+                </Canvas> */}
             </div>
             <div className="relative z-10 text-center px-4">
                 <h1 ref={textRef} className="flex justify-center items-center">
@@ -70,16 +71,16 @@ const About = () => {
 
 const Team = () => {
     const members = [
-        { name: 'David Lee', role: 'Chair', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David' },
-        { name: 'Emma Wilson', role: 'Vice Chair', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma' },
-        { name: 'Ryan Garcia', role: 'Research Lead', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ryan' },
-        { name: 'Sophie Martin', role: 'Projects Lead', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sophie' },
-        { name: 'Kevin Chen', role: 'Tech Lead', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Kevin' },
-        { name: 'Jessica Liu', role: 'Event Coordinator', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica' },
-        { name: 'Daniel Kim', role: 'Outreach', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel' },
-        { name: 'Olivia Brown', role: 'Content', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Olivia' },
-        { name: 'William Davis', role: 'Logistics', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=William' },
-        { name: 'Ava Taylor', role: 'Design', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ava' },
+        { name: 'K L Vaibhav Jyotish', role: 'Chair', image: '/src/assets/sigai-vaibhav.jpg', linkedin: '#' },
+        { name: 'Md.Zain Qureshi', role: 'Vice Chair', image: '/src/assets/sigai-zain.jpg', linkedin: '#' },
+        { name: 'Mahek Sethi', role: 'General Secretary', image: '/src/assets/sigai-mahek.jpg', linkedin: '#' },
+        { name: 'Surya R', role: 'Executive Secretary', image: '/src/assets/sigai-surya.jpg', linkedin: '#' },
+        { name: 'Hemang Agarwal', role: 'Treasurer', image: '/src/assets/sigai-hemang.jpg', linkedin: '#' },
+        { name: 'Shouraya Sharma', role: 'Web Master', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica', linkedin: '#' },
+        { name: 'Divi Jaiwnath', role: 'Graphic Designer', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel', linkedin: '#' },
+        { name: 'Tejas N', role: 'Executive Member', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Olivia', linkedin: '#' },
+        { name: 'Aneesh Srivattsa', role: 'Executive Member', image: '/src/assets/sigai-aneesh.jpg', linkedin: '#' },
+        { name: 'Chitra Singh', role: 'Executive Member', image: '/src/assets/sigai-chitra.jpg', linkedin: '#' },
     ];
 
     useEffect(() => {
@@ -153,11 +154,21 @@ const Team = () => {
                             </div>
                             <p className="text-xs font-mono text-gray-400 uppercase tracking-wider">{member.role}</p>
 
-                            {/* Tech Decoration */}
-                            <div className="mt-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
-                                <div className="h-1 w-8 bg-cyan-400/50 rounded-full"></div>
-                                <div className="h-1 w-2 bg-white/30 rounded-full"></div>
-                                <div className="h-1 w-2 bg-white/30 rounded-full"></div>
+                            {/* Tech Decoration & Socials */}
+                            <div className="mt-4 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+                                <div className="flex space-x-1">
+                                    <div className="h-1 w-8 bg-cyan-400/50 rounded-full"></div>
+                                    <div className="h-1 w-2 bg-white/30 rounded-full"></div>
+                                    <div className="h-1 w-2 bg-white/30 rounded-full"></div>
+                                </div>
+                                <a
+                                    href={member.linkedin}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-gray-400 hover:text-cyan-400 transition-colors transform hover:scale-110"
+                                >
+                                    <Linkedin size={18} />
+                                </a>
                             </div>
                         </div>
 

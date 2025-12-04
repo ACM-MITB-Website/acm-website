@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Linkedin } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
 import { Stars, Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
 import gsap from 'gsap';
@@ -69,13 +70,13 @@ const About = () => {
 
 const Team = () => {
     const members = [
-        { id: 1, name: 'Gururaj H.L.', role: 'President', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Gururaj' },
-        { id: 2, name: 'Shreyas J', role: 'Vice President', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Shreyas' },
-        { id: 3, name: 'Shivansh Gautam', role: 'Technical Lead', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Shivansh' },
-        { id: 4, name: 'Medha Udupa', role: 'Events Coordinator', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Medha' },
-        { id: 5, name: 'S. P. Bharath', role: 'Treasurer', image: '/assets/sp-bharath.jpg' },
-        { id: 6, name: 'Ryan', role: 'Marketing Head', image: '/assets/ryan.jpg' },
-        { id: 7, name: 'Saanvie', role: 'Design Lead', image: '/assets/saanvie.jpg' },
+        { id: 1, name: 'Gururaj H.L.', role: 'President', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Gururaj', linkedin: '#' },
+        { id: 2, name: 'Shreyas J', role: 'Vice President', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Shreyas', linkedin: '#' },
+        { id: 3, name: 'Shivansh Gautam', role: 'Technical Lead', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Shivansh', linkedin: '#' },
+        { id: 4, name: 'Medha Udupa', role: 'Events Coordinator', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Medha', linkedin: '#' },
+        { id: 5, name: 'S. P. Bharath', role: 'Treasurer', image: '/assets/sp-bharath.jpg', linkedin: '#' },
+        { id: 6, name: 'Ryan', role: 'Marketing Head', image: '/assets/ryan.jpg', linkedin: '#' },
+        { id: 7, name: 'Saanvie', role: 'Design Lead', image: '/assets/saanvie.jpg', linkedin: '#' },
     ];
 
     useEffect(() => {
@@ -149,11 +150,21 @@ const Team = () => {
                             </div>
                             <p className="text-xs font-mono text-gray-400 uppercase tracking-wider">{member.role}</p>
 
-                            {/* Tech Decoration */}
-                            <div className="mt-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
-                                <div className="h-1 w-8 bg-blue-600/50 rounded-full"></div>
-                                <div className="h-1 w-2 bg-white/30 rounded-full"></div>
-                                <div className="h-1 w-2 bg-white/30 rounded-full"></div>
+                            {/* Tech Decoration & Socials */}
+                            <div className="mt-4 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+                                <div className="flex space-x-1">
+                                    <div className="h-1 w-8 bg-blue-600/50 rounded-full"></div>
+                                    <div className="h-1 w-2 bg-white/30 rounded-full"></div>
+                                    <div className="h-1 w-2 bg-white/30 rounded-full"></div>
+                                </div>
+                                <a
+                                    href={member.linkedin}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-gray-400 hover:text-blue-600 transition-colors transform hover:scale-110"
+                                >
+                                    <Linkedin size={18} />
+                                </a>
                             </div>
                         </div>
 
