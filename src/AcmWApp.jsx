@@ -71,14 +71,14 @@ const About = () => {
 
 const Team = () => {
     const members = [
-        { name: 'Vaishnavi Ashopa', role: 'Chair', image: '/src/assets/w-vaishnavi.jpg', linkedin: '#' },
-        { name: 'Ruchitankshi A', role: 'Vice Chair', image: '/src/assets/w-ruchitankshi.jpg', linkedin: '#' },
-        { name: 'Varsha Angadi', role: 'General Secretary', image: '/src/assets/w-varsha.jpg', linkedin: '#' },
-        { name: 'Dhruti A', role: 'Executive Secretary', image: '/src/assets/w-dhruti.jpg', linkedin: '#' },
-        { name: 'Tanvi Ghule', role: 'Treasurer', image: '/src/assets/w-tanvi.jpeg', linkedin: '#' },
-        { name: 'Thanmai Chamarthi', role: 'Executive Member', image: '/src/assets/w-thanmai.jpg', linkedin: '#' },
-        { name: 'Koynaa Jain', role: 'Executive Member', image: '/src/assets/w-koynaa.jpeg', linkedin: '#' },
-        { name: 'Venushree Gayatri', role: 'Executive Member', image: '/src/assets/w-venushree.jpg', linkedin: '#' },
+        { name: 'Vaishnavi Ashopa', role: 'Chair', image: '/assets/w-vaishnavi.jpg', linkedin: '#' },
+        { name: 'Ruchitankshi A', role: 'Vice Chair', image: '/assets/w-ruchitankshi.jpg', linkedin: '#' },
+        { name: 'Varsha Angadi', role: 'General Secretary', image: '/assets/w-varsha.jpg', linkedin: '#' },
+        { name: 'Dhruti A', role: 'Executive Secretary', image: '/assets/w-dhruti.jpg', linkedin: '#' },
+        { name: 'Tanvi Ghule', role: 'Treasurer', image: '/assets/w-tanvi.jpeg', linkedin: '#' },
+        { name: 'Thanmai Chamarthi', role: 'Executive Member', image: '/assets/w-thanmai.jpg', linkedin: '#' },
+        { name: 'Koynaa Jain', role: 'Executive Member', image: '/assets/w-koynaa.jpeg', linkedin: '#' },
+        { name: 'Venushree Gayatri', role: 'Executive Member', image: '/assets/w-venushree.jpg', linkedin: '#' },
     ];
 
     useEffect(() => {
