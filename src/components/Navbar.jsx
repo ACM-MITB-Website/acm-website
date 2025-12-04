@@ -7,11 +7,19 @@ const Navbar = () => {
     const navRef = useRef(null);
 
     const navLinks = [
+        { name: 'HOME', href: '/' },
         { name: 'ACM MITB', href: '/acm-mitb.html' },
         { name: 'SIG SOFT', href: '/sigsoft.html' },
         { name: 'SIG AI', href: '/sigai.html' },
         { name: 'ACM W', href: '/acm-w.html' },
+        { name: 'NEWS ROOM', href: '/news.html' },
     ];
+
+    const currentPath = window.location.pathname;
+    const filteredLinks = navLinks.filter(link => {
+        if (link.href === '/' && (currentPath === '/' || currentPath === '/index.html')) return false;
+        return link.href !== currentPath;
+    });
 
     const [showNavbar, setShowNavbar] = useState(false);
 
@@ -65,7 +73,7 @@ const Navbar = () => {
 
                     {/* Desktop Links */}
                     <div className="hidden md:flex items-center space-x-6">
-                        {navLinks.map((link) => (
+                        {filteredLinks.map((link) => (
                             <a
                                 key={link.name}
                                 href={link.href}
@@ -98,7 +106,7 @@ const Navbar = () => {
             {/* Mobile Menu Overlay */}
             {isOpen && (
                 <div className="fixed inset-0 z-40 bg-black/95 backdrop-blur-xl md:hidden flex flex-col items-center justify-center space-y-8">
-                    {navLinks.map((link) => (
+                    {filteredLinks.map((link) => (
                         <a
                             key={link.name}
                             href={link.href}
