@@ -6,6 +6,7 @@ import Timeline from './components/Timeline';
 import Footer from './components/Footer';
 import Loader3D from './components/Loader3D';
 import Hub from './components/Hub';
+import SidePanel from './components/SidePanel';
 import PopupBanner from './components/PopupBanner';
 
 const App = () => {
@@ -24,8 +25,9 @@ const App = () => {
     }
 
     return (
-        <div className="bg-black min-h-screen text-white selection:bg-acm-teal selection:text-black">
+        <div className="bg-black min-h-screen text-white selection:bg-green-500 selection:text-black overflow-x-hidden">
             <PopupBanner />
+            <SidePanel />
             <Navbar />
             <Hero />
             <Hub />
