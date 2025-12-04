@@ -16,6 +16,7 @@ export default defineConfig({
         sigai: 'sigai.html',
         acm_mitb: 'acm-mitb.html',
         acm_w: 'acm-w.html',
+        news: 'news.html',
       },
     },
   },
