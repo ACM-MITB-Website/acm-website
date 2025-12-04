@@ -3,6 +3,7 @@ import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { Stars, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
 import gsap from 'gsap';
 import * as THREE from 'three';
+import acmMitbLogo from '../assets/acm-mitb-logo.png';
 
 const InteractiveBubble = ({ color, position, scale }) => {
     const meshRef = useRef();
@@ -124,7 +125,7 @@ const Hero = () => {
             <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 pointer-events-none">
                 <div ref={textRef} className="flex justify-center mb-6">
                     <img
-                        src="/assets/acm-mitb-landing-logo.png"
+                        src={acmMitbLogo}
                         alt="ACM MITB"
                         className="h-32 md:h-48 object-contain drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]"
                     />

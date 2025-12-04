@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import Timeline from './components/Timeline';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import acmWLogo from './assets/acm-w-logo.png';
 
 const AcmWHero = () => {
     const textRef = useRef(null);
@@ -39,8 +40,12 @@ const AcmWHero = () => {
                 </Canvas>
             </div>
             <div className="relative z-10 text-center px-4">
-                <h1 ref={textRef} className="text-6xl md:text-8xl font-bold text-white tracking-tighter drop-shadow-[0_0_30px_rgba(217,70,239,0.5)]">
-                    ACM-W
+                <h1 ref={textRef} className="flex justify-center items-center">
+                    <img
+                        src={acmWLogo}
+                        alt="ACM-W"
+                        className="h-24 md:h-32 drop-shadow-[0_0_30px_rgba(217,70,239,0.5)]"
+                    />
                 </h1>
                 <p className="text-xl md:text-2xl text-fuchsia-500 mt-4 font-mono tracking-widest">
                     WOMEN IN COMPUTING

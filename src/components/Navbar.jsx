@@ -5,94 +5,119 @@ import gsap from 'gsap';
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const navRef = useRef(null);
-    const menuRef = useRef(null);
 
     const navLinks = [
-        { name: 'Home', href: '/' },
-        { name: 'SIGSOFT', href: '/sigsoft.html' },
+        { name: 'ACM MITB', href: '/acm-mitb.html' },
+        { name: 'SIG SOFT', href: '/sigsoft.html' },
         { name: 'SIG AI', href: '/sigai.html' },
-        { name: 'ACM-W', href: '/acm-w.html' },
-        { name: 'Events', href: '#timeline' },
+        { name: 'ACM W', href: '/acm-w.html' },
     ];
 
+    const [showNavbar, setShowNavbar] = useState(false);
+
     useEffect(() => {
-        gsap.from(navRef.current, {
-            y: -100,
-            opacity: 0,
-            duration: 1,
-            ease: 'power3.out',
-            delay: 0.2,
-        });
+        const handleScroll = () => {
+            if (window.scrollY > 100) {
+                setShowNavbar(true);
+            } else {
+                setShowNavbar(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     useEffect(() => {
-        if (isOpen) {
-            gsap.to(menuRef.current, {
-                height: 'auto',
+        if (showNavbar) {
+            gsap.to(navRef.current, {
+                y: 0,
                 opacity: 1,
                 duration: 0.5,
                 ease: 'power3.out',
             });
         } else {
-            gsap.to(menuRef.current, {
-                height: 0,
+            gsap.to(navRef.current, {
+                y: -100,
                 opacity: 0,
                 duration: 0.5,
                 ease: 'power3.in',
             });
         }
-    }, [isOpen]);
+    }, [showNavbar]);
 
     const toggleMenu = () => setIsOpen(!isOpen);
 
     return (
-        <nav ref={navRef} className="fixed w-full z-50 top-0 left-0 bg-black/50 backdrop-blur-md border-b border-white/10">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-20">
-                    <div className="flex-shrink-0">
-                        <a href="#" className="text-2xl font-bold tracking-tighter text-white hover:text-acm-teal transition-colors">
-                            ACM MITB
-                        </a>
-                    </div>
-                    <div className="hidden md:block">
-                        <div className="ml-10 flex items-baseline space-x-8">
-                            {navLinks.map((link) => (
-                                <a
-                                    key={link.name}
-                                    href={link.href}
-                                    className="text-sm font-medium text-gray-300 hover:text-white hover:scale-105 transition-all duration-300 uppercase tracking-widest"
-                                >
-                                    {link.name}
-                                </a>
-                            ))}
-                        </div>
-                    </div>
-                    <div className="-mr-2 flex md:hidden">
+        <>
+            <nav ref={navRef} className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] md:w-auto opacity-0 -translate-y-full">
+                <div className="bg-black/20 hover:bg-black/80 transition-all duration-300 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 shadow-[0_0_20px_rgba(34,197,94,0.1)] flex items-center justify-between md:justify-start md:space-x-6">
+
+                    {/* Mobile Menu Button */}
+                    <div className="md:hidden">
                         <button
                             onClick={toggleMenu}
-                            className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none"
+                            className="text-gray-300 hover:text-white focus:outline-none"
                         >
-                            {isOpen ? <X size={24} /> : <Menu size={24} />}
+                            {isOpen ? <X size={20} /> : <Menu size={20} />}
                         </button>
                     </div>
-                </div>
-            </div>
 
-            <div ref={menuRef} className="md:hidden overflow-hidden h-0 opacity-0 bg-acm-blue">
-                <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                    {/* Desktop Links */}
+                    <div className="hidden md:flex items-center space-x-6">
+                        {navLinks.map((link) => (
+                            <a
+                                key={link.name}
+                                href={link.href}
+                                className="group relative text-sm font-medium text-gray-300 hover:text-white transition-colors uppercase tracking-wider whitespace-nowrap"
+                            >
+                                {link.name}
+                                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-acm-teal transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+                            </a>
+                        ))}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex items-center space-x-4 md:pl-4 md:border-l md:border-white/10">
+                        <a
+                            href="#join"
+                            className="hidden md:inline-block text-xs font-bold bg-white text-black px-4 py-2 rounded-full hover:bg-acm-teal hover:scale-105 transition-all"
+                        >
+                            JOIN ACM
+                        </a>
+                        <a
+                            href="#contact"
+                            className="text-xs font-medium text-gray-300 hover:text-white whitespace-nowrap"
+                        >
+                            GET IN TOUCH
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            {/* Mobile Menu Overlay */}
+            {isOpen && (
+                <div className="fixed inset-0 z-40 bg-black/95 backdrop-blur-xl md:hidden flex flex-col items-center justify-center space-y-8">
                     {navLinks.map((link) => (
                         <a
                             key={link.name}
                             href={link.href}
                             onClick={() => setIsOpen(false)}
-                            className="text-gray-300 hover:text-acm-teal block px-3 py-2 rounded-md text-base font-medium"
+                            className="text-2xl font-bold text-white hover:text-acm-teal tracking-widest"
                         >
                             {link.name}
                         </a>
                     ))}
+                    <a
+                        href="#join"
+                        onClick={() => setIsOpen(false)}
+                        className="text-xl font-bold bg-white text-black px-8 py-3 rounded-full hover:bg-acm-teal"
+                    >
+                        JOIN ACM
+                    </a>
                 </div>
-            </div>
-        </nav>
+            )}
+        </>
     );
 };
 

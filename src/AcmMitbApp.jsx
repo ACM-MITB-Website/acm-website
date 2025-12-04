@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import Timeline from './components/Timeline';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import acmMitbLogo from './assets/acm-mitb-logo.png';
 
 const AcmMitbHero = () => {
     const textRef = useRef(null);
@@ -39,8 +40,12 @@ const AcmMitbHero = () => {
                 </Canvas>
             </div>
             <div className="relative z-10 text-center px-4">
-                <h1 ref={textRef} className="text-6xl md:text-8xl font-bold text-white tracking-tighter drop-shadow-[0_0_30px_rgba(37,99,235,0.5)]">
-                    ACM MITB
+                <h1 ref={textRef} className="flex justify-center items-center">
+                    <img
+                        src={acmMitbLogo}
+                        alt="ACM MITB"
+                        className="h-24 md:h-32 drop-shadow-[0_0_30px_rgba(37,99,235,0.5)]"
+                    />
                 </h1>
                 <p className="text-xl md:text-2xl text-blue-600 mt-4 font-mono tracking-widest">
                     STUDENT CHAPTER
@@ -64,13 +69,13 @@ const About = () => {
 
 const Team = () => {
     const members = [
-        { id: 1, name: 'Gururaj H.L.', role: 'President', image: '/assets/team/default-avatar.png' },
-        { id: 2, name: 'Shreyas J', role: 'Vice President', image: '/assets/team/default-avatar.png' },
-        { id: 3, name: 'Shivansh Gautam', role: 'Technical Lead', image: '/assets/team/default-avatar.png' },
-        { id: 4, name: 'Medha Udupa', role: 'Events Coordinator', image: '/assets/team/default-avatar.png' },
-        { id: 5, name: 'S. P. Bharath', role: 'Treasurer', image: '/assets/team/bharath.jpg' },
-        { id: 6, name: 'Ryan', role: 'Marketing Head', image: '/assets/team/ryan.jpg' },
-        { id: 7, name: 'Saanvie', role: 'Design Lead', image: '/assets/team/saanvie.jpg' },
+        { id: 1, name: 'Gururaj H.L.', role: 'President', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Gururaj' },
+        { id: 2, name: 'Shreyas J', role: 'Vice President', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Shreyas' },
+        { id: 3, name: 'Shivansh Gautam', role: 'Technical Lead', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Shivansh' },
+        { id: 4, name: 'Medha Udupa', role: 'Events Coordinator', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Medha' },
+        { id: 5, name: 'S. P. Bharath', role: 'Treasurer', image: '/assets/sp-bharath.jpg' },
+        { id: 6, name: 'Ryan', role: 'Marketing Head', image: '/assets/ryan.jpg' },
+        { id: 7, name: 'Saanvie', role: 'Design Lead', image: '/assets/saanvie.jpg' },
     ];
 
     useEffect(() => {

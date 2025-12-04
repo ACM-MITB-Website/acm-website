@@ -6,6 +6,7 @@ import Timeline from './components/Timeline';
 import Footer from './components/Footer';
 import Loader3D from './components/Loader3D';
 import Hub from './components/Hub';
+import PopupBanner from './components/PopupBanner';
 
 const App = () => {
     const [loading, setLoading] = useState(true);
@@ -24,6 +25,7 @@ const App = () => {
 
     return (
         <div className="bg-black min-h-screen text-white selection:bg-acm-teal selection:text-black">
+            <PopupBanner />
             <Navbar />
             <Hero />
             <Sponsors />
