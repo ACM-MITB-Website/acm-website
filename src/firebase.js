@@ -1,17 +1,18 @@
 // src/firebase.js
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
-// PASTE YOUR KEYS HERE
 const firebaseConfig = {
-    apiKey: "AIzaSyCebz1_TmT-Jf_d62K81itED2lSLjw8fLU",
-  authDomain: "acm-website-dev.firebaseapp.com",
-  projectId: "acm-website-dev",
-  storageBucket: "acm-website-dev.firebasestorage.app",
-  messagingSenderId: "228430752836",
-  appId: "1:228430752836:web:97ba5da1e67964cc5de011"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+export const db = getFirestore(app);
