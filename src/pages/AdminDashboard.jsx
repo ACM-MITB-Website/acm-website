@@ -3,7 +3,8 @@ import { auth, db } from '../firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import AuthButton from '../components/AuthButton';
-import { Trash2, Plus, Edit, Save, X } from 'lucide-react';
+import Toast from '../components/Toast';
+import { Trash2, Plus, Edit, Save, X, Loader2, Database, LogOut, User } from 'lucide-react';
 
 const AdminDashboard = () => {
     const [user, setUser] = useState(null);
@@ -12,6 +13,8 @@ const AdminDashboard = () => {
     const [data, setData] = useState([]);
     const [newItem, setNewItem] = useState({});
     const [isEditing, setIsEditing] = useState(null);
+    const [toast, setToast] = useState(null);
+    const [actionLoading, setActionLoading] = useState(false);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -27,51 +30,64 @@ const AdminDashboard = () => {
         }
     }, [user, activeTab]);
 
+    const showToast = (message, type = 'info') => {
+        setToast({ message, type });
+    };
+
+    const handleFirestoreError = (error) => {
+        console.error("Firestore Error:", error);
+        if (error.code === 'permission-denied') {
+            showToast("Permission Denied. Check Firestore Rules.", "error");
+        } else if (error.code === 'not-found' || error.message.includes("NOT_FOUND")) {
+            showToast("Database not found. Please create it in Firebase Console.", "error");
+        } else {
+            showToast(`Error: ${error.message}`, "error");
+        }
+    };
+
     const fetchData = async (collectionName) => {
         try {
             const querySnapshot = await getDocs(collection(db, collectionName));
             const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setData(items);
         } catch (error) {
-            console.error("Error fetching data:", error);
-            alert(`Error fetching data: ${error.message}. Check console for details.`);
+            handleFirestoreError(error);
         }
     };
 
     const handleAdd = async () => {
+        if (Object.keys(newItem).length === 0) {
+            showToast("Please fill in the fields.", "error");
+            return;
+        }
+        setActionLoading(true);
         try {
             await addDoc(collection(db, activeTab), newItem);
+            showToast("Item added successfully!", "success");
             setNewItem({});
             fetchData(activeTab);
         } catch (error) {
-            console.error("Error adding document: ", error);
-            alert(`Error adding item: ${error.message}`);
+            handleFirestoreError(error);
+        } finally {
+            setActionLoading(false);
         }
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm("Are you sure you want to delete this item?")) {
-            try {
-                await deleteDoc(doc(db, activeTab, id));
-                fetchData(activeTab);
-            } catch (error) {
-                console.error("Error deleting document: ", error);
-            }
-        }
-    };
+        if (!window.confirm("Are you sure you want to delete this item?")) return;
 
-    const handleUpdate = async (id, updatedData) => {
         try {
-            await updateDoc(doc(db, activeTab, id), updatedData);
-            setIsEditing(null);
+            await deleteDoc(doc(db, activeTab, id));
+            showToast("Item deleted successfully.", "success");
             fetchData(activeTab);
         } catch (error) {
-            console.error("Error updating document: ", error);
+            handleFirestoreError(error);
         }
     };
 
     const handleSeed = async () => {
         if (!window.confirm("This will add initial data to the database. Continue?")) return;
+        setActionLoading(true);
 
         const initialTeam = [
             { name: 'Gururaj H.L.', role: 'President', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Gururaj', linkedin: '#' },
@@ -98,21 +114,32 @@ const AdminDashboard = () => {
             for (const event of initialEvents) {
                 await addDoc(collection(db, 'events_mitb'), event);
             }
-            alert("Seeding complete!");
+            showToast("Seeding complete!", "success");
             fetchData('team_mitb');
         } catch (error) {
-            console.error("Error seeding data: ", error);
-            alert(`Error seeding data: ${error.message}`);
+            handleFirestoreError(error);
+        } finally {
+            setActionLoading(false);
         }
     };
 
-    if (loading) return <div className="min-h-screen bg-black text-white flex items-center justify-center">Loading...</div>;
+    if (loading) return (
+        <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center">
+            <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+        </div>
+    );
 
     if (!user) {
         return (
-            <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
-                <h1 className="text-3xl font-bold mb-8">Admin Access Required</h1>
-                <AuthButton />
+            <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-4">
+                <div className="bg-gray-900 p-8 rounded-2xl border border-gray-800 shadow-2xl max-w-md w-full text-center">
+                    <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Database className="w-8 h-8 text-blue-500" />
+                    </div>
+                    <h1 className="text-3xl font-bold mb-2">Admin Access</h1>
+                    <p className="text-gray-400 mb-8">Sign in to manage ACM Website content</p>
+                    <AuthButton />
+                </div>
             </div>
         );
     }
@@ -121,86 +148,224 @@ const AdminDashboard = () => {
         { id: 'team_mitb', label: 'ACM MITB Team' },
         { id: 'events_mitb', label: 'ACM MITB Events' },
         { id: 'team_sigai', label: 'SIGAI Team' },
-        // Add more as needed
     ];
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-8">
+        <div className="min-h-screen bg-gray-950 text-white p-4 md:p-8 font-sans">
+            {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+
             <div className="max-w-7xl mx-auto">
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold text-blue-500">Admin Dashboard</h1>
+                {/* Header */}
+                <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 bg-gray-900/50 p-6 rounded-2xl border border-gray-800 backdrop-blur-sm">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-blue-500/20 rounded-lg">
+                            <Database className="w-6 h-6 text-blue-500" />
+                        </div>
+                        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                            Admin Dashboard
+                        </h1>
+                    </div>
+
                     <div className="flex items-center gap-4">
-                        <button onClick={handleSeed} className="bg-yellow-600 px-4 py-2 rounded hover:bg-yellow-700">Seed Data</button>
-                        <span>{user.email}</span>
-                        <button onClick={() => signOut(auth)} className="bg-red-600 px-4 py-2 rounded hover:bg-red-700">Logout</button>
+                        <button
+                            onClick={handleSeed}
+                            disabled={actionLoading}
+                            className="bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 px-4 py-2 rounded-lg hover:bg-yellow-500/20 transition-all disabled:opacity-50 text-sm font-medium"
+                        >
+                            {actionLoading ? 'Seeding...' : 'Seed Data'}
+                        </button>
+
+                        <div className="flex items-center gap-3 bg-gray-800 px-4 py-2 rounded-lg border border-gray-700">
+                            <User className="w-4 h-4 text-gray-400" />
+                            <span className="text-sm text-gray-300">{user.email}</span>
+                        </div>
+
+                        <button
+                            onClick={() => signOut(auth)}
+                            className="p-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                            title="Logout"
+                        >
+                            <LogOut className="w-5 h-5" />
+                        </button>
                     </div>
                 </div>
 
-                <div className="flex gap-4 mb-8 overflow-x-auto pb-2">
+                {/* Tabs */}
+                <div className="flex gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
                     {collections.map(tab => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === tab.id ? 'bg-blue-600' : 'bg-gray-800 hover:bg-gray-700'}`}
+                            className={`px-6 py-3 rounded-xl whitespace-nowrap transition-all font-medium text-sm ${activeTab === tab.id
+                                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
+                                    : 'bg-gray-900 text-gray-400 hover:bg-gray-800 hover:text-white border border-gray-800'
+                                }`}
                         >
                             {tab.label}
                         </button>
                     ))}
                 </div>
 
-                <div className="bg-gray-800 rounded-lg p-6">
-                    <h2 className="text-xl font-semibold mb-4">Manage {collections.find(c => c.id === activeTab)?.label}</h2>
+                <div className="grid lg:grid-cols-3 gap-8">
+                    {/* Add New Item Form */}
+                    <div className="lg:col-span-1">
+                        <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800 sticky top-8">
+                            <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
+                                <Plus className="w-5 h-5 text-blue-500" />
+                                Add New Item
+                            </h2>
 
-                    {/* Add New Item Form - Simplified for generic use, can be customized per collection */}
-                    <div className="mb-8 p-4 bg-gray-700 rounded">
-                        <h3 className="text-lg mb-2">Add New Item</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            {activeTab.includes('team') ? (
-                                <>
-                                    <input placeholder="Name" className="bg-gray-600 p-2 rounded" value={newItem.name || ''} onChange={e => setNewItem({ ...newItem, name: e.target.value })} />
-                                    <input placeholder="Role" className="bg-gray-600 p-2 rounded" value={newItem.role || ''} onChange={e => setNewItem({ ...newItem, role: e.target.value })} />
-                                    <input placeholder="Image URL" className="bg-gray-600 p-2 rounded" value={newItem.image || ''} onChange={e => setNewItem({ ...newItem, image: e.target.value })} />
-                                    <input placeholder="LinkedIn URL" className="bg-gray-600 p-2 rounded" value={newItem.linkedin || ''} onChange={e => setNewItem({ ...newItem, linkedin: e.target.value })} />
-                                </>
-                            ) : (
-                                <>
-                                    <input placeholder="Title" className="bg-gray-600 p-2 rounded" value={newItem.title || ''} onChange={e => setNewItem({ ...newItem, title: e.target.value })} />
-                                    <input placeholder="Date" className="bg-gray-600 p-2 rounded" value={newItem.date || ''} onChange={e => setNewItem({ ...newItem, date: e.target.value })} />
-                                    <input placeholder="Status (completed/upcoming)" className="bg-gray-600 p-2 rounded" value={newItem.status || ''} onChange={e => setNewItem({ ...newItem, status: e.target.value })} />
-                                    <input placeholder="Type" className="bg-gray-600 p-2 rounded" value={newItem.type || ''} onChange={e => setNewItem({ ...newItem, type: e.target.value })} />
-                                </>
-                            )}
+                            <div className="space-y-4">
+                                {activeTab.includes('team') ? (
+                                    <>
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-gray-500 uppercase font-semibold tracking-wider">Name</label>
+                                            <input
+                                                className="w-full bg-gray-950 border border-gray-800 p-3 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all"
+                                                value={newItem.name || ''}
+                                                onChange={e => setNewItem({ ...newItem, name: e.target.value })}
+                                                placeholder="e.g. John Doe"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-gray-500 uppercase font-semibold tracking-wider">Role</label>
+                                            <input
+                                                className="w-full bg-gray-950 border border-gray-800 p-3 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all"
+                                                value={newItem.role || ''}
+                                                onChange={e => setNewItem({ ...newItem, role: e.target.value })}
+                                                placeholder="e.g. President"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-gray-500 uppercase font-semibold tracking-wider">Image URL</label>
+                                            <input
+                                                className="w-full bg-gray-950 border border-gray-800 p-3 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all"
+                                                value={newItem.image || ''}
+                                                onChange={e => setNewItem({ ...newItem, image: e.target.value })}
+                                                placeholder="https://..."
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-gray-500 uppercase font-semibold tracking-wider">LinkedIn</label>
+                                            <input
+                                                className="w-full bg-gray-950 border border-gray-800 p-3 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all"
+                                                value={newItem.linkedin || ''}
+                                                onChange={e => setNewItem({ ...newItem, linkedin: e.target.value })}
+                                                placeholder="https://linkedin.com/in/..."
+                                            />
+                                        </div>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-gray-500 uppercase font-semibold tracking-wider">Title</label>
+                                            <input
+                                                className="w-full bg-gray-950 border border-gray-800 p-3 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all"
+                                                value={newItem.title || ''}
+                                                onChange={e => setNewItem({ ...newItem, title: e.target.value })}
+                                                placeholder="e.g. Hackathon 2024"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-gray-500 uppercase font-semibold tracking-wider">Date</label>
+                                            <input
+                                                className="w-full bg-gray-950 border border-gray-800 p-3 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all"
+                                                value={newItem.date || ''}
+                                                onChange={e => setNewItem({ ...newItem, date: e.target.value })}
+                                                placeholder="e.g. Oct 2024"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-gray-500 uppercase font-semibold tracking-wider">Status</label>
+                                            <select
+                                                className="w-full bg-gray-950 border border-gray-800 p-3 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all text-gray-300"
+                                                value={newItem.status || ''}
+                                                onChange={e => setNewItem({ ...newItem, status: e.target.value })}
+                                            >
+                                                <option value="">Select Status</option>
+                                                <option value="upcoming">Upcoming</option>
+                                                <option value="completed">Completed</option>
+                                            </select>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-gray-500 uppercase font-semibold tracking-wider">Type</label>
+                                            <input
+                                                className="w-full bg-gray-950 border border-gray-800 p-3 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all"
+                                                value={newItem.type || ''}
+                                                onChange={e => setNewItem({ ...newItem, type: e.target.value })}
+                                                placeholder="e.g. Competition"
+                                            />
+                                        </div>
+                                    </>
+                                )}
+
+                                <button
+                                    onClick={handleAdd}
+                                    disabled={actionLoading}
+                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+                                    {actionLoading ? 'Adding...' : 'Add Item'}
+                                </button>
+                            </div>
                         </div>
-                        <button onClick={handleAdd} className="bg-green-600 px-4 py-2 rounded flex items-center gap-2 hover:bg-green-700">
-                            <Plus size={18} /> Add Item
-                        </button>
                     </div>
 
                     {/* List Items */}
-                    <div className="space-y-4">
-                        {data.map(item => (
-                            <div key={item.id} className="bg-gray-700 p-4 rounded flex justify-between items-center">
-                                <div>
-                                    {activeTab.includes('team') ? (
-                                        <>
-                                            <h3 className="font-bold">{item.name}</h3>
-                                            <p className="text-gray-400">{item.role}</p>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <h3 className="font-bold">{item.title}</h3>
-                                            <p className="text-gray-400">{item.date} - {item.status}</p>
-                                        </>
-                                    )}
-                                </div>
-                                <div className="flex gap-2">
-                                    <button onClick={() => handleDelete(item.id)} className="text-red-400 hover:text-red-300 p-2">
-                                        <Trash2 size={20} />
-                                    </button>
-                                </div>
+                    <div className="lg:col-span-2">
+                        <div className="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden">
+                            <div className="p-6 border-b border-gray-800">
+                                <h2 className="text-lg font-semibold">
+                                    Current Items <span className="text-gray-500 text-sm font-normal ml-2">({data.length})</span>
+                                </h2>
                             </div>
-                        ))}
-                        {data.length === 0 && <p className="text-gray-500 text-center">No items found.</p>}
+
+                            <div className="divide-y divide-gray-800 max-h-[600px] overflow-y-auto">
+                                {data.map(item => (
+                                    <div key={item.id} className="p-4 hover:bg-gray-800/50 transition-colors flex justify-between items-center group">
+                                        <div className="flex items-center gap-4">
+                                            {activeTab.includes('team') && item.image && (
+                                                <img src={item.image} alt={item.name} className="w-10 h-10 rounded-full object-cover border border-gray-700" />
+                                            )}
+                                            <div>
+                                                {activeTab.includes('team') ? (
+                                                    <>
+                                                        <h3 className="font-medium text-gray-200">{item.name}</h3>
+                                                        <p className="text-sm text-gray-500">{item.role}</p>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <h3 className="font-medium text-gray-200">{item.title}</h3>
+                                                        <div className="flex items-center gap-2 mt-1">
+                                                            <span className={`text-xs px-2 py-0.5 rounded-full ${item.status === 'completed' ? 'bg-green-500/10 text-green-500' : 'bg-blue-500/10 text-blue-500'
+                                                                }`}>
+                                                                {item.status}
+                                                            </span>
+                                                            <span className="text-xs text-gray-500">• {item.date}</span>
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            onClick={() => handleDelete(item.id)}
+                                            className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                            title="Delete"
+                                        >
+                                            <Trash2 className="w-5 h-5" />
+                                        </button>
+                                    </div>
+                                ))}
+
+                                {data.length === 0 && (
+                                    <div className="p-12 text-center text-gray-500">
+                                        <Database className="w-12 h-12 mx-auto mb-4 opacity-20" />
+                                        <p>No items found in this collection.</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
