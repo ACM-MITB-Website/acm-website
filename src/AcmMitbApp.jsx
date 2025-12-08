@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { db } from './firebase';
+import { collection, getDocs } from 'firebase/firestore';
 import { Linkedin } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
 import { Stars, Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
@@ -69,17 +71,25 @@ const About = () => {
 };
 
 const Team = () => {
-    const members = [
-        { id: 1, name: 'Gururaj H.L.', role: 'President', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Gururaj', linkedin: '#' },
-        { id: 2, name: 'Shreyas J', role: 'Vice President', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Shreyas', linkedin: '#' },
-        { id: 3, name: 'Shivansh Gautam', role: 'Technical Lead', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Shivansh', linkedin: '#' },
-        { id: 4, name: 'Medha Udupa', role: 'Events Coordinator', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Medha', linkedin: '#' },
-        { id: 5, name: 'S. P. Bharath', role: 'Treasurer', image: '/assets/sp-bharath.jpg', linkedin: '#' },
-        { id: 6, name: 'Ryan', role: 'Marketing Head', image: '/assets/ryan.jpg', linkedin: '#' },
-        { id: 7, name: 'Saanvie', role: 'Design Lead', image: '/assets/saanvie.jpg', linkedin: '#' },
-    ];
+    const [members, setMembers] = useState([]);
 
     useEffect(() => {
+        const fetchMembers = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, 'team_mitb'));
+                const teamData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setMembers(teamData);
+            } catch (error) {
+                console.error("Error fetching team members: ", error);
+            }
+        };
+
+        fetchMembers();
+    }, []);
+
+    useEffect(() => {
+        if (members.length === 0) return;
+
         const cards = document.querySelectorAll('.team-card');
 
         const handleMouseMove = (e) => {
@@ -217,13 +227,30 @@ const acmMitbEvents = [
 ];
 
 const AcmMitbApp = () => {
+    const [events, setEvents] = useState([]);
+
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, 'events_mitb'));
+                const eventsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                // Sort events by date or ID if needed, for now just raw data
+                setEvents(eventsData);
+            } catch (error) {
+                console.error("Error fetching events: ", error);
+            }
+        };
+
+        fetchEvents();
+    }, []);
+
     return (
         <div className="bg-black min-h-screen text-white selection:bg-blue-600 selection:text-black">
             <Navbar />
             <AcmMitbHero />
             <About />
             <Team />
-            <Timeline title="CHAPTER TIMELINE" data={acmMitbEvents} />
+            <Timeline title="CHAPTER TIMELINE" data={events} />
             <Footer />
         </div>
     );
