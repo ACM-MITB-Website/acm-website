@@ -1,140 +1,93 @@
-import React, { useEffect, useRef } from 'react';
-import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { Stars, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
+import React, { useEffect, useRef, useState, Suspense } from 'react';
 import gsap from 'gsap';
-import * as THREE from 'three';
 import acmMitbLogo from '../assets/acm-mitb-logo.png';
+import { SplitText } from './ui/SplitText';
+import Galaxy from './ui/Galaxy';
 
-const InteractiveBubble = ({ color, position, scale }) => {
-    const meshRef = useRef();
-    const initialPos = new THREE.Vector3(...position);
-
-    useFrame((state) => {
-        const t = state.clock.getElapsedTime();
-        const mouse = state.mouse;
-
-        // 1. Breathing Effect (Smooth scaling)
-        // Different phase for each bubble based on position
-        const breathe = Math.sin(t * 0.5 + position[0]) * 0.1 + 1;
-        meshRef.current.scale.set(scale * breathe, scale * breathe, scale * breathe);
-
-        // 2. Premium Float (Slower, more complex)
-        const floatX = Math.sin(t * 0.2 + position[0]) * 0.5;
-        const floatY = Math.cos(t * 0.15 + position[1]) * 0.5;
-        const floatZ = Math.sin(t * 0.1 + position[2]) * 0.2;
-
-        // 3. Parallax Mouse Interaction
-        // Instead of attracting, move slightly opposite or with mouse based on depth to create 3D feel
-        // Deeper bubbles move less, closer ones move more
-        const parallaxFactor = 0.5 + (position[2] + 5) * 0.1; // Estimate depth influence
-
-        const targetX = initialPos.x + floatX + (mouse.x * parallaxFactor * 2);
-        const targetY = initialPos.y + floatY + (mouse.y * parallaxFactor * 2);
-        const targetZ = initialPos.z + floatZ;
-
-        if (meshRef.current) {
-            // Very smooth lerp for "heavy" feel
-            meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.03);
-            meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.03);
-            meshRef.current.position.z = THREE.MathUtils.lerp(meshRef.current.position.z, targetZ, 0.03);
-
-            // Subtle rotation
-            meshRef.current.rotation.x = t * 0.05;
-            meshRef.current.rotation.y = t * 0.08;
-        }
-    });
-
-    return (
-        <Sphere ref={meshRef} args={[1, 64, 64]} position={position}>
-            <MeshDistortMaterial
-                color={color}
-                emissive={color}
-                emissiveIntensity={0.3}
-                roughness={0.2}
-                metalness={0.8}
-                distort={0.3} // Subtle distortion
-                speed={1.5} // Slow, fluid distortion
-            />
-        </Sphere>
-    );
-};
-
-const FloatingBubbles = () => {
-    const bubbles = [
-        { color: '#22c55e', position: [-4, 2, -2], scale: 1.2 }, // Green (SIGSOFT)
-        { color: '#2563eb', position: [4, -2, -3], scale: 1.5 },  // Blue (ACM MITB)
-        { color: '#d946ef', position: [-3, -3, -4], scale: 1.3 }, // Fuchsia (ACM-W)
-        { color: '#22d3ee', position: [3, 3, -2], scale: 1.4 }    // Cyan (SIG AI)
-    ];
-
-    return (
-        <group>
-            {bubbles.map((bubble, index) => (
-                <InteractiveBubble key={index} {...bubble} />
-            ))}
-        </group>
-    );
-};
-
-const InteractiveStars = () => {
-    const starsRef = useRef();
-    useFrame((state) => {
-        const { mouse } = state;
-        if (starsRef.current) {
-            // Smoothly interpolate rotation
-            starsRef.current.rotation.x = THREE.MathUtils.lerp(starsRef.current.rotation.x, mouse.y * 0.1, 0.1);
-            starsRef.current.rotation.y = THREE.MathUtils.lerp(starsRef.current.rotation.y, mouse.x * 0.1, 0.1);
-        }
-    });
-
-    return <Stars ref={starsRef} radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />;
-};
+// Lazy Load Robot to prevent white screen crashes
+const Robot = React.lazy(() => import('./ui/Robot'));
 
 const Hero = () => {
     const textRef = useRef(null);
-    const subTextRef = useRef(null);
+    const [showScroll, setShowScroll] = useState(true);
 
     useEffect(() => {
         const tl = gsap.timeline();
-
+        // Text fade in
         tl.fromTo(textRef.current,
-            { y: 50, opacity: 0 },
-            { y: 0, opacity: 1, duration: 1.5, ease: 'power3.out', delay: 0.5 }
-        )
-            .fromTo(subTextRef.current,
-                { y: 30, opacity: 0 },
-                { y: 0, opacity: 1, duration: 1.5, ease: 'power3.out' },
-                '-=1'
-            );
+            { opacity: 0 },
+            { opacity: 1, duration: 1, ease: 'power3.out' }
+        );
+
+        const handleScroll = () => {
+            setShowScroll(window.scrollY < 50);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     return (
-        <section id="home" className="relative h-screen w-full overflow-hidden">
-            {/* 3D Background */}
-            <div className="absolute inset-0 z-0">
-                <Canvas camera={{ position: [0, 0, 8] }}>
-                    <ambientLight intensity={0.2} />
-                    <pointLight position={[10, 10, 10]} intensity={2} color="#00D4FF" />
-                    <pointLight position={[-10, -10, -10]} intensity={1} color="#7C3AED" />
-                    <InteractiveStars />
-                    <FloatingBubbles />
-                </Canvas>
+        <section id="home" className="relative h-screen w-full bg-black">
+            {/* 3D Background - Extended Height for Overlap */}
+            <div className="absolute top-0 left-0 w-full h-[150vh] z-0 bg-black">
+                <Galaxy
+                    mouseRepulsion={true}
+                    mouseInteraction={true}
+                    density={1.5}
+                    glowIntensity={0.5}
+                    saturation={0.8}
+                    hueShift={240}
+                />
             </div>
 
-            {/* Content Overlay */}
-            <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 pointer-events-none">
-                <div ref={textRef} className="flex justify-center mb-6">
-                    <img
-                        src={acmMitbLogo}
-                        alt="ACM MITB"
-                        className="h-32 md:h-48 object-contain drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]"
-                    />
+            {/* Contrast Overlay */}
+            <div className="absolute inset-0 z-[1] bg-black/30 pointer-events-none" />
+
+            {/* Content Overlay - Split Layout */}
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 h-full w-full items-center px-4 md:px-12 pointer-events-none">
+
+                {/* Left: Robot Interaction */}
+                <div className="h-[50vh] lg:h-full w-full flex items-center justify-center pointer-events-auto order-2 lg:order-1">
+                    <Suspense fallback={<div className="text-white/30 text-xs border border-white/10 p-4 rounded bg-black/50 tracking-widest">LOADING 3D...</div>}>
+                        <Robot />
+                    </Suspense>
                 </div>
 
+                {/* Right: Typography */}
+                <div ref={textRef} className="flex flex-col items-center lg:items-end text-center lg:text-right drop-shadow-2xl order-1 lg:order-2 lg:pr-32">
+                    <div className="pointer-events-auto">
+                        <SplitText
+                            className="text-5xl lg:text-[5rem] leading-none font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50 select-none pb-4"
+                            delay={0.1}
+                        >
+                            INNOVATE
+                        </SplitText>
+
+                        <SplitText
+                            className="text-4xl lg:text-6xl font-bold tracking-tighter text-red-600 mt-2 mb-8 select-none"
+                            delay={0.3}
+                        >
+                            BUILD • LEAD
+                        </SplitText>
+
+                        <p className="max-w-xl ml-auto text-gray-200 text-sm md:text-lg mb-10 leading-relaxed font-medium">
+                            Collaborate with like-minded peers and industry experts to push the boundaries of technology.
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row items-center lg:justify-end gap-6">
+                            <a href="#events" className="group relative px-8 py-4 bg-white text-black rounded-full font-bold tracking-wider overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.5)]">
+                                <span className="relative z-10 flex items-center gap-2">
+                                    VIEW EVENTS <span className="transition-transform group-hover:translate-x-1">→</span>
+                                </span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* Scroll Indicator */}
-            <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-white/50">
+            <div className={`absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white/50 z-30 pointer-events-auto transition-all duration-500 ${showScroll ? 'opacity-100 translate-y-0 animate-bounce' : 'opacity-0 translate-y-4'}`}>
                 <span className="text-sm tracking-widest">SCROLL TO EXPLORE</span>
             </div>
         </section>

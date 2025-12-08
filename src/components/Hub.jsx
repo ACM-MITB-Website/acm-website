@@ -68,7 +68,7 @@ const Hub = () => {
         <section ref={containerRef} className="py-32 relative z-10 min-h-screen flex flex-col justify-center">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
                 <div className="text-left mb-16">
-                    <h2 className="text-sm font-mono text-acm-teal tracking-widest mb-2">SELECT DESTINATION</h2>
+                    <h2 className="text-sm font-mono text-acm-teal tracking-widest mb-2">EXPLORE DOMAINS</h2>
                     <div className="h-px w-20 bg-acm-teal/50"></div>
                 </div>
 

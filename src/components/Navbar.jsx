@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import gsap from 'gsap';
+import AuthButton from './AuthButton';
+import acmMitbLogo from '../assets/acm-mitb-logo.png';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -21,14 +22,14 @@ const Navbar = () => {
         return link.href !== currentPath;
     });
 
-    const [showNavbar, setShowNavbar] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
-            if (window.scrollY > 100) {
-                setShowNavbar(true);
+            if (window.scrollY > 50) {
+                setIsScrolled(true);
             } else {
-                setShowNavbar(false);
+                setIsScrolled(false);
             }
         };
 
@@ -36,30 +37,24 @@ const Navbar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    useEffect(() => {
-        if (showNavbar) {
-            gsap.to(navRef.current, {
-                y: 0,
-                opacity: 1,
-                duration: 0.5,
-                ease: 'power3.out',
-            });
-        } else {
-            gsap.to(navRef.current, {
-                y: -100,
-                opacity: 0,
-                duration: 0.5,
-                ease: 'power3.in',
-            });
-        }
-    }, [showNavbar]);
-
     const toggleMenu = () => setIsOpen(!isOpen);
 
     return (
         <>
-            <nav ref={navRef} className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] md:w-auto opacity-0 -translate-y-full">
-                <div className="bg-black/20 hover:bg-black/80 transition-all duration-300 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 shadow-[0_0_20px_rgba(34,197,94,0.1)] flex items-center justify-between md:justify-start md:space-x-6">
+            {/* Fixed Logo Left Aligned */}
+            <a href="/" className="fixed top-6 left-6 z-50 transition-transform duration-300 hover:scale-105">
+                <img
+                    src={acmMitbLogo}
+                    alt="ACM MITB"
+                    className="h-10 w-auto md:h-12 object-contain drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]"
+                />
+            </a>
+
+            <nav ref={navRef} className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] md:w-auto transition-all duration-300">
+                <div className={`transition-all duration-300 rounded-full px-6 py-3 flex items-center justify-between md:justify-start md:space-x-6 ${isScrolled
+                    ? 'bg-black/80 backdrop-blur-xl border border-white/10 shadow-[0_0_20px_rgba(34,197,94,0.1)]'
+                    : 'bg-transparent border border-transparent'
+                    }`}>
 
                     {/* Mobile Menu Button */}
                     <div className="md:hidden">
@@ -87,15 +82,10 @@ const Navbar = () => {
 
                     {/* Action Buttons */}
                     <div className="flex items-center space-x-4 md:pl-4 md:border-l md:border-white/10">
-                        <a
-                            href="#join"
-                            className="hidden md:inline-block text-xs font-bold bg-white text-black px-4 py-2 rounded-full hover:bg-acm-teal hover:scale-105 transition-all"
-                        >
-                            JOIN ACM
-                        </a>
+                        <AuthButton />
                         <a
                             href="#contact"
-                            className="text-xs font-medium text-gray-300 hover:text-white whitespace-nowrap"
+                            className="text-xs font-medium text-gray-300 hover:text-white whitespace-nowrap hidden lg:block"
                         >
                             GET IN TOUCH
                         </a>
@@ -116,6 +106,7 @@ const Navbar = () => {
                             {link.name}
                         </a>
                     ))}
+                    {/* Simplified mobile auth - just duplicate for now or rely on header */}
                     <a
                         href="#join"
                         onClick={() => setIsOpen(false)}
