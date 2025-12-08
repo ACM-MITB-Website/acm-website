@@ -6,6 +6,14 @@
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ACM MITB</title>
+  <script>
+    window.onerror = function(msg, url, line, col, error) {
+      document.body.innerHTML += '<div style="background:white;color:red;position:fixed;top:0;left:0;z-index:9999;padding:20px;">' + msg + ' at ' + url + ':' + line + '</div>';
+    };
+    window.onunhandledrejection = function(e) {
+      document.body.innerHTML += '<div style="background:white;color:red;position:fixed;top:50px;left:0;z-index:9999;padding:20px;">Unhandled Rejection: ' + e.reason + '</div>';
+    };
+  </script>
 </head>
 
 <body>
