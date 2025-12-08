@@ -8,6 +8,7 @@ import gsap from 'gsap';
 import Timeline from './components/Timeline';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import SplashCursor from './components/SplashCursor';
 import acmMitbLogo from './assets/acm-mitb-logo.png';
 
 const AcmMitbHero = () => {
@@ -228,6 +229,8 @@ const acmMitbEvents = [
 
 const AcmMitbApp = () => {
     const [events, setEvents] = useState([]);
+    const [showSplash, setShowSplash] = useState(false);
+    const timelineRef = useRef(null);
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -244,13 +247,33 @@ const AcmMitbApp = () => {
         fetchEvents();
     }, []);
 
+    useEffect(() => {
+        const handleScroll = () => {
+            if (timelineRef.current) {
+                const rect = timelineRef.current.getBoundingClientRect();
+                const triggerPoint = window.innerHeight;
+                setShowSplash(rect.top < triggerPoint);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     return (
         <div className="bg-black min-h-screen text-white selection:bg-blue-600 selection:text-black">
+            <SplashCursor
+                isPaused={!showSplash}
+                className={`transition-opacity duration-1000 ${showSplash ? 'opacity-100' : 'opacity-0'}`}
+            />
             <Navbar />
             <AcmMitbHero />
             <About />
             <Team />
-            <Timeline title="CHAPTER TIMELINE" data={events} />
+            <div ref={timelineRef}>
+                <Timeline title="CHAPTER TIMELINE" data={events} />
+            </div>
             <Footer />
         </div>
     );

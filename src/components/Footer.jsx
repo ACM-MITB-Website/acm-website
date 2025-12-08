@@ -1,12 +1,13 @@
 import React from 'react';
-import { Canvas } from '@react-three/fiber';
-import { Sphere, MeshDistortMaterial } from '@react-three/drei';
+// import { Canvas } from '@react-three/fiber';
+// import { Sphere, MeshDistortMaterial } from '@react-three/drei';
 import { Github, Twitter, Linkedin, Mail } from 'lucide-react';
 
 const Footer = () => {
     return (
         <footer id="contact" className="relative bg-black text-white py-10 overflow-hidden">
-            {/* 3D Globe Background */}
+            {/* 3D Globe Background - DISABLED FOR STABILITY */}
+            {/* 
             <div className="absolute right-0 bottom-0 w-1/2 h-full opacity-20 pointer-events-none">
                 <Canvas>
                     <ambientLight intensity={0.5} />
@@ -15,6 +16,7 @@ const Footer = () => {
                     </Sphere>
                 </Canvas>
             </div>
+            */}
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24">

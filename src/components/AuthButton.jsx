@@ -6,6 +6,29 @@ import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 function AuthButton() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const handleLogin = async () => {
+    if (!auth || !auth.app) {
+      alert("Authentication not configured. (Check .env keys)");
+      return;
+    }
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (error) {
+      console.error("Login Failed:", error.message);
+      alert("Login Failed: " + error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Logout Failed:", error.message);
+      alert("Logout Failed: " + error);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -13,14 +36,6 @@ function AuthButton() {
     });
     return () => unsubscribe();
   }, []);
-
-  const handleLogin = async () => {
-    try { await signInWithPopup(auth, googleProvider); } catch (error) { console.error("Login Failed:", error.message); }
-  };
-
-  const handleLogout = async () => {
-    try { await signOut(auth); } catch (error) { console.error("Logout Failed:", error.message); }
-  };
 
   if (loading) { return <div className="text-white text-sm">Checking status...</div>; }
 

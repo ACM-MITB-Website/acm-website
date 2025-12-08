@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Linkedin } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
 import { Stars, Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import Timeline from './components/Timeline';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import SplashCursor from './components/SplashCursor';
 import sigAiLogo from './assets/sigai-logo.png';
 
 const SigAiHero = () => {
@@ -221,13 +222,36 @@ const sigAiEvents = [
 ];
 
 const SigAiApp = () => {
+    const [showSplash, setShowSplash] = useState(false);
+    const timelineRef = useRef(null);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (timelineRef.current) {
+                const rect = timelineRef.current.getBoundingClientRect();
+                const triggerPoint = window.innerHeight;
+                setShowSplash(rect.top < triggerPoint);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     return (
         <div className="bg-black min-h-screen text-white selection:bg-cyan-400 selection:text-black">
+            <SplashCursor
+                isPaused={!showSplash}
+                className={`transition-opacity duration-1000 ${showSplash ? 'opacity-100' : 'opacity-0'}`}
+            />
             <Navbar />
             <SigAiHero />
             <About />
             <Team />
-            <Timeline title="SIG AI TIMELINE" data={sigAiEvents} />
+            <div ref={timelineRef}>
+                <Timeline title="SIG AI TIMELINE" data={sigAiEvents} />
+            </div>
             <Footer />
         </div>
     );
