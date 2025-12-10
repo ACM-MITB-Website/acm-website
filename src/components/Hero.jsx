@@ -31,8 +31,8 @@ const Hero = () => {
             {/* 3D Background - Extended Height for Overlap */}
             <div className="absolute top-0 left-0 w-full h-[150vh] z-0 bg-black">
                 <Galaxy
-                    mouseRepulsion={true}
-                    mouseInteraction={true}
+                    mouseRepulsion={false}
+                    mouseInteraction={false}
                     density={1.5}
                     glowIntensity={0.5}
                     saturation={0.8}

@@ -6,7 +6,7 @@ import About from './components/About';
 import Sponsors from './components/Sponsors';
 import Timeline from './components/Timeline';
 import Footer from './components/Footer';
-import Loader3D from './components/Loader3D';
+import LoaderBot from './components/LoaderBot';
 import Hub from './components/Hub';
 import ErrorBoundary from './components/ErrorBoundary';
 import SplashCursor from './components/SplashCursor';
@@ -18,6 +18,10 @@ const App = () => {
     const timelineRef = useRef(null);
 
     useEffect(() => {
+        // Remove debug loader if it exists
+        const loader = document.getElementById('debug-loader');
+        if (loader) loader.style.display = 'none';
+
         const handleScroll = () => {
             if (timelineRef.current) {
                 const rect = timelineRef.current.getBoundingClientRect();
@@ -32,19 +36,18 @@ const App = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    useEffect(() => {
-        // Simulate initial loading for 3D assets
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 2500);
-        return () => clearTimeout(timer);
-    }, []);
+    // LoaderBot handles its own timer based on Spline load, so we don't need a timeout here
+    // but we need a failsafe in case Spline never loads? 
+    // Actually LoaderBot calls onComplete. We just need to pass setLoading(false) to it.
+
+    // We can remove the timer effect for loading, or keep it as a fallback.
+    // Let's rely on LoaderBot's onComplete.
 
     return (
         <ErrorBoundary>
             <AnimatePresence mode='wait'>
                 {loading ? (
-                    <Loader3D key="loader" />
+                    <LoaderBot key="loader" onComplete={() => setLoading(false)} />
                 ) : (
                     <div key="main-content" className="bg-black min-h-screen text-white selection:bg-green-500 selection:text-black overflow-x-hidden">
                         <SplashCursor
