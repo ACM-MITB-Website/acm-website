@@ -17,6 +17,7 @@ export default defineConfig({
         acm_mitb: 'acm-mitb.html',
         acm_w: 'acm-w.html',
         news: 'news.html',
+        about: 'about.html',
         admin: 'admin.html',
       },
     },

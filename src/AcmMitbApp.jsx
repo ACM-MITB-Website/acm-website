@@ -3,13 +3,24 @@ import { db } from './firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { Linkedin } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
-import { Stars, Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
+import { Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
 import gsap from 'gsap';
-import Timeline from './components/Timeline';
+import EventShowcase from './components/EventShowcase';
+// import Timeline from './components/Timeline'; // Removed
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import SplashCursor from './components/SplashCursor';
 import acmMitbLogo from './assets/acm-mitb-logo.png';
+import Particles from './components/Particles';
+
+import codeAiImg from './assets/code-ai-2025.png';
+import hackniteImg from './assets/hacknite-2025.png';
+import industryDayImg from './assets/industry-day-2025.jpg';
+import posterPresentationImg from './assets/poster-presentation-2025.jpg';
+import distinguishedLectureImg from './assets/distinguished-lecture-2025.jpg';
+import squidGameImg from './assets/squid-game-2025.jpg';
+import hacknovaImg from './assets/hacknova-2024.jpg';
+import hourOfCodeImg from './assets/hour-of-code-2024.jpg';
+import membershipDriveImg from './assets/membership-drive-2024.png';
 
 const AcmMitbHero = () => {
     const textRef = useRef(null);
@@ -24,10 +35,23 @@ const AcmMitbHero = () => {
     return (
         <section className="relative h-[60vh] w-full overflow-hidden flex items-center justify-center pt-20">
             <div className="absolute inset-0 z-0">
+                <Particles
+                    particleColors={['#ffffff', '#ffffff']}
+                    particleCount={300}
+                    particleSpread={10}
+                    speed={0.1}
+                    particleBaseSize={100}
+                    moveParticlesOnHover={true}
+                    alphaParticles={false}
+                    disableRotation={false}
+                    className="absolute inset-0"
+                />
+            </div>
+            {/* 3D Sphere Overlay */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
                 <Canvas camera={{ position: [0, 0, 8] }}>
                     <ambientLight intensity={0.2} />
                     <pointLight position={[10, 10, 10]} intensity={2} color="#2563eb" />
-                    <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade speed={1} />
                     <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
                         <Sphere args={[2, 64, 64]}>
                             <MeshDistortMaterial
@@ -189,90 +213,93 @@ const Team = () => {
     );
 };
 
-const acmMitbEvents = [
-    {
-        id: 1,
-        date: 'Aug 2024',
-        title: 'Orientation',
-        status: 'completed',
-        type: 'Event'
-    },
-    {
-        id: 2,
-        date: 'Sep 2024',
-        title: 'Tech Talk',
-        status: 'completed',
-        type: 'Seminar'
-    },
-    {
-        id: 3,
-        date: 'Oct 2024',
-        title: 'Hackathon',
-        status: 'completed',
-        type: 'Competition'
-    },
-    {
-        id: 4,
-        date: 'Jan 2025',
-        title: 'Code Sprint',
-        status: 'upcoming',
-        type: 'Contest'
-    },
-    {
-        id: 5,
-        date: 'Apr 2025',
-        title: 'Annual Expo',
-        status: 'upcoming',
-        type: 'Exhibition'
-    },
-];
-
 const AcmMitbApp = () => {
-    const [events, setEvents] = useState([]);
-    const [showSplash, setShowSplash] = useState(false);
+    // const [events, setEvents] = useState([]); // Replaced with static data
     const timelineRef = useRef(null);
 
-    useEffect(() => {
-        const fetchEvents = async () => {
-            try {
-                const querySnapshot = await getDocs(collection(db, 'events_mitb'));
-                const eventsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                // Sort events by date or ID if needed, for now just raw data
-                setEvents(eventsData);
-            } catch (error) {
-                console.error("Error fetching events: ", error);
-            }
-        };
-
-        fetchEvents();
-    }, []);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            if (timelineRef.current) {
-                const rect = timelineRef.current.getBoundingClientRect();
-                const triggerPoint = window.innerHeight;
-                setShowSplash(rect.top < triggerPoint);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll();
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    const events = [
+        {
+            id: 1,
+            title: "Code AI 2025",
+            description: "Bridging research gaps in AI, biometrics, and robotics.",
+            date: "Mon Apr 07 2025",
+            image: codeAiImg,
+            status: "upcoming"
+        },
+        {
+            id: 2,
+            title: "HackNite 2025",
+            description: "A 24-hour hackathon organized by ACM MITB, fostering innovation and collaboration.",
+            date: "Sat Mar 29 2025",
+            image: hackniteImg,
+            status: "upcoming"
+        },
+        {
+            id: 3,
+            title: "Industry Day 2025",
+            description: "ACM India Industry Day at MIT Bengaluru on AI and mobile communication.",
+            date: "Sat Feb 22 2025",
+            image: industryDayImg,
+            status: "completed"
+        },
+        {
+            id: 4,
+            title: "Research Poster Presentation",
+            description: "20+ AI, cybersecurity, and data science posters were presented.",
+            date: "Sun Jan 19 2025",
+            image: posterPresentationImg,
+            status: "completed"
+        },
+        {
+            id: 5,
+            title: "Distinguished Lecture",
+            description: "Dr. Yogesh Simmhan's talk on distributed systems at MIT Bengaluru.",
+            date: "Sun Jan 19 2025",
+            image: distinguishedLectureImg,
+            status: "completed"
+        },
+        {
+            id: 6,
+            title: "Squid Game",
+            description: "150 students participated in strategic challenges at MITB ACM's event.",
+            date: "Sat Jan 18 2025",
+            image: squidGameImg,
+            status: "completed"
+        },
+        {
+            id: 7,
+            title: "HackNova 2024",
+            description: "48-hour Cybersecurity CTF Challenge at MIT Bengaluru with 40+ teams.",
+            date: "Mon Dec 16 2024",
+            image: hacknovaImg,
+            status: "completed"
+        },
+        {
+            id: 8,
+            title: "Hour of Code 2024",
+            description: "ACM MITB hosted Hour of Code at Muddenahalli, promoting digital literacy.",
+            date: "Sun Dec 15 2024",
+            image: hourOfCodeImg,
+            status: "completed"
+        },
+        {
+            id: 9,
+            title: "Membership Drive",
+            description: "Promoting ACM benefits with an interactive Theme Board at MAHE Bengaluru.",
+            date: "Fri Nov 08 2024",
+            image: membershipDriveImg,
+            status: "completed"
+        }
+    ];
 
     return (
         <div className="bg-black min-h-screen text-white selection:bg-blue-600 selection:text-black">
-            <SplashCursor
-                isPaused={!showSplash}
-                className={`transition-opacity duration-1000 ${showSplash ? 'opacity-100' : 'opacity-0'}`}
-            />
             <Navbar />
             <AcmMitbHero />
             <About />
             <Team />
             <div ref={timelineRef}>
-                <Timeline title="CHAPTER TIMELINE" data={events} />
+                <EventShowcase events={events} />
             </div>
             <Footer />
         </div>

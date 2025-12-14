@@ -1,13 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Linkedin } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
-import { Stars, Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
+import { Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
 import gsap from 'gsap';
-import Timeline from './components/Timeline';
+import EventShowcase from './components/EventShowcase';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import SplashCursor from './components/SplashCursor';
 import sigAiLogo from './assets/sigai-logo.png';
+import Particles from './components/Particles';
+
+import jamImg from './assets/sigai-jam-2025.jpg';
+import panelImg from './assets/sigai-panel-2025.jpg';
+import hourOfCodeImg from './assets/sigai-hour-of-code-2024.png';
 
 const SigAiHero = () => {
     const textRef = useRef(null);
@@ -22,10 +26,23 @@ const SigAiHero = () => {
     return (
         <section className="relative h-[60vh] w-full overflow-hidden flex items-center justify-center pt-20">
             <div className="absolute inset-0 z-0">
-                {/* <Canvas camera={{ position: [0, 0, 8] }}>
+                <Particles
+                    particleColors={['#ffffff', '#ffffff']}
+                    particleCount={300}
+                    particleSpread={10}
+                    speed={0.1}
+                    particleBaseSize={100}
+                    moveParticlesOnHover={true}
+                    alphaParticles={false}
+                    disableRotation={false}
+                    className="absolute inset-0"
+                />
+            </div>
+            {/* 3D Sphere Overlay */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
+                <Canvas camera={{ position: [0, 0, 8] }}>
                     <ambientLight intensity={0.2} />
                     <pointLight position={[10, 10, 10]} intensity={2} color="#22d3ee" />
-                    <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade speed={1} />
                     <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
                         <Sphere args={[2, 64, 64]}>
                             <MeshDistortMaterial
@@ -39,8 +56,9 @@ const SigAiHero = () => {
                             />
                         </Sphere>
                     </Float>
-                </Canvas> */}
+                </Canvas>
             </div>
+
             <div className="relative z-10 text-center px-4">
                 <h1 ref={textRef} className="flex justify-center items-center">
                     <img
@@ -186,71 +204,41 @@ const Team = () => {
 const sigAiEvents = [
     {
         id: 1,
-        date: 'Sep 2024',
-        title: 'Intro to ML',
-        status: 'completed',
-        type: 'Workshop'
+        title: "Just a Minute",
+        description: "MITB ACM SIGAI and APEX hosted a JAM competition at Turinger 2025, challenging participants to present technical topics fluently, with free registration and prizes.",
+        date: "Fri Jan 17 2025",
+        image: jamImg,
+        status: "completed"
     },
     {
         id: 2,
-        date: 'Oct 2024',
-        title: 'Kaggle Kickoff',
-        status: 'completed',
-        type: 'Competition'
+        title: "Panel Discussion",
+        description: "MITB ACM SIG-AI hosted a panel at Turinger 2025 on AI bias, featuring experts discussing causes, impacts, unbiased systems, and ethical mitigation strategies.",
+        date: "Fri Jan 17 2025",
+        image: panelImg,
+        status: "completed"
     },
     {
         id: 3,
-        date: 'Nov 2024',
-        title: 'Neural Networks',
-        status: 'completed',
-        type: 'Lecture'
-    },
-    {
-        id: 4,
-        date: 'Feb 2025',
-        title: 'GenAI Summit',
-        status: 'upcoming',
-        type: 'Conference'
-    },
-    {
-        id: 5,
-        date: 'Mar 2025',
-        title: 'AI Ethics Panel',
-        status: 'upcoming',
-        type: 'Panel'
-    },
+        title: "Hour of Code",
+        description: "MITB ACM SIG-AI organized Hour of Code 2024, introducing Class 6 students to coding and AI through interactive block coding and engaging activities.",
+        date: "Mon Dec 09 2024",
+        image: hourOfCodeImg,
+        status: "completed"
+    }
 ];
 
 const SigAiApp = () => {
-    const [showSplash, setShowSplash] = useState(false);
     const timelineRef = useRef(null);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            if (timelineRef.current) {
-                const rect = timelineRef.current.getBoundingClientRect();
-                const triggerPoint = window.innerHeight;
-                setShowSplash(rect.top < triggerPoint);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll();
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     return (
         <div className="bg-black min-h-screen text-white selection:bg-cyan-400 selection:text-black">
-            <SplashCursor
-                isPaused={!showSplash}
-                className={`transition-opacity duration-1000 ${showSplash ? 'opacity-100' : 'opacity-0'}`}
-            />
             <Navbar />
             <SigAiHero />
             <About />
             <Team />
             <div ref={timelineRef}>
-                <Timeline title="SIG AI TIMELINE" data={sigAiEvents} />
+                <EventShowcase events={sigAiEvents} />
             </div>
             <Footer />
         </div>

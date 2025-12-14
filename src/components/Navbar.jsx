@@ -9,6 +9,7 @@ const Navbar = () => {
 
     const navLinks = [
         { name: 'HOME', href: '/' },
+        { name: 'ABOUT', href: '/about.html' },
         { name: 'ACM MITB', href: '/acm-mitb.html' },
         { name: 'SIG SOFT', href: '/sigsoft.html' },
         { name: 'SIG AI', href: '/sigai.html' },

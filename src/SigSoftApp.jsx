@@ -1,13 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Linkedin } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
-import { Stars, Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
+import { Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
 import gsap from 'gsap';
-import Timeline from './components/Timeline';
+import EventShowcase from './components/EventShowcase';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import SplashCursor from './components/SplashCursor';
 import sigSoftLogo from './assets/sigsoft-logo.png';
+import Particles from './components/Particles';
+
+import flutterFlowImg from './assets/sigsoft-flutterflow-2025.jpg';
+import debugMarathonImg from './assets/sigsoft-debug-marathon-2025.jpg';
+import hourOfCodeImg from './assets/sigsoft-hour-of-code-2024.jpg';
 
 const SigSoftHero = () => {
     const textRef = useRef(null);
@@ -22,10 +26,23 @@ const SigSoftHero = () => {
     return (
         <section className="relative h-[60vh] w-full overflow-hidden flex items-center justify-center pt-20">
             <div className="absolute inset-0 z-0">
+                <Particles
+                    particleColors={['#ffffff', '#ffffff']}
+                    particleCount={300}
+                    particleSpread={10}
+                    speed={0.1}
+                    particleBaseSize={100}
+                    moveParticlesOnHover={true}
+                    alphaParticles={false}
+                    disableRotation={false}
+                    className="absolute inset-0"
+                />
+            </div>
+            {/* 3D Sphere Overlay */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
                 <Canvas camera={{ position: [0, 0, 8] }}>
                     <ambientLight intensity={0.2} />
                     <pointLight position={[10, 10, 10]} intensity={2} color="#22c55e" />
-                    <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade speed={1} />
                     <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
                         <Sphere args={[2, 64, 64]}>
                             <MeshDistortMaterial
@@ -185,71 +202,41 @@ const Team = () => {
 const sigsoftEvents = [
     {
         id: 1,
-        date: 'Sep 2024',
-        title: 'Git Workshop',
-        status: 'completed',
-        type: 'Workshop'
+        title: "Flutter Flow Workshop",
+        description: "MITB ACM SIG-SOFT hosted an App Development Workshop at Turinger’25, teaching FlutterFlow, a no-code platform, with expert guidance from Hasnen Tai, fostering hands-on learning in mobile and web app creation.",
+        date: "Sat Jan 18 2025",
+        image: flutterFlowImg,
+        status: "completed"
     },
     {
         id: 2,
-        date: 'Oct 2024',
-        title: 'Open Source 101',
-        status: 'completed',
-        type: 'Talk'
+        title: "Debug Marathon",
+        description: "MITB ACM SIG-SOFT hosted Debug Marathon at Turinger’25, a competitive debugging challenge fostering problem-solving, technical skills, innovation, collaboration, and skill development in real-time debugging scenarios.",
+        date: "Sat Jan 18 2025",
+        image: debugMarathonImg,
+        status: "completed"
     },
     {
         id: 3,
-        date: 'Nov 2024',
-        title: 'React Deep Dive',
-        status: 'completed',
-        type: 'Workshop'
-    },
-    {
-        id: 4,
-        date: 'Jan 2026',
-        title: 'Microsoft Fabric',
-        status: 'upcoming',
-        type: 'Workshop'
-    },
-    {
-        id: 5,
-        date: 'Mar 2025',
-        title: 'DevOps Bootcamp',
-        status: 'upcoming',
-        type: 'Bootcamp'
-    },
+        title: "Hour of Code",
+        description: "MITB ACM SIG-SOFT conducted Hour of Code, introducing young students to computing concepts, promoting digital literacy, and fostering interest in technology.",
+        date: "Wed Dec 11 2024",
+        image: hourOfCodeImg,
+        status: "completed"
+    }
 ];
 
 const SigSoftApp = () => {
-    const [showSplash, setShowSplash] = useState(false);
     const timelineRef = useRef(null);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            if (timelineRef.current) {
-                const rect = timelineRef.current.getBoundingClientRect();
-                const triggerPoint = window.innerHeight;
-                setShowSplash(rect.top < triggerPoint);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll();
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     return (
         <div className="bg-black min-h-screen text-white selection:bg-green-500 selection:text-black">
-            <SplashCursor
-                isPaused={!showSplash}
-                className={`transition-opacity duration-1000 ${showSplash ? 'opacity-100' : 'opacity-0'}`}
-            />
             <Navbar />
             <SigSoftHero />
             <About />
             <Team />
             <div ref={timelineRef}>
-                <Timeline title="SIGSOFT TIMELINE" data={sigsoftEvents} />
+                <EventShowcase events={sigsoftEvents} />
             </div>
             <Footer />
         </div>

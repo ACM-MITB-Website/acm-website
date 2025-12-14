@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Stars, Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import SplashCursor from './components/SplashCursor';
 import { ArrowRight, Calendar, Tag, User } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -211,29 +210,10 @@ const NewsGrid = () => {
 };
 
 const NewsApp = () => {
-    const [showSplash, setShowSplash] = useState(false);
     const newsRef = useRef(null);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            if (newsRef.current) {
-                const rect = newsRef.current.getBoundingClientRect();
-                const triggerPoint = window.innerHeight;
-                setShowSplash(rect.top < triggerPoint);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll();
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     return (
         <div className="bg-black min-h-screen text-white selection:bg-violet-500 selection:text-white">
-            <SplashCursor
-                isPaused={!showSplash}
-                className={`transition-opacity duration-1000 ${showSplash ? 'opacity-100' : 'opacity-0'}`}
-            />
             <Navbar />
             <NewsHero />
             <div ref={newsRef}>
