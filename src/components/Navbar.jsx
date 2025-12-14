@@ -84,6 +84,15 @@ const Navbar = () => {
                     {/* Action Buttons */}
                     <div className="flex items-center space-x-4 md:pl-4 md:border-l md:border-white/10">
                         <AuthButton />
+
+                        {/* Become a Member Button */}
+                        <a
+                            href="/membership.html"
+                            className="px-3 py-1.5 bg-transparent border border-acm-teal text-acm-teal text-xs font-bold rounded-full hover:bg-acm-teal hover:text-black transition duration-200 whitespace-nowrap hidden lg:block"
+                        >
+                            BECOME A MEMBER
+                        </a>
+
                         <a
                             href="#contact"
                             className="text-xs font-medium text-gray-300 hover:text-white whitespace-nowrap hidden lg:block"
@@ -107,7 +116,15 @@ const Navbar = () => {
                             {link.name}
                         </a>
                     ))}
-                    {/* Simplified mobile auth - just duplicate for now or rely on header */}
+                    {/* Mobile Auth/Member Actions */}
+                    <a
+                        href="/membership.html"
+                        onClick={() => setIsOpen(false)}
+                        className="text-lg font-bold text-acm-teal border border-acm-teal px-6 py-2 rounded-full hover:bg-acm-teal hover:text-black transition"
+                    >
+                        BECOME A MEMBER
+                    </a>
+
                     <a
                         href="#join"
                         onClick={() => setIsOpen(false)}
@@ -117,6 +134,8 @@ const Navbar = () => {
                     </a>
                 </div>
             )}
+
+            {/* Modal Removed */}
         </>
     );
 };
