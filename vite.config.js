@@ -19,6 +19,7 @@ export default defineConfig({
         news: 'news.html',
         about: 'about.html',
         admin: 'admin.html',
+        membership: 'membership.html',
       },
     },
   },
