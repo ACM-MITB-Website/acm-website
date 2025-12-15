@@ -20,6 +20,7 @@ export default defineConfig({
         about: 'about.html',
         admin: 'admin.html',
         membership: 'membership.html',
+        townhall: 'townhall.html',
       },
     },
   },

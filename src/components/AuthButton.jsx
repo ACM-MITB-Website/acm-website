@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { auth, googleProvider } from '../firebase';
 import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 
-function AuthButton() {
+function AuthButton({ className = "" }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -50,7 +50,10 @@ function AuthButton() {
         </div>
       ) : (
         // IF LOGGED OUT (Final Styled Button)
-        <button onClick={handleLogin} className="px-3 py-1.5 bg-white text-black text-xs font-bold rounded-full shadow-lg hover:bg-acm-teal hover:scale-105 transition duration-200 whitespace-nowrap">
+        <button
+          onClick={handleLogin}
+          className={className || "px-3 py-1.5 bg-white text-black text-xs font-bold rounded-full shadow-lg hover:bg-acm-teal hover:scale-105 transition duration-200 whitespace-nowrap"}
+        >
           JOIN ACM
         </button>
       )}
