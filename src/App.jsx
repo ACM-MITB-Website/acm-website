@@ -8,6 +8,8 @@ import Footer from './components/Footer';
 import LoaderBot from './components/LoaderBot';
 import Hub from './components/Hub';
 import ErrorBoundary from './components/ErrorBoundary';
+import PopupBanner from './components/PopupBanner';
+import EventSidebar from './components/EventSidebar';
 
 const App = () => {
     // Debug: Keep loading disabled for now to ensure stability
@@ -28,6 +30,10 @@ const App = () => {
                     <LoaderBot key="loader" onComplete={() => setLoading(false)} />
                 ) : (
                     <div key="main-content" className="bg-black min-h-screen text-white selection:bg-green-500 selection:text-black overflow-x-hidden">
+                        {/* Event Popup Banner */}
+                        <PopupBanner />
+                        {/* Event Sidebar Notification */}
+                        <EventSidebar />
                         {/* <SidePanel /> REMOVED as per user request */}
                         <Navbar />
                         <Hero />
@@ -46,3 +52,4 @@ const App = () => {
 };
 
 export default App;
+

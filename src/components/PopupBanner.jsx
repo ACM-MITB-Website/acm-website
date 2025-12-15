@@ -84,7 +84,7 @@ const PopupBanner = () => {
 
                     <div className="my-8 flex items-center justify-center space-x-4">
                         <div className="h-px w-12 bg-white/20"></div>
-                        <p className="text-lg font-bold text-white">31st JAN 2026</p>
+                        <p className="text-lg font-bold text-white">30th Jan - 1st Feb 2026</p>
                         <div className="h-px w-12 bg-white/20"></div>
                     </div>
 

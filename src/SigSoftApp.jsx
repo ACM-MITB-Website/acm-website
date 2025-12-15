@@ -89,12 +89,12 @@ const About = () => {
 
 const Team = () => {
     const members = [
-        { name: 'Shane Chellam', role: 'Chair', image: '/assets/shane-chellam.jpg', linkedin: '#' },
+        { name: 'Shane Chellam', role: 'Chair', image: '/assets/shane-chellam.jpg', linkedin: 'https://www.linkedin.com/in/shane-chellam-sp/' },
         { name: 'Fadil Ahmed', role: 'Vice Chair', image: '/assets/fadil-ahmed.jpg', linkedin: '#' },
-        { name: 'Sai Tej Gadiyaram', role: 'General Secretary', image: '/assets/sai-tej-gadiyaram.jpg', linkedin: '#' },
-        { name: 'Thushar Maiyya', role: 'Executive Secretary', image: '/assets/thushar-maiyya.jpg', linkedin: '#' },
-        { name: 'Ananya Gupta', role: 'Treasurer', image: '/assets/ananya-gupta.jpg', linkedin: '#' },
-        { name: 'Anchit Goel', role: 'Web Master', image: '/assets/anchit-goel.jpg', linkedin: '#' },
+        { name: 'Sai Tej Gadiyaram', role: 'General Secretary', image: '/assets/sai-tej-gadiyaram.jpg', linkedin: 'https://www.linkedin.com/in/sai-tej-gadiyaram-481199259/' },
+        { name: 'Thushar Maiyya', role: 'Executive Secretary', image: '/assets/thushar-maiyya.jpg', linkedin: 'https://www.linkedin.com/in/thushar-maiya-27a0a3390/' },
+        { name: 'Ananya Gupta', role: 'Treasurer', image: '/assets/ananya-gupta.jpg', linkedin: 'https://www.linkedin.com/in/ananya-gupta-001601292/' },
+        { name: 'Anchit Goel', role: 'Web Master', image: '/assets/anchit-goel.jpg', linkedin: 'https://www.linkedin.com/in/anchitgoel5/' },
         { name: 'Ashwin S. Gupta', role: 'Executive Member', image: '/assets/ashwin-gupta.jpg', linkedin: '#' },
         { name: 'Naman Aggarwal', role: 'Executive Member', image: '/assets/naman-agarwal.jpg', linkedin: '#' },
         { name: 'Farhad Jaffrey', role: 'Executive Member', image: '/assets/farhad.jpg', linkedin: '#' },

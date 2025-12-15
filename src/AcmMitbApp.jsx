@@ -1,6 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { db } from './firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import React, { useEffect, useRef } from 'react';
 import { Linkedin } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
 import { Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
@@ -96,25 +94,22 @@ const About = () => {
 };
 
 const Team = () => {
-    const [members, setMembers] = useState([]);
+    const members = [
+        { name: 'Dr.Gururaj H L', role: 'Faculty Advisor', image: '/assets/gururaj-hl.jpg', linkedin: 'https://www.linkedin.com/in/dr-gururaj-h-l-92513539/' },
+        { name: 'Dr.Shreyas J', role: 'Faculty Advisor', image: '/assets/shreyas-j.jpg', linkedin: 'https://www.linkedin.com/in/dr-shreyas-j-a069a225/' },
+        { name: 'Shivansh Gautam', role: 'Chair', image: '/assets/shivansh-gautam.jpg', linkedin: 'https://www.linkedin.com/in/shivansh-gautam-sg/' },
+        { name: 'Medha Udupa', role: 'Vice Chair', image: '/assets/medha-udupa.jpg', linkedin: 'https://www.linkedin.com/in/medha-udupa-b55352227' },
+        { name: 'S.P. Bharath', role: 'General Secretary', image: '/assets/sp-bharath.jpg', linkedin: '#' },
+        { name: 'Anushka Mishra', role: 'Executive Secretary', image: '/assets/anushka-mishra.jpg', linkedin: 'https://www.linkedin.com/in/anushka-mishra-355049315/' },
+        { name: 'Romansh Rathee', role: 'Treasurer', image: '/assets/romansh-rathee.jpg', linkedin: 'https://www.linkedin.com/in/romansh-rathee/' },
+        { name: 'Ryan Gupta', role: 'Web Master', image: '/assets/ryan-gupta.jpg', linkedin: 'https://www.linkedin.com/in/ryan-gupta/' },
+        { name: 'Ekalvya Sethi', role: 'Media Head', image: '/assets/ekalvya-sethi.jpg', linkedin: 'https://www.linkedin.com/in/eklavya-sethi-565631346/' },
+        { name: 'Nidheesh Jakkula', role: 'Graphic Designer', image: '/assets/nidheesh-jakkula.jpg', linkedin: '#' },
+        { name: 'Sanvi Sharma', role: 'Executive Member', image: '/assets/sanvi-sharma.jpg', linkedin: 'https://www.linkedin.com/in/sanvi-sharma-ai/' },
+        { name: 'Yash Bharadwaj', role: 'Executive Member', image: '/assets/yash-bharadwaj.jpg', linkedin: '#' },
+    ];
 
     useEffect(() => {
-        const fetchMembers = async () => {
-            try {
-                const querySnapshot = await getDocs(collection(db, 'team_mitb'));
-                const teamData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                setMembers(teamData);
-            } catch (error) {
-                console.error("Error fetching team members: ", error);
-            }
-        };
-
-        fetchMembers();
-    }, []);
-
-    useEffect(() => {
-        if (members.length === 0) return;
-
         const cards = document.querySelectorAll('.team-card');
 
         const handleMouseMove = (e) => {
@@ -136,7 +131,7 @@ const Team = () => {
                 card.removeEventListener('mousemove', handleMouseMove);
             });
         };
-    }, [members]);
+    }, []);
 
     return (
         <section className="py-10 px-4 md:px-20 max-w-7xl mx-auto">
@@ -150,7 +145,7 @@ const Team = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {members.map((member, index) => (
                     <div
                         key={index}
@@ -196,7 +191,7 @@ const Team = () => {
                                     href={member.linkedin}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-gray-400 hover:text-blue-600 transition-colors transform hover:scale-110"
+                                    className="text-gray-400 hover:text-blue-600 transition-colors transform hover:scale-110 z-20 pointer-events-auto"
                                 >
                                     <Linkedin size={18} />
                                 </a>
@@ -212,6 +207,7 @@ const Team = () => {
         </section>
     );
 };
+
 
 const AcmMitbApp = () => {
     // const [events, setEvents] = useState([]); // Replaced with static data
