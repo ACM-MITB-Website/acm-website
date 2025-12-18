@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
+import Navbar from './components/NavbarOptimized';
 import Footer from './components/Footer';
 import AuthButton from './components/AuthButton';
-import { auth, db, storage } from './firebase';
+import { auth, db } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
 import { Trash2, Edit2, Plus, Save, X } from 'lucide-react';
@@ -56,7 +56,10 @@ const TownhallApp = () => {
             setEvents(snap.docs.map(d => ({ id: d.id, ...d.data() })));
         });
         const unsubStories = onSnapshot(collection(db, "stories"), (snap) => {
-            setStories(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+            const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            // Sort by date descending
+            data.sort((a, b) => new Date(b.date) - new Date(a.date));
+            setStories(data);
         });
         const unsubNews = onSnapshot(collection(db, "news"), (snap) => {
             setNews(snap.docs.map(d => ({ id: d.id, ...d.data() })));
@@ -132,7 +135,7 @@ const TownhallApp = () => {
             <Navbar />
             <div className="pt-32 px-4 max-w-7xl mx-auto pb-20">
                 <div className="flex justify-between items-center mb-10">
-                    <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">
+                    <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-linear-to-r from-yellow-400 to-orange-500">
                         Townhall Admin
                     </h1>
                     <div className="flex items-center space-x-4">
@@ -227,7 +230,7 @@ const SponsorsManager = ({ data, onAdd, onDelete }) => {
 }
 
 const EventsManager = ({ data, onAdd, onDelete, onUpdate }) => {
-    const [form, setForm] = useState({ title: '', date: '', description: '', image: '', status: 'upcoming' });
+    const [form, setForm] = useState({ title: '', date: '', description: '', image: '', link: '', status: 'upcoming' });
     const [editingId, setEditingId] = useState(null);
 
     const handleSubmit = (e) => {
@@ -238,7 +241,7 @@ const EventsManager = ({ data, onAdd, onDelete, onUpdate }) => {
         } else {
             onAdd(form);
         }
-        setForm({ title: '', date: '', description: '', image: '', status: 'upcoming' });
+        setForm({ title: '', date: '', description: '', image: '', link: '', status: 'upcoming' });
     };
 
     const startEdit = (item) => {
@@ -258,6 +261,8 @@ const EventsManager = ({ data, onAdd, onDelete, onUpdate }) => {
                     <option value="completed">Completed</option>
                 </select>
 
+                <input placeholder="Event Link (https://...)" value={form.link} onChange={e => setForm({ ...form, link: e.target.value })} className="bg-black/40 border border-white/10 p-3 rounded-lg text-white" />
+
                 <div className="md:col-span-2 space-y-2">
                     <label className="text-sm text-gray-400">Event Image</label>
                     <ImageUpload
@@ -271,7 +276,7 @@ const EventsManager = ({ data, onAdd, onDelete, onUpdate }) => {
 
                 <div className="flex gap-2 md:col-span-2">
                     <button type="submit" className="flex-1 bg-acm-teal text-black font-bold p-3 rounded-lg hover:bg-white transition">{editingId ? 'UPDATE EVENT' : 'ADD EVENT'}</button>
-                    {editingId && <button type="button" onClick={() => { setEditingId(null); setForm({ title: '', date: '', description: '', image: '', status: 'upcoming' }) }} className="bg-red-500 text-white p-3 rounded-lg"><X /></button>}
+                    {editingId && <button type="button" onClick={() => { setEditingId(null); setForm({ title: '', date: '', description: '', image: '', link: '', status: 'upcoming' }) }} className="bg-red-500 text-white p-3 rounded-lg"><X /></button>}
                 </div>
             </form>
             <div className="space-y-4">
@@ -295,7 +300,7 @@ const EventsManager = ({ data, onAdd, onDelete, onUpdate }) => {
 }
 
 const StoriesManager = ({ data, onAdd, onDelete }) => {
-    const [form, setForm] = useState({ title: '', description: '', iconName: 'Users', chapters: [], image: '' });
+    const [form, setForm] = useState({ title: '', description: '', iconName: 'Users', chapters: [], image: '', link: '', date: '' });
 
     const handleChapterChange = (chapter) => {
         if (form.chapters.includes(chapter)) {
@@ -308,7 +313,7 @@ const StoriesManager = ({ data, onAdd, onDelete }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         onAdd(form);
-        setForm({ title: '', description: '', iconName: 'Users', chapters: [], image: '' });
+        setForm({ title: '', description: '', iconName: 'Users', chapters: [], image: '', link: '', date: '' });
     };
 
     const chaptersList = ['acm-mitb', 'sigai', 'sigsoft', 'acm-w'];
@@ -318,6 +323,10 @@ const StoriesManager = ({ data, onAdd, onDelete }) => {
             <h2 className="text-2xl font-bold mb-6">Manage Moments / Stories</h2>
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-black/20 p-6 rounded-xl border border-white/5">
                 <input placeholder="Title" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} className="bg-black/40 border border-white/10 p-3 rounded-lg text-white" required />
+
+                <input placeholder="Date (e.g., Fri Jan 17 2025)" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} className="bg-black/40 border border-white/10 p-3 rounded-lg text-white" required />
+
+                <input placeholder="Link (https://...)" value={form.link} onChange={e => setForm({ ...form, link: e.target.value })} className="bg-black/40 border border-white/10 p-3 rounded-lg text-white" />
 
                 <div className="md:col-span-1 space-y-2">
                     <label className="text-sm text-gray-400">Moment Image (Optional)</label>
@@ -362,7 +371,9 @@ const StoriesManager = ({ data, onAdd, onDelete }) => {
                             <img src={item.image} alt={item.title} className="w-full h-40 object-cover rounded-lg mb-4" />
                         )}
                         <h3 className="font-bold text-lg mb-2">{item.title}</h3>
-                        <p className="text-sm text-gray-400">{item.description}</p>
+                        <p className="text-sm text-gray-400 mb-2">{item.description}</p>
+                        {item.date && <p className="text-xs text-gray-500 mb-2">Date: {item.date}</p>}
+                        {item.link && <p className="text-xs text-blue-400 mb-2 break-all">Link: {item.link}</p>}
                         <div className="flex flex-wrap gap-2 mt-3">
                             {item.chapters && item.chapters.map(c => (
                                 <span key={c} className="text-xs font-mono bg-blue-900/40 text-blue-300 px-2 py-1 rounded">{c}</span>

@@ -3,15 +3,16 @@ import { db } from '../firebase';
 import { doc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 
-const COURSES = [
-    "Computer Science & Engineering (Core)",
-    "Artificial Intelligence & Machine Learning",
-    "Data Science",
-    "Cybersecurity",
-    "Information Technology",
-    "Electronics & Communication Engineering",
-    "Electronics & Computer Engineering",
-    "VLSI Design & Technology"
+const DEPARTMENTS = [
+    { value: "CSE Core", label: "Computer Science & Engineering (Core)" },
+    { value: "AI", label: "Artificial Intelligence & Machine Learning" },
+    { value: "DS", label: "Data Science" },
+    { value: "Cybersec", label: "Cybersecurity" },
+    { value: "ECE", label: "Electronics & Communication Engineering" },
+    { value: "ECM", label: "Electronics & Computer Engineering" },
+    { value: "VLSI", label: "VLSI Design & Technology" },
+    { value: "IT", label: "Information Technology" },
+    { value: "Others", label: "Others" }
 ];
 
 const ProfileCompletion = ({ user, onComplete }) => {
@@ -20,8 +21,11 @@ const ProfileCompletion = ({ user, onComplete }) => {
         regNo: '',
         studentEmail: '',
         year: '',
-        course: COURSES[0],
-        phone: ''
+        department: DEPARTMENTS[0].value,
+        customDepartment: '',
+        dob: '',
+        phone: '',
+        townhall: false
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -44,14 +48,11 @@ const ProfileCompletion = ({ user, onComplete }) => {
     };
 
     const validateStudentEmail = (email) => {
-        // Structure: name.mitblr(year)@learner.manipal.edu
-        // Regex: something.mitblr20XX@learner.manipal.edu
-        // Note: The user said "name.mitblr(year of join)". Assuming year of join is 2022, 2023 etc.
-        const regex = /^[a-zA-Z0-9.]+@learner\.manipal\.edu$/;
-        if (!regex.test(email)) return "Must be a valid @learner.manipal.edu email.";
-
-        if (!email.includes(".mitblr20")) return "Email format should be name.mitblrYYYY@learner.manipal.edu";
-
+        // Format: name.mitblr20XX@learner.manipal.edu
+        const regex = /^[a-zA-Z]+\.mitblr20\d{2}@learner\.manipal\.edu$/;
+        if (!regex.test(email)) {
+            return "Email format must be name.mitblr20XX@learner.manipal.edu";
+        }
         return null;
     };
 
@@ -67,11 +68,6 @@ const ProfileCompletion = ({ user, onComplete }) => {
         const phoneQuery = query(usersRef, where("phone", "==", formData.phone));
         const phoneSnap = await getDocs(phoneQuery);
         if (!phoneSnap.empty) return "Phone Number already registered.";
-
-        // Check Student Email
-        const emailQuery = query(usersRef, where("studentEmail", "==", formData.studentEmail));
-        const emailSnap = await getDocs(emailQuery);
-        if (!emailSnap.empty) return "Student Email already registered.";
 
         return null;
     };
@@ -90,7 +86,22 @@ const ProfileCompletion = ({ user, onComplete }) => {
             if (emailError) throw new Error(emailError);
 
             if (!formData.year) throw new Error("Please select your year.");
-            if (!formData.phone || formData.phone.length < 10) throw new Error("Please enter a valid phone number.");
+            if (!formData.dob) throw new Error("Please enter your Date of Birth.");
+            if (!formData.phone || formData.phone.length < 10) throw new Error("Please enter a valid 10-digit phone number.");
+
+            // Validate custom department if Others is selected
+            const finalDepartment = formData.department === 'Others'
+                ? formData.customDepartment.trim()
+                : formData.department;
+
+            if (formData.department === 'Others') {
+                if (!formData.customDepartment.trim()) {
+                    throw new Error("Please specify your department.");
+                }
+                if (formData.customDepartment.length > 25) {
+                    throw new Error("Department name must be 25 characters or less.");
+                }
+            }
 
             // Database Uniqueness Check
             const uniqueError = await checkUniqueness();
@@ -103,11 +114,12 @@ const ProfileCompletion = ({ user, onComplete }) => {
                 name: formData.name,
                 regNo: formData.regNo,
                 studentEmail: formData.studentEmail,
-                year: formData.year,
-                course: formData.course,
+                year: parseInt(formData.year),
+                department: finalDepartment,
+                dob: formData.dob,
                 phone: formData.phone,
-                townhall: false, // Default
-                createdAt: new Date()
+                townhall: false, // Default - hidden attribute
+                createdAt: new Date().toISOString()
             });
 
             onComplete(); // Callback to parent to close modal/refresh state
@@ -121,50 +133,50 @@ const ProfileCompletion = ({ user, onComplete }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-            <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
-                <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 p-6 border-b border-white/10">
-                    <h2 className="text-2xl font-bold text-white">Complete Your Profile</h2>
-                    <p className="text-gray-400 text-sm mt-1">Please provide your details to continue.</p>
+            <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+                <div className="bg-linear-to-r from-blue-900/20 to-purple-900/20 p-4 border-b border-white/10 shrink-0">
+                    <h2 className="text-xl font-bold text-white">Complete Your Profile</h2>
+                    <p className="text-gray-400 text-xs mt-1">Please provide your details to continue.</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                <form onSubmit={handleSubmit} className="p-5 space-y-3 overflow-y-auto custom-scrollbar">
                     {error && (
-                        <div className="bg-red-500/10 border border-red-500/20 p-3 rounded-lg flex items-center gap-2 text-red-400 text-sm">
-                            <AlertCircle size={16} />
+                        <div className="bg-red-500/10 border border-red-500/20 p-2 rounded-lg flex items-center gap-2 text-red-400 text-xs">
+                            <AlertCircle size={14} />
                             {error}
                         </div>
                     )}
 
                     <div>
-                        <label className="block text-xs font-mono text-gray-400 mb-1">FULL NAME</label>
+                        <label className="block text-[10px] font-mono text-gray-400 mb-1">FULL NAME</label>
                         <input
                             type="text"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                            className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
                             required
                         />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3">
                         <div>
-                            <label className="block text-xs font-mono text-gray-400 mb-1">REGISTRATION NO.</label>
+                            <label className="block text-[10px] font-mono text-gray-400 mb-1">REGISTRATION NO.</label>
                             <input
                                 type="text"
                                 placeholder="2XXXXXXXX"
                                 value={formData.regNo}
                                 onChange={(e) => setFormData({ ...formData, regNo: e.target.value })}
                                 maxLength={9}
-                                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                                className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
                                 required
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-mono text-gray-400 mb-1">ACADEMIC YEAR</label>
+                            <label className="block text-[10px] font-mono text-gray-400 mb-1">ACADEMIC YEAR</label>
                             <select
                                 value={formData.year}
                                 onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-                                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                                className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
                                 required
                             >
                                 <option value="" className="text-black">Select Year</option>
@@ -177,48 +189,79 @@ const ProfileCompletion = ({ user, onComplete }) => {
                     </div>
 
                     <div>
-                        <label className="block text-xs font-mono text-gray-400 mb-1">STUDENT EMAIL</label>
+                        <label className="block text-[10px] font-mono text-gray-400 mb-1">STUDENT EMAIL</label>
                         <input
                             type="email"
                             placeholder="name.mitblr20XX@learner.manipal.edu"
                             value={formData.studentEmail}
                             onChange={(e) => setFormData({ ...formData, studentEmail: e.target.value })}
-                            className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                            className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-xs font-mono text-gray-400 mb-1">COURSE / BRANCH</label>
+                        <label className="block text-[10px] font-mono text-gray-400 mb-1">DEPARTMENT</label>
                         <select
-                            value={formData.course}
-                            onChange={(e) => setFormData({ ...formData, course: e.target.value })}
-                            className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                            value={formData.department}
+                            onChange={(e) => setFormData({ ...formData, department: e.target.value, customDepartment: '' })}
+                            className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
                             required
                         >
-                            {COURSES.map(c => (
-                                <option key={c} value={c} className="text-black">{c}</option>
+                            {DEPARTMENTS.map(dept => (
+                                <option key={dept.value} value={dept.value} className="text-black">{dept.label}</option>
                             ))}
                         </select>
                     </div>
 
-                    <div>
-                        <label className="block text-xs font-mono text-gray-400 mb-1">PHONE NUMBER</label>
-                        <input
-                            type="tel"
-                            value={formData.phone}
-                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
-                            required
-                        />
+                    {formData.department === 'Others' && (
+                        <div>
+                            <label className="block text-[10px] font-mono text-gray-400 mb-1">CUSTOM DEPARTMENT (MAX 25 CHARS)</label>
+                            <input
+                                type="text"
+                                value={formData.customDepartment}
+                                onChange={(e) => setFormData({ ...formData, customDepartment: e.target.value })}
+                                maxLength={25}
+                                placeholder="Enter your department"
+                                className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
+                                required
+                            />
+                            <p className="text-[10px] text-gray-500 mt-1">{formData.customDepartment.length}/25 characters</p>
+                        </div>
+                    )}
+
+                    <div className="grid grid-cols-2 gap-3">
+                        <div>
+                            <label className="block text-[10px] font-mono text-gray-400 mb-1">DATE OF BIRTH</label>
+                            <input
+                                type="date"
+                                value={formData.dob}
+                                onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+                                className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-mono text-gray-400 mb-1">PHONE NUMBER</label>
+                            <input
+                                type="tel"
+                                placeholder="Mobile"
+                                value={formData.phone}
+                                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                maxLength={10}
+                                className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
+                                required
+                            />
+                        </div>
                     </div>
+
 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl mt-4 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl mt-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
                     >
-                        {loading ? <Loader2 className="animate-spin" /> : <><CheckCircle size={20} /> COMPLETE REGISTRATION</>}
+                        {loading ? <Loader2 className="animate-spin" size={16} /> : <><CheckCircle size={16} /> COMPLETE REGISTRATION</>}
                     </button>
                 </form>
             </div>

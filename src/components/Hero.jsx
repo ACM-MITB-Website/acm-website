@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, Suspense } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import acmMitbLogo from '../assets/acm-mitb-logo.png';
 import { SplitText } from './ui/SplitText';
@@ -41,7 +42,7 @@ const Hero = () => {
             </div>
 
             {/* Contrast Overlay */}
-            <div className="absolute inset-0 z-[1] bg-black/30 pointer-events-none" />
+            <div className="absolute inset-0 z-1 bg-black/30 pointer-events-none" />
 
             {/* Content Overlay - Split Layout */}
             <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 h-full w-full items-center px-4 md:px-12 pointer-events-none">
@@ -57,7 +58,7 @@ const Hero = () => {
                 <div ref={textRef} className="flex flex-col items-center lg:items-end text-center lg:text-right drop-shadow-2xl order-1 lg:order-2 lg:pr-32">
                     <div className="pointer-events-auto">
                         <SplitText
-                            className="text-5xl lg:text-[5rem] leading-none font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50 select-none pb-4"
+                            className="text-5xl lg:text-[5rem] leading-none font-bold tracking-tighter text-transparent bg-clip-text bg-linear-to-b from-white to-white/50 select-none pb-4"
                             delay={0.1}
                         >
                             INNOVATE
@@ -75,12 +76,12 @@ const Hero = () => {
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center lg:justify-end gap-6">
-                            <a href="#events" className="group relative px-8 py-4 bg-white text-black rounded-full font-bold tracking-wider overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.5)]">
+                            <Link to="/membership" className="group relative px-8 py-4 bg-white text-black rounded-full font-bold tracking-wider overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.5)]">
                                 <span className="relative z-10 flex items-center gap-2">
-                                    VIEW EVENTS <span className="transition-transform group-hover:translate-x-1">→</span>
+                                    JOIN US <span className="transition-transform group-hover:translate-x-1">→</span>
                                 </span>
-                                <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </a>
+                                <div className="absolute inset-0 bg-linear-to-r from-gray-200 to-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </Link>
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import Navbar from './components/Navbar';
+import React, { useEffect, useRef, useState } from 'react';
+import Navbar from './components/NavbarOptimized';
 import Footer from './components/Footer';
+import ProfileCompletion from './components/ProfileCompletion';
+import { auth, db } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 import step1 from './assets/step1-join.png';
 import step2 from './assets/step2-india.png';
 import step3 from './assets/step3-details.png';
@@ -13,6 +17,21 @@ gsap.registerPlugin(ScrollTrigger);
 
 const MembershipApp = () => {
     const stepsRef = useRef([]);
+    const [user, setUser] = useState(null);
+    const [showProfileForm, setShowProfileForm] = useState(false);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            setUser(currentUser);
+            if (currentUser) {
+                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                setShowProfileForm(!userDoc.exists());
+            } else {
+                setShowProfileForm(false);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
 
     useEffect(() => {
         stepsRef.current.forEach((el, index) => {
@@ -62,6 +81,9 @@ const MembershipApp = () => {
 
     return (
         <div className="bg-black min-h-screen text-white font-sans selection:bg-acm-teal selection:text-black">
+            {showProfileForm && user && (
+                <ProfileCompletion user={user} onComplete={() => setShowProfileForm(false)} />
+            )}
             <Navbar />
 
             <div className="pt-32 pb-20 px-4 max-w-5xl mx-auto">

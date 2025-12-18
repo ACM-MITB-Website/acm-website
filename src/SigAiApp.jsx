@@ -1,17 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Linkedin } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
 import { Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
 import gsap from 'gsap';
 import EventShowcase from './components/EventShowcase';
-import Navbar from './components/Navbar';
+import Navbar from './components/NavbarOptimized';
 import Footer from './components/Footer';
 import sigAiLogo from './assets/sigai-logo.png';
-import Particles from './components/Particles';
-
-import jamImg from './assets/sigai-jam-2025.jpg';
-import panelImg from './assets/sigai-panel-2025.jpg';
-import hourOfCodeImg from './assets/sigai-hour-of-code-2024.png';
+import StarBackground from './components/StarBackground';
+import ProfileCompletion from './components/ProfileCompletion';
+import { auth, db } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 const SigAiHero = () => {
     const textRef = useRef(null);
@@ -26,38 +26,9 @@ const SigAiHero = () => {
     return (
         <section className="relative h-[60vh] w-full overflow-hidden flex items-center justify-center pt-20">
             <div className="absolute inset-0 z-0">
-                <Particles
-                    particleColors={['#ffffff', '#ffffff']}
-                    particleCount={300}
-                    particleSpread={10}
-                    speed={0.1}
-                    particleBaseSize={100}
-                    moveParticlesOnHover={true}
-                    alphaParticles={false}
-                    disableRotation={false}
-                    className="absolute inset-0"
-                />
+                <StarBackground />
             </div>
-            {/* 3D Sphere Overlay */}
-            <div className="absolute inset-0 z-0 pointer-events-none">
-                <Canvas camera={{ position: [0, 0, 8] }}>
-                    <ambientLight intensity={0.2} />
-                    <pointLight position={[10, 10, 10]} intensity={2} color="#22d3ee" />
-                    <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
-                        <Sphere args={[2, 64, 64]}>
-                            <MeshDistortMaterial
-                                color="#22d3ee"
-                                emissive="#22d3ee"
-                                emissiveIntensity={0.2}
-                                roughness={0.2}
-                                metalness={0.8}
-                                distort={0.4}
-                                speed={2}
-                            />
-                        </Sphere>
-                    </Float>
-                </Canvas>
-            </div>
+            {/* 3D Sphere Overlay Removed for Moving Stars Effect */}
 
             <div className="relative z-10 text-center px-4">
                 <h1 ref={textRef} className="flex justify-center items-center">
@@ -95,7 +66,7 @@ const Team = () => {
         { name: 'Mahek Sethi', role: 'General Secretary', image: '/assets/sigai-mahek.jpg', linkedin: '#' },
         { name: 'Surya R', role: 'Executive Secretary', image: '/assets/sigai-surya.jpg', linkedin: '#' },
         { name: 'Hemang Agarwal', role: 'Treasurer', image: '/assets/sigai-hemang.jpg', linkedin: '#' },
-        { name: 'Shouraya Sharma', role: 'Web Master', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica', linkedin: '#' },
+        { name: 'Shouraya Sharma', role: 'Web Master', image: '/assets/sigai-shouraya.jpg', linkedin: 'https://www.linkedin.com/in/shouraya-sharma-71bb2b329/' },
         { name: 'Divi Jaiwnath', role: 'Graphic Designer', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel', linkedin: '#' },
         { name: 'Tejas N', role: 'Executive Member', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Olivia', linkedin: '#' },
         { name: 'Aneesh Srivattsa', role: 'Executive Member', image: '/assets/sigai-aneesh.jpg', linkedin: '#' },
@@ -161,12 +132,12 @@ const Team = () => {
                                     className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 grayscale group-hover:grayscale-0"
                                 />
                                 {/* Scanline Effect */}
-                                <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] opacity-20 pointer-events-none"></div>
+                                <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-size-[100%_4px] opacity-20 pointer-events-none"></div>
                             </div>
                         </div>
 
                         {/* Content Overlay */}
-                        <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black via-black/80 to-transparent z-10 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                        <div className="absolute bottom-0 left-0 w-full p-4 bg-linear-to-t from-black via-black/80 to-transparent z-10 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                             <div className="flex items-center justify-between mb-1">
                                 <h3 className="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors">{member.name}</h3>
                                 <div className="h-2 w-2 rounded-full bg-cyan-500 shadow-[0_0_10px_#22d3ee]"></div>
@@ -201,44 +172,35 @@ const Team = () => {
     );
 };
 
-const sigAiEvents = [
-    {
-        id: 1,
-        title: "Just a Minute",
-        description: "MITB ACM SIGAI and APEX hosted a JAM competition at Turinger 2025, challenging participants to present technical topics fluently, with free registration and prizes.",
-        date: "Fri Jan 17 2025",
-        image: jamImg,
-        status: "completed"
-    },
-    {
-        id: 2,
-        title: "Panel Discussion",
-        description: "MITB ACM SIG-AI hosted a panel at Turinger 2025 on AI bias, featuring experts discussing causes, impacts, unbiased systems, and ethical mitigation strategies.",
-        date: "Fri Jan 17 2025",
-        image: panelImg,
-        status: "completed"
-    },
-    {
-        id: 3,
-        title: "Hour of Code",
-        description: "MITB ACM SIG-AI organized Hour of Code 2024, introducing Class 6 students to coding and AI through interactive block coding and engaging activities.",
-        date: "Mon Dec 09 2024",
-        image: hourOfCodeImg,
-        status: "completed"
-    }
-];
-
 const SigAiApp = () => {
     const timelineRef = useRef(null);
+    const [user, setUser] = useState(null);
+    const [showProfileForm, setShowProfileForm] = useState(false);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            setUser(currentUser);
+            if (currentUser) {
+                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                setShowProfileForm(!userDoc.exists());
+            } else {
+                setShowProfileForm(false);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
 
     return (
         <div className="bg-black min-h-screen text-white selection:bg-cyan-400 selection:text-black">
+            {showProfileForm && user && (
+                <ProfileCompletion user={user} onComplete={() => setShowProfileForm(false)} />
+            )}
             <Navbar />
             <SigAiHero />
             <About />
             <Team />
             <div ref={timelineRef}>
-                <EventShowcase events={sigAiEvents} />
+                <EventShowcase chapter="sigai" />
             </div>
             <Footer />
         </div>

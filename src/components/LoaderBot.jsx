@@ -167,7 +167,7 @@ const LoaderBot = ({ onComplete }) => {
     }, [onComplete]);
 
     return (
-        <div ref={containerRef} className="fixed inset-0 z-[9999] bg-black overflow-hidden font-sans">
+        <div ref={containerRef} className="fixed inset-0 z-9999 bg-black overflow-hidden font-sans">
 
             <div className="absolute inset-0 z-0">
                 <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
@@ -180,11 +180,11 @@ const LoaderBot = ({ onComplete }) => {
                 <div ref={textRef} className="text-right opacity-0">
                     <h1 className="text-4xl md:text-7xl font-bold text-white tracking-tighter leading-tight drop-shadow-[0_0_30px_rgba(0,255,136,0.3)]">
                         WELCOME TO THE <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-cyan-400 to-blue-500">
+                        <span className="text-transparent bg-clip-text bg-linear-to-r from-green-400 via-cyan-400 to-blue-500">
                             WORLD OF INNOVATION
                         </span>
                     </h1>
-                    <div className="w-full h-1 bg-gradient-to-r from-transparent via-green-500 to-transparent mt-4 opacity-50" />
+                    <div className="w-full h-1 bg-linear-to-r from-transparent via-green-500 to-transparent mt-4 opacity-50" />
                 </div>
             </div>
         </div>

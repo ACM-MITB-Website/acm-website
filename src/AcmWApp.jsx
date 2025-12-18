@@ -1,17 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Linkedin } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
 import { Float, MeshDistortMaterial, Sphere } from '@react-three/drei'; // Removed Stars
 import gsap from 'gsap';
 import EventShowcase from './components/EventShowcase';
-import Navbar from './components/Navbar';
+import Navbar from './components/NavbarOptimized';
 import Footer from './components/Footer';
 import acmWLogo from './assets/acm-w-logo.png';
-import Particles from './components/Particles';
-
-import eminentSpeakerImg from './assets/acmw-eminent-speaker-2025.jpg';
-import techQuizImg from './assets/acmw-tech-quiz-2025.jpg';
-import hourOfCodeImg from './assets/acmw-hour-of-code-2024.png';
+import StarBackground from './components/StarBackground';
+import ProfileCompletion from './components/ProfileCompletion';
+import { auth, db } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 const AcmWHero = () => {
     const textRef = useRef(null);
@@ -26,38 +26,9 @@ const AcmWHero = () => {
     return (
         <section className="relative h-[60vh] w-full overflow-hidden flex items-center justify-center pt-20">
             <div className="absolute inset-0 z-0">
-                <Particles
-                    particleColors={['#ffffff', '#ffffff']}
-                    particleCount={300}
-                    particleSpread={10}
-                    speed={0.1}
-                    particleBaseSize={100}
-                    moveParticlesOnHover={true}
-                    alphaParticles={false}
-                    disableRotation={false}
-                    className="absolute inset-0"
-                />
+                <StarBackground />
             </div>
-            {/* 3D Sphere Overlay */}
-            <div className="absolute inset-0 z-0 pointer-events-none">
-                <Canvas camera={{ position: [0, 0, 8] }}>
-                    <ambientLight intensity={0.2} />
-                    <pointLight position={[10, 10, 10]} intensity={2} color="#d946ef" />
-                    <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
-                        <Sphere args={[2, 64, 64]}>
-                            <MeshDistortMaterial
-                                color="#d946ef"
-                                emissive="#d946ef"
-                                emissiveIntensity={0.2}
-                                roughness={0.2}
-                                metalness={0.8}
-                                distort={0.4}
-                                speed={2}
-                            />
-                        </Sphere>
-                    </Float>
-                </Canvas>
-            </div>
+            {/* 3D Sphere Overlay Removed for Moving Stars Effect */}
             <div className="relative z-10 text-center px-4">
                 <h1 ref={textRef} className="flex justify-center items-center">
                     <img
@@ -198,44 +169,35 @@ const Team = () => {
     );
 };
 
-const acmWEvents = [
-    {
-        id: 1,
-        title: "Eminent Speaker Talk",
-        description: "The MITB ACM-W Chapter hosted Dr. Meena Mahajan at Turinger 2025 for a talk on computational complexity and its significance.",
-        date: "Fri Jan 17 2025",
-        image: eminentSpeakerImg,
-        status: "completed"
-    },
-    {
-        id: 2,
-        title: "Tech Quiz",
-        description: "Tech quiz challenged participants on programming, AI, cybersecurity, and emerging technologies, fostering learning, problem-solving, teamwork, and innovation in technology.",
-        date: "Fri Jan 17 2025",
-        image: techQuizImg,
-        status: "completed"
-    },
-    {
-        id: 3,
-        title: "Hour of Code",
-        description: "MITB ACM-W conducted an Hour of Code session at Muddenahalli, introducing students to computing and promoting digital literacy as part of their outreach efforts.",
-        date: "Thu Dec 12 2024",
-        image: hourOfCodeImg,
-        status: "completed"
-    }
-];
-
 const AcmWApp = () => {
     const timelineRef = useRef(null);
+    const [user, setUser] = useState(null);
+    const [showProfileForm, setShowProfileForm] = useState(false);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            setUser(currentUser);
+            if (currentUser) {
+                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                setShowProfileForm(!userDoc.exists());
+            } else {
+                setShowProfileForm(false);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
 
     return (
         <div className="bg-black min-h-screen text-white selection:bg-fuchsia-500 selection:text-black">
+            {showProfileForm && user && (
+                <ProfileCompletion user={user} onComplete={() => setShowProfileForm(false)} />
+            )}
             <Navbar />
             <AcmWHero />
             <About />
             <Team />
             <div ref={timelineRef}>
-                <EventShowcase events={acmWEvents} />
+                <EventShowcase chapter="acm-w" />
             </div>
             <Footer />
         </div>

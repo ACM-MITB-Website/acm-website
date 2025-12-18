@@ -1,7 +1,6 @@
-<<<<<<< HEAD
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import Navbar from './components/Navbar';
+import Navbar from './components/NavbarOptimized';
 import Hero from './components/Hero';
 import About from './components/About';
 import Sponsors from './components/Sponsors';
@@ -11,18 +10,42 @@ import Hub from './components/Hub';
 import ErrorBoundary from './components/ErrorBoundary';
 import PopupBanner from './components/PopupBanner';
 import EventSidebar from './components/EventSidebar';
+import ProfileCompletion from './components/ProfileCompletion';
+import { auth, db } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { Shield } from 'lucide-react';
 
 const App = () => {
-    // Debug: Keep loading disabled for now to ensure stability
     const [loading, setLoading] = useState(true);
-    const timelineRef = useRef(null);
+    const [user, setUser] = useState(null);
+    const [showProfileForm, setShowProfileForm] = useState(false);
+    const [hasTownhallAccess, setHasTownhallAccess] = useState(false);
 
-    // LoaderBot handles its own timer based on Spline load, so we don't need a timeout here
-    // but we need a failsafe in case Spline never loads? 
-    // Actually LoaderBot calls onComplete. We just need to pass setLoading(false) to it.
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            setUser(currentUser);
+            if (currentUser) {
+                // Check if user profile exists
+                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                if (!userDoc.exists()) {
+                    setShowProfileForm(true);
+                } else {
+                    setShowProfileForm(false);
+                    // Check townhall access
+                    setHasTownhallAccess(userDoc.data()?.townhall === true);
+                }
+            } else {
+                setShowProfileForm(false);
+                setHasTownhallAccess(false);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
 
-    // We can remove the timer effect for loading, or keep it as a fallback.
-    // Let's rely on LoaderBot's onComplete.
+    const handleProfileComplete = () => {
+        setShowProfileForm(false);
+    };
 
     return (
         <ErrorBoundary>
@@ -31,20 +54,31 @@ const App = () => {
                     <LoaderBot key="loader" onComplete={() => setLoading(false)} />
                 ) : (
                     <div key="main-content" className="bg-black min-h-screen text-white selection:bg-green-500 selection:text-black overflow-x-hidden">
-                        {/* Event Popup Banner */}
+                        {showProfileForm && user && (
+                            <ProfileCompletion user={user} onComplete={handleProfileComplete} />
+                        )}
                         <PopupBanner />
-                        {/* Event Sidebar Notification */}
                         <EventSidebar />
-                        {/* <SidePanel /> REMOVED as per user request */}
                         <Navbar />
                         <Hero />
                         <About />
                         <Hub />
-
-                        {/* Journey Section (Timeline) Removed */}
-
                         <Sponsors />
                         <Footer />
+
+                        {/* Townhall Access Button - Only for special users */}
+                        {hasTownhallAccess && (
+                            <a
+                                href="/townhall.html"
+                                className="fixed bottom-6 right-6 z-50 group bg-linear-to-r from-purple-600 to-pink-600 p-4 rounded-full shadow-2xl hover:shadow-purple-500/50 transition-all hover:scale-110 animate-pulse hover:animate-none"
+                                title="Townhall Admin Access"
+                            >
+                                <Shield className="text-white" size={28} />
+                                <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-black/90 text-white px-3 py-1 rounded-lg text-sm font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                                    Townhall Admin
+                                </span>
+                            </a>
+                        )}
                     </div>
                 )}
             </AnimatePresence>
@@ -53,61 +87,3 @@ const App = () => {
 };
 
 export default App;
-
-=======
-import React, { useState, useRef } from 'react';
-import { AnimatePresence } from 'framer-motion';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import About from './components/About';
-import Sponsors from './components/Sponsors';
-import Footer from './components/Footer';
-import LoaderBot from './components/LoaderBot';
-import Hub from './components/Hub';
-import ErrorBoundary from './components/ErrorBoundary';
-import PopupBanner from './components/PopupBanner';
-import EventSidebar from './components/EventSidebar';
-
-const App = () => {
-    // Debug: Keep loading disabled for now to ensure stability
-    const [loading, setLoading] = useState(true);
-    const timelineRef = useRef(null);
-
-    // LoaderBot handles its own timer based on Spline load, so we don't need a timeout here
-    // but we need a failsafe in case Spline never loads? 
-    // Actually LoaderBot calls onComplete. We just need to pass setLoading(false) to it.
-
-    // We can remove the timer effect for loading, or keep it as a fallback.
-    // Let's rely on LoaderBot's onComplete.
-
-    return (
-        <ErrorBoundary>
-            <AnimatePresence mode='wait'>
-                {loading ? (
-                    <LoaderBot key="loader" onComplete={() => setLoading(false)} />
-                ) : (
-                    <div key="main-content" className="bg-black min-h-screen text-white selection:bg-green-500 selection:text-black overflow-x-hidden">
-                        {/* Event Popup Banner */}
-                        <PopupBanner />
-                        {/* Event Sidebar Notification */}
-                        <EventSidebar />
-                        {/* <SidePanel /> REMOVED as per user request */}
-                        <Navbar />
-                        <Hero />
-                        <About />
-                        <Hub />
-
-                        {/* Journey Section (Timeline) Removed */}
-
-                        <Sponsors />
-                        <Footer />
-                    </div>
-                )}
-            </AnimatePresence>
-        </ErrorBoundary>
-    );
-};
-
-export default App;
-
->>>>>>> 6ded1bc (Refactor stories feature and add team member photos)

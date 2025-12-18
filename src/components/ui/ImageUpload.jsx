@@ -1,7 +1,8 @@
 import React, { useCallback, useState } from 'react';
-import { storage } from '../../firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Upload, X, Check, Loader2, Image as ImageIcon } from 'lucide-react';
+
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 const ImageUpload = ({ onUpload, folder = 'images', customName, className = "" }) => {
     const [dragActive, setDragActive] = useState(false);
@@ -34,23 +35,46 @@ const ImageUpload = ({ onUpload, folder = 'images', customName, className = "" }
         reader.readAsDataURL(file);
 
         try {
-            // Naming convention: folder/customName.ext OR folder/timestamp_filename
-            const extension = file.name.split('.').pop();
-            const fileName = customName
-                ? `${customName}.${extension}`
-                : `${Date.now()}_${file.name}`;
+            // Prepare form data for Cloudinary
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+            formData.append('folder', folder);
+            
+            if (customName) {
+                formData.append('public_id', customName);
+            }
 
-            const fullPath = `${folder}/${fileName}`;
-            const storageRef = ref(storage, fullPath);
+            console.log('Uploading to Cloudinary:', {
+                cloudName: CLOUDINARY_CLOUD_NAME,
+                uploadPreset: CLOUDINARY_UPLOAD_PRESET,
+                folder: folder
+            });
 
-            const snapshot = await uploadBytes(storageRef, file);
-            const downloadURL = await getDownloadURL(snapshot.ref);
+            // Upload to Cloudinary
+            const response = await fetch(
+                `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+                {
+                    method: 'POST',
+                    body: formData
+                }
+            );
+
+            const data = await response.json();
+            console.log('Cloudinary response:', data);
+
+            if (!response.ok) {
+                throw new Error(data.error?.message || 'Upload failed');
+            }
+
+            const downloadURL = data.secure_url;
 
             onUpload(downloadURL);
             setUploading(false);
         } catch (err) {
             console.error("Upload failed:", err);
-            setError("Upload failed. Please try again.");
+            const errorMessage = err.message || "Upload failed. Please try again.";
+            setError(errorMessage);
             setUploading(false);
         }
     };
