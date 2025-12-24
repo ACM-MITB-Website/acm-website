@@ -29,6 +29,7 @@ const chapters = [
         image: '/assets/team-3.png',
         logo: '/assets/sigsoft-logo.png',
         gradient: 'from-purple-600 to-indigo-500',
+        position: 'object-top',
     },
     {
         id: 'sigai',
@@ -52,7 +53,7 @@ const ChapterCard = ({ chapter }) => {
                 <img
                     src={chapter.image}
                     alt={chapter.name}
-                    className="w-full h-full object-cover transition-all duration-500 group-hover:blur-sm group-hover:scale-105 group-hover:brightness-50"
+                    className={`w-full h-full object-cover transition-all duration-500 group-hover:blur-sm group-hover:scale-105 group-hover:brightness-50 ${chapter.position || 'object-center'}`}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-90" />
             </div>
