@@ -29,7 +29,7 @@ const chapters = [
         image: '/assets/team-3.png',
         logo: '/assets/sigsoft-logo.png',
         gradient: 'from-purple-600 to-indigo-500',
-        position: 'object-top',
+
     },
     {
         id: 'sigai',
