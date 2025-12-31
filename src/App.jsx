@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useLoader } from './context/LoaderContext';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/NavbarOptimized';
 import Hero from './components/Hero';
 import About from './components/About';
 import Sponsors from './components/Sponsors';
 import Footer from './components/Footer';
-import LoaderBot from './components/LoaderBot';
+import LoaderCube from './components/LoaderCube';
 import Hub from './components/Hub';
 import ErrorBoundary from './components/ErrorBoundary';
 import PopupBanner from './components/PopupBanner';
@@ -17,7 +18,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { Shield } from 'lucide-react';
 
 const App = () => {
-    const [loading, setLoading] = useState(true);
+    const { loading, setLoading } = useLoader();
     const [user, setUser] = useState(null);
     const [showProfileForm, setShowProfileForm] = useState(false);
     const [hasTownhallAccess, setHasTownhallAccess] = useState(false);
@@ -51,7 +52,9 @@ const App = () => {
         <ErrorBoundary>
             <AnimatePresence mode='wait'>
                 {loading ? (
-                    <LoaderBot key="loader" onComplete={() => setLoading(false)} />
+                    <LoaderCube key="loader" onComplete={() => {
+                        setLoading(false);
+                    }} />
                 ) : (
                     <div key="main-content" className="bg-black min-h-screen text-white selection:bg-green-500 selection:text-black overflow-x-hidden">
                         {showProfileForm && user && (

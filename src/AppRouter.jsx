@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ErrorBoundary from './components/ErrorBoundary';
 import Loader from './components/Loader';
+import { LoaderProvider } from './context/LoaderContext';
 
 // Lazy load pages for code splitting
 const HomePage = lazy(() => import('./App'));
@@ -37,25 +38,27 @@ const RedirectToHome = () => {
 const AppRouter = () => {
     return (
         <ErrorBoundary>
-            <Router>
-                <ScrollToTop />
-                <RedirectToHome />
-                <Suspense fallback={<Loader />}>
-                    <Routes>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/about" element={<AboutPage />} />
-                        <Route path="/acm-mitb" element={<AcmMitbPage />} />
-                        <Route path="/acm-w" element={<AcmWPage />} />
-                        <Route path="/news" element={<NewsPage />} />
-                        <Route path="/membership" element={<MembershipPage />} />
-                        <Route path="/sigai" element={<SigAiPage />} />
-                        <Route path="/sigsoft" element={<SigSoftPage />} />
-                        <Route path="/townhall" element={<TownhallPage />} />
-                        {/* Fallback route for 404s/Refreshes */}
-                        <Route path="*" element={<HomePage />} />
-                    </Routes>
-                </Suspense>
-            </Router>
+            <LoaderProvider>
+                <Router>
+                    <ScrollToTop />
+                    <RedirectToHome />
+                    <Suspense fallback={<Loader />}>
+                        <Routes>
+                            <Route path="/" element={<HomePage />} />
+                            <Route path="/about" element={<AboutPage />} />
+                            <Route path="/acm-mitb" element={<AcmMitbPage />} />
+                            <Route path="/acm-w" element={<AcmWPage />} />
+                            <Route path="/news" element={<NewsPage />} />
+                            <Route path="/membership" element={<MembershipPage />} />
+                            <Route path="/sigai" element={<SigAiPage />} />
+                            <Route path="/sigsoft" element={<SigSoftPage />} />
+                            <Route path="/townhall" element={<TownhallPage />} />
+                            {/* Fallback route for 404s/Refreshes */}
+                            <Route path="*" element={<HomePage />} />
+                        </Routes>
+                    </Suspense>
+                </Router>
+            </LoaderProvider>
         </ErrorBoundary>
     );
 };

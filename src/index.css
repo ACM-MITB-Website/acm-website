@@ -9,6 +9,11 @@
   --font-mono: 'JetBrains Mono', monospace;
 }
 
+
+html {
+  background-color: black;
+}
+
 body {
   background: radial-gradient(circle at center, #1e1b4b 0%, #000000 100%);
   color: white;

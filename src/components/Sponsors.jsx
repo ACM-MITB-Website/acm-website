@@ -69,7 +69,7 @@ const Sponsors = () => {
                 }
 
                 .animate-scroll {
-                    animation: scroll 40s linear infinite;
+                    animation: scroll 15s linear infinite;
                 }
 
                 .animate-scroll:hover {

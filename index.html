@@ -8,11 +8,11 @@
   <meta name="description" content="ACM MITB Student Chapter - Association for Computing Machinery at MIT Bangalore" />
   <meta name="theme-color" content="#000000" />
   <title>ACM MITB</title>
-  
+
   <!-- Preconnect to external domains for faster loading -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-  
+
   <style>
     body {
       background-color: #000000;
@@ -20,16 +20,11 @@
       margin: 0;
       padding: 0;
     }
-    
-    /* Loading fallback */
+
+    /* Loading fallback empty to prevent flash */
     #root:empty::before {
-      content: "Loading...";
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      font-size: 1.5rem;
-      color: #00ff88;
+      content: "";
+      display: none;
     }
   </style>
 </head>
