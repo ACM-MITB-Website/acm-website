@@ -47,9 +47,10 @@ const Navbar = memo(() => {
     return (
         <>
             {/* Fixed Logo Left Aligned */}
-            <Link 
-                to="/" 
-                className="fixed top-6 left-6 z-50 transition-transform duration-300 hover:scale-105"
+            {/* Fixed Logo Left Aligned (Desktop Only) */}
+            <Link
+                to="/"
+                className="fixed top-6 left-6 z-50 transition-transform duration-300 hover:scale-105 hidden md:block"
                 aria-label="ACM MITB Home"
             >
                 <img
@@ -62,22 +63,21 @@ const Navbar = memo(() => {
                 />
             </Link>
 
-            <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] md:w-auto transition-all duration-300">
-                <div className={`transition-all duration-300 rounded-full px-6 py-3 flex items-center justify-between md:justify-start md:space-x-6 ${
-                    isScrolled
-                        ? 'bg-black/80 backdrop-blur-xl border border-white/10 shadow-[0_0_20px_rgba(34,197,94,0.1)]'
-                        : 'bg-transparent border border-transparent'
-                }`}>
-                    {/* Mobile Menu Button */}
+            <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] md:w-auto transition-all duration-300">
+                <div className={`transition-all duration-300 rounded-full px-6 py-3 flex items-center justify-between md:justify-start md:space-x-6 ${isScrolled
+                    ? 'bg-black/80 backdrop-blur-xl border border-white/10 shadow-[0_0_20px_rgba(34,197,94,0.1)]'
+                    : 'bg-transparent border border-transparent'
+                    }`}>
+
+                    {/* Mobile Logo (Inside Nav) - Replaces Menu Button on Left */}
                     <div className="md:hidden">
-                        <button
-                            onClick={toggleMenu}
-                            className="text-gray-300 hover:text-white focus:outline-none"
-                            aria-label={isOpen ? 'Close menu' : 'Open menu'}
-                            aria-expanded={isOpen}
-                        >
-                            {isOpen ? <X size={20} /> : <Menu size={20} />}
-                        </button>
+                        <Link to="/">
+                            <img
+                                src={acmMitbLogo}
+                                alt="ACM MITB"
+                                className="h-8 w-auto object-contain"
+                            />
+                        </Link>
                     </div>
 
                     {/* Desktop Links */}
@@ -96,8 +96,6 @@ const Navbar = memo(() => {
 
                     {/* Action Buttons */}
                     <div className="flex items-center space-x-4 md:pl-4 md:border-l md:border-white/10">
-                        <AuthButton />
-
                         {/* Become a Member Button */}
                         <Link
                             to="/membership"
@@ -110,15 +108,29 @@ const Navbar = memo(() => {
                             href="#contact"
                             className="text-xs font-medium text-gray-300 hover:text-white whitespace-nowrap hidden lg:block"
                         >
-                            CONTACT
+                            CONTACT US
                         </a>
+
+                        <AuthButton />
+
+                        {/* Mobile Menu Button - Moved to Right end */}
+                        <div className="md:hidden pl-2 border-l border-white/10 ml-2">
+                            <button
+                                onClick={toggleMenu}
+                                className="text-gray-300 hover:text-white focus:outline-none flex items-center"
+                                aria-label={isOpen ? 'Close menu' : 'Open menu'}
+                                aria-expanded={isOpen}
+                            >
+                                {isOpen ? <X size={24} /> : <Menu size={24} />}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </nav>
 
             {/* Mobile Menu Overlay */}
             {isOpen && (
-                <div 
+                <div
                     className="fixed inset-0 bg-black/95 backdrop-blur-lg z-40 md:hidden"
                     onClick={closeMenu}
                 >
@@ -128,11 +140,10 @@ const Navbar = memo(() => {
                                 key={link.path}
                                 to={link.path}
                                 onClick={closeMenu}
-                                className={`text-2xl font-bold transition-colors uppercase tracking-wider ${
-                                    location.pathname === link.path
-                                        ? 'text-acm-teal'
-                                        : 'text-gray-300 hover:text-white'
-                                }`}
+                                className={`text-2xl font-bold transition-colors uppercase tracking-wider ${location.pathname === link.path
+                                    ? 'text-acm-teal'
+                                    : 'text-gray-300 hover:text-white'
+                                    }`}
                             >
                                 {link.name}
                             </Link>

@@ -12,6 +12,22 @@ const Hero = () => {
     const textRef = useRef(null);
     const [showScroll, setShowScroll] = useState(true);
 
+    const [heroInView, setHeroInView] = useState(true);
+    const heroRef = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setHeroInView(entry.isIntersecting);
+            },
+            { threshold: 0 }
+        );
+        if (heroRef.current) observer.observe(heroRef.current);
+        return () => {
+            if (heroRef.current) observer.unobserve(heroRef.current);
+        };
+    }, []);
+
     useEffect(() => {
         const tl = gsap.timeline();
         // Text fade in
@@ -28,7 +44,7 @@ const Hero = () => {
     }, []);
 
     return (
-        <section id="home" className="relative h-screen w-full bg-black">
+        <section ref={heroRef} id="home" className="relative h-screen w-full bg-black">
             {/* 3D Background - Extended Height for Overlap */}
             <div className="absolute top-0 left-0 w-full h-[150vh] z-0 bg-black">
                 <Galaxy
@@ -38,6 +54,7 @@ const Hero = () => {
                     glowIntensity={0.5}
                     saturation={0.8}
                     hueShift={240}
+                    disableAnimation={!heroInView}
                 />
             </div>
 
@@ -55,7 +72,7 @@ const Hero = () => {
                 </div>
 
                 {/* Right: Typography */}
-                <div ref={textRef} className="flex flex-col items-center lg:items-end text-center lg:text-right drop-shadow-2xl order-1 lg:order-2 lg:pr-32">
+                <div ref={textRef} className="flex flex-col items-center lg:items-end text-center lg:text-right drop-shadow-2xl order-1 lg:order-2 lg:pr-32 pt-32 lg:pt-0">
                     <div className="pointer-events-auto">
                         <SplitText
                             className="text-5xl lg:text-[5rem] leading-none font-bold tracking-tighter text-transparent bg-clip-text bg-linear-to-b from-white to-white/50 select-none pb-4"

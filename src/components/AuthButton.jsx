@@ -45,7 +45,9 @@ function AuthButton({ className = "" }) {
         // IF LOGGED IN (Final Styled View)
         <div className="flex items-center space-x-2 bg-gray-800 p-1 rounded-full shadow-md border border-white/10">
           <img src={user.photoURL} alt="Profile" className="w-6 h-6 rounded-full border border-blue-400" />
-          <span className="text-white text-xs font-medium hidden lg:inline max-w-[100px] truncate">Hello, {user.displayName.split(' ')[0]}</span>
+          <span className="text-white text-xs font-medium hidden lg:inline whitespace-nowrap">
+            Hello, {user.displayName ? user.displayName.split(' ')[0] : 'User'}
+          </span>
           <button onClick={handleLogout} className="px-2 py-0.5 bg-red-600/80 text-white text-[10px] uppercase font-bold rounded-full hover:bg-red-700 transition duration-200">Logout</button>
         </div>
       ) : (
@@ -54,7 +56,7 @@ function AuthButton({ className = "" }) {
           onClick={handleLogin}
           className={className || "px-3 py-1.5 bg-white text-black text-xs font-bold rounded-full shadow-lg hover:bg-acm-teal hover:scale-105 transition duration-200 whitespace-nowrap"}
         >
-          JOIN ACM
+          LOGIN
         </button>
       )}
     </div>

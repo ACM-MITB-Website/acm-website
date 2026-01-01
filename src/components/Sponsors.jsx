@@ -24,8 +24,8 @@ const Sponsors = () => {
         return () => unsubscribe();
     }, []);
 
-    // Duplicate for scroll
-    const allSponsors = sponsors.length > 0 ? [...sponsors, ...sponsors, ...sponsors, ...sponsors] : [];
+    // Create seamless loop by duplicating the list enough times to fill screen + buffer
+    const allSponsors = sponsors.length > 0 ? [...sponsors, ...sponsors] : [];
 
     return (
         <section className="py-16 px-4 overflow-hidden relative">
@@ -36,11 +36,30 @@ const Sponsors = () => {
                 <div className="h-px w-20 bg-acm-teal/50 mx-auto"></div>
             </div>
 
-            <div className="relative">
-                <div className="flex animate-scroll">
+            <div className="relative w-full overflow-hidden">
+                <div className="flex w-max animate-scroll">
+                    {/* First set of sponsors */}
                     {allSponsors.map((sponsor, index) => (
                         <div
-                            key={`${sponsor.id}-${index}`}
+                            key={`set1-${sponsor.id}-${index}`}
+                            className="flex-shrink-0 mx-8 w-48 h-32 flex flex-col items-center justify-center group"
+                        >
+                            <div className="relative w-full h-full flex items-center justify-center bg-white/5 rounded-xl border border-white/10 p-6 transition-all duration-300 hover:bg-white/10 hover:scale-105">
+                                <img
+                                    src={sponsor.logo}
+                                    alt={sponsor.name}
+                                    className="max-w-full max-h-full object-contain filter brightness-90 group-hover:brightness-110 transition-all"
+                                />
+                            </div>
+                            <p className="mt-3 text-xs text-gray-400 font-mono tracking-wider">
+                                {sponsor.name}
+                            </p>
+                        </div>
+                    ))}
+                    {/* Duplicate set for seamless looping */}
+                    {allSponsors.map((sponsor, index) => (
+                        <div
+                            key={`set2-${sponsor.id}-${index}`}
                             className="flex-shrink-0 mx-8 w-48 h-32 flex flex-col items-center justify-center group"
                         >
                             <div className="relative w-full h-full flex items-center justify-center bg-white/5 rounded-xl border border-white/10 p-6 transition-all duration-300 hover:bg-white/10 hover:scale-105">
@@ -69,7 +88,8 @@ const Sponsors = () => {
                 }
 
                 .animate-scroll {
-                    animation: scroll 15s linear infinite;
+                    display: flex;
+                    animation: scroll 10s linear infinite; /* Faster than 15s, smoother than 6s */
                 }
 
                 .animate-scroll:hover {
