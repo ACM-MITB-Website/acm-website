@@ -8,6 +8,7 @@ import Sponsors from './components/Sponsors';
 import Footer from './components/Footer';
 import Loader from './components/Loader';
 import Hub from './components/Hub';
+import Galaxy from './components/ui/Galaxy';
 import ErrorBoundary from './components/ErrorBoundary';
 import PopupBanner from './components/PopupBanner';
 import EventSidebar from './components/EventSidebar';
@@ -57,6 +58,16 @@ const App = () => {
                     }} />
                 ) : (
                     <div key="main-content" className="bg-black min-h-screen text-white selection:bg-green-500 selection:text-black overflow-x-hidden">
+                        <div className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none">
+                            <Galaxy
+                                mouseRepulsion={false}
+                                mouseInteraction={false}
+                                density={1.5}
+                                glowIntensity={0.5}
+                                saturation={0.8}
+                                hueShift={240}
+                            />
+                        </div>
                         {showProfileForm && user && (
                             <ProfileCompletion user={user} onComplete={handleProfileComplete} />
                         )}

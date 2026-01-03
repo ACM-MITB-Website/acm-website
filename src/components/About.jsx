@@ -40,11 +40,11 @@ const About = () => {
 
     return (
         <section ref={containerRef} className="relative py-32 min-h-screen flex items-center z-10 overflow-hidden">
-            {/* Background Gradient for Merge - Hides stars as dots appear */}
+            {/* Background Gradient for Merge - Semi-transparent to let stars show through */}
             <div
                 className="absolute inset-0 z-0 pointer-events-none"
                 style={{
-                    background: 'linear-gradient(to bottom, transparent 0%, black 20%, black 100%)'
+                    background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 20%, rgba(0,0,0,0.5) 100%)'
                 }}
             />
 

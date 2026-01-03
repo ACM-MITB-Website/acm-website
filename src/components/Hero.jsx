@@ -44,20 +44,7 @@ const Hero = () => {
     }, []);
 
     return (
-        <section ref={heroRef} id="home" className="relative h-screen w-full bg-black">
-            {/* 3D Background - Extended Height for Overlap */}
-            <div className="absolute top-0 left-0 w-full h-[150vh] z-0 bg-black">
-                <Galaxy
-                    mouseRepulsion={false}
-                    mouseInteraction={false}
-                    density={1.5}
-                    glowIntensity={0.5}
-                    saturation={0.8}
-                    hueShift={240}
-                    disableAnimation={!heroInView}
-                />
-            </div>
-
+        <section ref={heroRef} id="home" className="relative h-screen w-full bg-transparent">
             {/* Contrast Overlay */}
             <div className="absolute inset-0 z-1 bg-black/30 pointer-events-none" />
 

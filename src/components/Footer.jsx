@@ -4,7 +4,7 @@ import { Linkedin, Instagram } from 'lucide-react';
 
 const Footer = () => {
     return (
-        <footer id="contact" className="relative bg-black text-white py-10 overflow-hidden">
+        <footer id="contact" className="relative bg-transparent text-white py-10 overflow-hidden">
             {/* 3D Globe Background - DISABLED FOR STABILITY */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24">
