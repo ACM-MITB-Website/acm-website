@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Target, Users, Lightbulb } from 'lucide-react';
 import TiltCard from './ui/TiltCard';
+import Particles from './Particles';
 
 const Card = ({ icon: Icon, title, description, delay }) => {
     return (
@@ -38,6 +39,21 @@ const About = () => {
 
     return (
         <section ref={containerRef} className="relative py-32 min-h-screen flex items-center z-10 overflow-hidden">
+            {/* Particles Background */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
+                <Particles
+                    particleCount={150}
+                    particleSpread={8}
+                    speed={0.05}
+                    particleColors={['#00D9FF', '#A855F7', '#ffffff']}
+                    alphaParticles={true}
+                    particleBaseSize={80}
+                    sizeRandomness={0.5}
+                    cameraDistance={25}
+                    disableRotation={false}
+                />
+            </div>
+
             {/* Background Gradient for Merge - Semi-transparent to let stars show through */}
             <div
                 className="absolute inset-0 z-0 pointer-events-none"
