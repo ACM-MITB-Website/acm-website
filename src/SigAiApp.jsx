@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Linkedin } from 'lucide-react';
-import { Canvas } from '@react-three/fiber';
-import { Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
 import gsap from 'gsap';
 import EventShowcase from './components/EventShowcase';
 import Navbar from './components/NavbarOptimized';
@@ -24,12 +22,10 @@ const SigAiHero = () => {
     }, []);
 
     return (
-        <section className="relative h-[60vh] w-full overflow-hidden flex items-center justify-center pt-20">
+        <section className="relative h-[50vh] w-full overflow-hidden flex items-center justify-center pt-20">
             <div className="absolute inset-0 z-0">
                 <StarBackground />
             </div>
-            {/* 3D Sphere Overlay Removed for Moving Stars Effect */}
-
             <div className="relative z-10 text-center px-4">
                 <h1 ref={textRef} className="flex justify-center items-center">
                     <img
@@ -43,6 +39,32 @@ const SigAiHero = () => {
                 </p>
             </div>
         </section>
+    );
+};
+
+const TabNavigation = ({ activeTab, setActiveTab }) => {
+    const tabs = [
+        { id: 'about', label: 'About Us' },
+        { id: 'team', label: 'Crew Manifest' },
+        { id: 'events', label: 'Events Chronicle' },
+    ];
+
+    return (
+        <div className="flex justify-center gap-2 md:gap-4 px-4 py-6 max-w-4xl mx-auto">
+            {tabs.map((tab) => (
+                <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`px-4 md:px-8 py-3 font-mono text-sm md:text-base tracking-wider transition-all duration-300 rounded-lg border ${
+                        activeTab === tab.id
+                            ? 'bg-cyan-400/20 border-cyan-400 text-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.3)]'
+                            : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:border-white/20 hover:text-white'
+                    }`}
+                >
+                    {tab.label}
+                </button>
+            ))}
+        </div>
     );
 };
 
@@ -115,7 +137,6 @@ const Team = () => {
                         key={index}
                         className="team-card group relative h-80 rounded-xl bg-white/5 border border-white/10 overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(34,211,238,0.2)]"
                     >
-                        {/* Holographic Gradient Overlay */}
                         <div
                             className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-0"
                             style={{
@@ -123,7 +144,6 @@ const Team = () => {
                             }}
                         ></div>
 
-                        {/* Image Container */}
                         <div className="absolute inset-0 p-1">
                             <div className="w-full h-full rounded-lg overflow-hidden relative">
                                 <img
@@ -131,12 +151,10 @@ const Team = () => {
                                     alt={member.name}
                                     className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 grayscale group-hover:grayscale-0"
                                 />
-                                {/* Scanline Effect */}
                                 <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-size-[100%_4px] opacity-20 pointer-events-none"></div>
                             </div>
                         </div>
 
-                        {/* Content Overlay */}
                         <div className="absolute bottom-0 left-0 w-full p-4 bg-linear-to-t from-black via-black/80 to-transparent z-10 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                             <div className="flex items-center justify-between mb-1">
                                 <h3 className="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors">{member.name}</h3>
@@ -144,7 +162,6 @@ const Team = () => {
                             </div>
                             <p className="text-xs font-mono text-gray-400 uppercase tracking-wider">{member.role}</p>
 
-                            {/* Tech Decoration & Socials */}
                             <div className="mt-4 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
                                 <div className="flex space-x-1">
                                     <div className="h-1 w-8 bg-cyan-400/50 rounded-full"></div>
@@ -162,7 +179,6 @@ const Team = () => {
                             </div>
                         </div>
 
-                        {/* Corner Accents */}
                         <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     </div>
@@ -176,6 +192,7 @@ const SigAiApp = () => {
     const timelineRef = useRef(null);
     const [user, setUser] = useState(null);
     const [showProfileForm, setShowProfileForm] = useState(false);
+    const [activeTab, setActiveTab] = useState('about');
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -190,6 +207,23 @@ const SigAiApp = () => {
         return () => unsubscribe();
     }, []);
 
+    const renderTabContent = () => {
+        switch (activeTab) {
+            case 'about':
+                return <About />;
+            case 'team':
+                return <Team />;
+            case 'events':
+                return (
+                    <div ref={timelineRef}>
+                        <EventShowcase chapter="sigai" />
+                    </div>
+                );
+            default:
+                return <About />;
+        }
+    };
+
     return (
         <div className="bg-black min-h-screen text-white selection:bg-cyan-400 selection:text-black">
             {showProfileForm && user && (
@@ -197,10 +231,9 @@ const SigAiApp = () => {
             )}
             <Navbar />
             <SigAiHero />
-            <About />
-            <Team />
-            <div ref={timelineRef}>
-                <EventShowcase chapter="sigai" />
+            <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+            <div className="min-h-[50vh]">
+                {renderTabContent()}
             </div>
             <Footer />
         </div>
