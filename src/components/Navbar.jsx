@@ -17,11 +17,7 @@ const Navbar = () => {
         { name: 'NEWS ROOM', href: '/news.html' },
     ];
 
-    const currentPath = window.location.pathname;
-    const filteredLinks = navLinks.filter(link => {
-        if (link.href === '/' && (currentPath === '/' || currentPath === '/index.html')) return false;
-        return link.href !== currentPath;
-    });
+
 
     const [isScrolled, setIsScrolled] = useState(false);
 
@@ -69,7 +65,7 @@ const Navbar = () => {
 
                     {/* Desktop Links */}
                     <div className="hidden md:flex items-center space-x-6">
-                        {filteredLinks.map((link) => (
+                        {navLinks.map((link) => (
                             <a
                                 key={link.name}
                                 href={link.href}
@@ -106,7 +102,7 @@ const Navbar = () => {
             {/* Mobile Menu Overlay */}
             {isOpen && (
                 <div className="fixed inset-0 z-40 bg-black/95 backdrop-blur-xl md:hidden flex flex-col items-center justify-center space-y-8">
-                    {filteredLinks.map((link) => (
+                    {navLinks.map((link) => (
                         <a
                             key={link.name}
                             href={link.href}
