@@ -53,11 +53,11 @@ const About = () => {
                 />
             </div>
 
-            {/* Background Gradient for Merge - Semi-transparent to let stars show through */}
+            {/* Background Gradient for Merge - Blur and darken to hide universe animation */}
             <div
-                className="absolute inset-0 z-0 pointer-events-none"
+                className="absolute inset-0 z-0 pointer-events-none backdrop-blur-3xl"
                 style={{
-                    background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.8) 20%, rgba(0,0,0,0.8) 100%)'
+                    background: 'linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,1) 50%, rgba(0,0,0,1) 100%)'
                 }}
             />
 
