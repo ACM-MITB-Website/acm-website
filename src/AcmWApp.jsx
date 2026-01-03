@@ -61,7 +61,7 @@ const About = () => {
 const Team = () => {
     const members = [
         { name: 'Vaishnavi Ashopa', role: 'Chair', image: '/assets/w-vaishnavi.jpg', linkedin: '#' },
-        { name: 'Ruchitankshi A', role: 'Vice Chair', image: '/assets/w-ruchitankshi.jpg', linkedin: '#' },
+        { name: 'Ruchitankshi A', role: 'Vice Chair', image: '/assets/ruchi.jpg', linkedin: '#' },
         { name: 'Varsha Angadi', role: 'General Secretary', image: '/assets/w-varsha.jpg', linkedin: '#' },
         { name: 'Dhruti A', role: 'Executive Secretary', image: '/assets/w-dhruti.jpg', linkedin: '#' },
         { name: 'Tanvi Ghule', role: 'Treasurer', image: '/assets/w-tanvi.jpeg', linkedin: '#' },
