@@ -89,7 +89,7 @@ const Sponsors = () => {
 
                 .animate-scroll {
                     display: flex;
-                    animation: scroll 10s linear infinite; /* Faster than 15s, smoother than 6s */
+                    animation: scroll 20s linear infinite; /* Slower 20s duration */
                 }
 
                 .animate-scroll:hover {
