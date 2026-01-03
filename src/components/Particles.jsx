@@ -36,14 +36,13 @@ const vertex = /* glsl */ `
   varying vec4 vRandom;
   varying vec3 vColor;
   
-  void main() {
-    vRandom = random;
-    vColor = color;
-    
-    vec3 pos = position * uSpread;
-    pos.z *= 10.0;
-    
-    vec4 mPos = modelMatrix * vec4(pos, 1.0);
+    void main() {
+      vRandom = random;
+      vColor = color;
+      
+      vec3 pos = position * uSpread;
+      
+      vec4 mPos = modelMatrix * vec4(pos, 1.0);
     float t = uTime;
     mPos.x += sin(t * random.z + 6.28 * random.w) * mix(0.1, 1.5, random.x);
     mPos.y += sin(t * random.y + 6.28 * random.x) * mix(0.1, 1.5, random.w);
