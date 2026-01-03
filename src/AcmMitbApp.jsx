@@ -58,12 +58,15 @@ const About = () => {
     );
 };
 
+import shivanshImg from './assets/shivansh-gautam.jpg';
+import medhaImg from './assets/medha-udupa.jpg';
+
 const Team = () => {
     const members = [
         { name: 'Dr.Gururaj H L', role: 'Faculty Advisor', image: '/assets/gururaj-hl.jpg', linkedin: 'https://www.linkedin.com/in/dr-gururaj-h-l-92513539/' },
         { name: 'Dr.Shreyas J', role: 'Faculty Advisor', image: '/assets/shreyas-j.jpg', linkedin: 'https://www.linkedin.com/in/dr-shreyas-j-a069a225/' },
-        { name: 'Shivansh Gautam', role: 'Chair', image: '/assets/shivansh-gautam.jpg', linkedin: 'https://www.linkedin.com/in/shivansh-gautam-sg/' },
-        { name: 'Medha Udupa', role: 'Vice Chair', image: '/assets/medha-udupa.jpg', linkedin: 'https://www.linkedin.com/in/medha-udupa-b55352227' },
+        { name: 'Shivansh Gautam', role: 'Chair', image: shivanshImg, linkedin: 'https://www.linkedin.com/in/shivansh-gautam-sg/' },
+        { name: 'Medha Udupa', role: 'Vice Chair', image: medhaImg, linkedin: 'https://www.linkedin.com/in/medha-udupa-b55352227' },
         { name: 'S.P. Bharath', role: 'General Secretary', image: '/assets/sp-bharath.jpg', linkedin: '#' },
         { name: 'Anushka Mishra', role: 'Executive Secretary', image: '/assets/anushka-mishra.jpg', linkedin: 'https://www.linkedin.com/in/anushka-mishra-355049315/' },
         { name: 'Romansh Rathee', role: 'Treasurer', image: '/assets/romansh-rathee.jpg', linkedin: 'https://www.linkedin.com/in/romansh-rathee/' },
