@@ -14,10 +14,12 @@ const DotGrid = ({
     gap = 32,
     baseColor = '#a855f7',
     activeColor = '#ff0000',
-    proximity = 150, // Radius of effect
-    scaleTrigger = 2.0, // How much to scale up
+    gradientStart = null,
+    gradientEnd = null,
+    proximity = 150,
+    scaleTrigger = 2.0,
     viscosity = 0.1,
-    maxDisplacement = 30, // Pixels to push out
+    maxDisplacement = 30,
     className = '',
     style,
     canvasStyle
@@ -29,6 +31,9 @@ const DotGrid = ({
 
     const baseRgb = useMemo(() => hexToRgb(baseColor), [baseColor]);
     const activeRgb = useMemo(() => hexToRgb(activeColor), [activeColor]);
+    const gradientStartRgb = useMemo(() => gradientStart ? hexToRgb(gradientStart) : null, [gradientStart]);
+    const gradientEndRgb = useMemo(() => gradientEnd ? hexToRgb(gradientEnd) : null, [gradientEnd]);
+    const dimensionsRef = useRef({ width: 0, height: 0 });
 
     // Pre-calculate pattern avoids arc calls per frame
     const circlePath = useMemo(() => {
@@ -44,6 +49,7 @@ const DotGrid = ({
         if (!wrap || !canvas) return;
 
         const { width, height } = wrap.getBoundingClientRect();
+        dimensionsRef.current = { width, height };
         const dpr = window.devicePixelRatio || 1;
 
         canvas.width = width * dpr;
@@ -71,7 +77,6 @@ const DotGrid = ({
             for (let x = 0; x < cols; x++) {
                 const cx = startX + x * cell;
                 const cy = startY + y * cell;
-                // Origin is fixed. We only calculate offset in draw.
                 dots.push({ cx, cy, x: cx, y: cy });
             }
         }
@@ -109,37 +114,41 @@ const DotGrid = ({
             const my = mouseRef.current.y;
 
             const radius = proximity;
+            const { width, height } = dimensionsRef.current;
 
             for (const dot of dotsRef.current) {
-                // Calculate distance to mouse
                 const dx = dot.cx - mx;
                 const dy = dot.cy - my;
                 const distSq = dx * dx + dy * dy;
                 const dist = Math.sqrt(distSq);
 
-                // Default state
                 let x = dot.cx;
                 let y = dot.cy;
                 let scale = 1;
-                let r = baseRgb.r;
-                let g = baseRgb.g;
-                let b = baseRgb.b;
+                let r, g, b;
+
+                if (gradientStartRgb && gradientEndRgb && width > 0 && height > 0) {
+                    const t = Math.min(1, Math.max(0, (dot.cx + dot.cy) / (width + height) * 1.5));
+                    r = Math.round(gradientStartRgb.r + (gradientEndRgb.r - gradientStartRgb.r) * t);
+                    g = Math.round(gradientStartRgb.g + (gradientEndRgb.g - gradientStartRgb.g) * t);
+                    b = Math.round(gradientStartRgb.b + (gradientEndRgb.b - gradientStartRgb.b) * t);
+                } else {
+                    r = baseRgb.r;
+                    g = baseRgb.g;
+                    b = baseRgb.b;
+                }
 
                 if (dist < radius) {
-                    // Strength 0 to 1 based on distance
                     const t = 1 - (dist / radius);
-                    const easeT = t * t; // Non-linear falloff for smoother shape
+                    const easeT = t * t;
 
-                    // COLOR: Interpolate
-                    r = Math.round(baseRgb.r + (activeRgb.r - baseRgb.r) * easeT);
-                    g = Math.round(baseRgb.g + (activeRgb.g - baseRgb.g) * easeT);
-                    b = Math.round(baseRgb.b + (activeRgb.b - baseRgb.b) * easeT);
+                    r = Math.round(r + (activeRgb.r - r) * easeT);
+                    g = Math.round(g + (activeRgb.g - g) * easeT);
+                    b = Math.round(b + (activeRgb.b - b) * easeT);
 
-                    // SCALE: Grow significantly
                     scale = 1 + (scaleTrigger * easeT);
 
-                    // POSITION: Bulge Effect
-                    const pushFactor = maxDisplacement * Math.sin(easeT * Math.PI / 2); // Sinusoidal bulge
+                    const pushFactor = maxDisplacement * Math.sin(easeT * Math.PI / 2);
 
                     if (dist > 0.1) {
                         x += (dx / dist) * pushFactor;
@@ -162,7 +171,7 @@ const DotGrid = ({
 
         rafId = requestAnimationFrame(draw);
         return () => cancelAnimationFrame(rafId);
-    }, [circlePath, proximity, scaleTrigger, maxDisplacement, baseRgb, activeRgb]);
+    }, [circlePath, proximity, scaleTrigger, maxDisplacement, baseRgb, activeRgb, gradientStartRgb, gradientEndRgb]);
 
     const handleMouseMove = (e) => {
         if (!canvasRef.current) return;

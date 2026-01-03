@@ -42,13 +42,14 @@ const About = () => {
             {/* Dot Grid Background */}
             <div className="absolute inset-0 z-[1]">
                 <DotGrid
-                    dotSize={4}
-                    gap={30}
-                    baseColor="#ffffff"
-                    activeColor="#00D9FF"
+                    dotSize={5}
+                    gap={35}
+                    gradientStart="#ff1744"
+                    gradientEnd="#00D9FF"
+                    activeColor="#ffffff"
                     proximity={150}
-                    scaleTrigger={2}
-                    maxDisplacement={10}
+                    scaleTrigger={1.5}
+                    maxDisplacement={8}
                 />
             </div>
 
