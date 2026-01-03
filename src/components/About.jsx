@@ -42,9 +42,9 @@ const About = () => {
             {/* Dot Grid Background */}
             <div className="absolute inset-0 z-[1]">
                 <DotGrid
-                    dotSize={2}
-                    gap={25}
-                    baseColor="rgba(255, 255, 255, 0.2)"
+                    dotSize={4}
+                    gap={30}
+                    baseColor="#ffffff"
                     activeColor="#00D9FF"
                     proximity={150}
                     scaleTrigger={2}
