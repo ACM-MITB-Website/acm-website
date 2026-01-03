@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+  --color-acm-blue: #0f172a;
+  --color-acm-teal: #00d4ff;
+  --color-acm-dark: #020617;
+  --color-acm-purple: #7c3aed;
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+
+html {
+  background-color: black;
+}
+
+body {
+  background: radial-gradient(circle at center, #1e1b4b 0%, #000000 100%);
+  color: white;
+  overflow-x: hidden;
+}
+
+/* Hide Spline Watermark */
+a[href^="https://spline.design"],
+#spline-watermark {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
