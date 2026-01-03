@@ -6,7 +6,7 @@ import Hero from './components/Hero';
 import About from './components/About';
 import Sponsors from './components/Sponsors';
 import Footer from './components/Footer';
-import LoaderCube from './components/LoaderCube';
+import Loader from './components/Loader';
 import Hub from './components/Hub';
 import ErrorBoundary from './components/ErrorBoundary';
 import PopupBanner from './components/PopupBanner';
@@ -52,7 +52,7 @@ const App = () => {
         <ErrorBoundary>
             <AnimatePresence mode='wait'>
                 {loading ? (
-                    <LoaderCube key="loader" onComplete={() => {
+                    <Loader key="loader" onComplete={() => {
                         setLoading(false);
                     }} />
                 ) : (
