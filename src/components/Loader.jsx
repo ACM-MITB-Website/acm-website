@@ -1,16 +1,7 @@
 import React from 'react';
-import Lottie from 'lottie-react';
 
 const Loader = ({ onComplete }) => {
     const [isVisible, setIsVisible] = React.useState(true);
-    const [animationData, setAnimationData] = React.useState(null);
-
-    React.useEffect(() => {
-        fetch('https://lottie.host/5caef671-b7ea-4a3f-b589-51f7e8ee3797/r5BPfEYFrD.json')
-            .then(response => response.json())
-            .then(data => setAnimationData(data))
-            .catch(err => console.error('Failed to load animation:', err));
-    }, []);
 
     React.useEffect(() => {
         const timer = setTimeout(() => {
@@ -25,15 +16,38 @@ const Loader = ({ onComplete }) => {
 
     return (
         <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
-            {animationData && (
-                <div style={{ filter: 'brightness(0) invert(1)' }}>
-                    <Lottie 
-                        animationData={animationData} 
-                        loop={true} 
-                        style={{ width: 150, height: 150 }}
+            <svg 
+                width="150" 
+                height="150" 
+                viewBox="0 0 100 100" 
+                className="infinity-loader"
+            >
+                <path
+                    d="M24.3,30C11.4,30,5,43.3,5,50s6.4,20,19.3,20c19.3,0,32.1-40,51.4-40C88.6,30,95,43.3,95,50s-6.4,20-19.3,20C56.4,70,43.6,30,24.3,30z"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeDasharray="205.271142578125"
+                    strokeDashoffset="0"
+                >
+                    <animate
+                        attributeName="stroke-dashoffset"
+                        values="0;410.542285156250"
+                        dur="2s"
+                        repeatCount="indefinite"
                     />
-                </div>
-            )}
+                </path>
+            </svg>
+            <style>{`
+                .infinity-loader {
+                    animation: pulse 2s ease-in-out infinite;
+                }
+                @keyframes pulse {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.7; }
+                }
+            `}</style>
         </div>
     );
 };
