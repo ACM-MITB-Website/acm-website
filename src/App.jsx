@@ -58,7 +58,7 @@ const App = () => {
                     }} />
                 ) : (
                     <div key="main-content" className="bg-black min-h-screen text-white selection:bg-green-500 selection:text-black overflow-x-hidden">
-                        <div className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none">
+                        <div className="fixed inset-0 w-screen h-screen z-0 pointer-events-none">
                             <Galaxy
                                 mouseRepulsion={false}
                                 mouseInteraction={false}

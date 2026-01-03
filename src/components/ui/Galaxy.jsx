@@ -28,13 +28,13 @@ uniform float uSpeed;
 uniform vec2 uMouse;
 uniform float uGlowIntensity;
 uniform float uSaturation;
-uniform bool uMouseRepulsion;
+uniform float uMouseRepulsion;
 uniform float uTwinkleIntensity;
 uniform float uRotationSpeed;
 uniform float uRepulsionStrength;
 uniform float uMouseActiveFactor;
 uniform float uAutoCenterRepulsion;
-uniform bool uTransparent;
+uniform float uTransparent;
 
 varying vec2 vUv;
 
@@ -129,20 +129,20 @@ void main() {
 
   vec2 mouseNorm = uMouse - vec2(0.5);
   
-  if (uAutoCenterRepulsion > 0.0) {
-    vec2 centerUV = vec2(0.0, 0.0);
-    float centerDist = length(uv - centerUV);
-    vec2 repulsion = normalize(uv - centerUV) * (uAutoCenterRepulsion / (centerDist + 0.1));
-    uv += repulsion * 0.05;
-  } else if (uMouseRepulsion) {
-    vec2 mousePosUV = (uMouse * uResolution.xy - focalPx) / uResolution.y;
-    float mouseDist = length(uv - mousePosUV);
-    vec2 repulsion = normalize(uv - mousePosUV) * (uRepulsionStrength / (mouseDist + 0.1));
-    uv += repulsion * 0.05 * uMouseActiveFactor;
-  } else {
-    vec2 mouseOffset = mouseNorm * 0.1 * uMouseActiveFactor;
-    uv += mouseOffset;
-  }
+if (uAutoCenterRepulsion > 0.0) {
+      vec2 centerUV = vec2(0.0, 0.0);
+      float centerDist = length(uv - centerUV);
+      vec2 repulsion = normalize(uv - centerUV) * (uAutoCenterRepulsion / (centerDist + 0.1));
+      uv += repulsion * 0.05;
+    } else if (uMouseRepulsion > 0.5) {
+      vec2 mousePosUV = (uMouse * uResolution.xy - focalPx) / uResolution.y;
+      float mouseDist = length(uv - mousePosUV);
+      vec2 repulsion = normalize(uv - mousePosUV) * (uRepulsionStrength / (mouseDist + 0.1));
+      uv += repulsion * 0.05 * uMouseActiveFactor;
+    } else {
+      vec2 mouseOffset = mouseNorm * 0.1 * uMouseActiveFactor;
+      uv += mouseOffset;
+    }
 
   float autoRotAngle = uTime * uRotationSpeed;
   mat2 autoRot = mat2(cos(autoRotAngle), -sin(autoRotAngle), sin(autoRotAngle), cos(autoRotAngle));
@@ -159,14 +159,14 @@ void main() {
     col += StarLayer(uv * scale + i * 453.32) * fade;
   }
 
-  if (uTransparent) {
-    float alpha = length(col);
-    alpha = smoothstep(0.0, 0.3, alpha);
-    alpha = min(alpha, 1.0);
-    gl_FragColor = vec4(col, alpha);
-  } else {
-    gl_FragColor = vec4(col, 1.0);
-  }
+if (uTransparent > 0.5) {
+      float alpha = length(col);
+      alpha = smoothstep(0.0, 0.3, alpha);
+      alpha = min(alpha, 1.0);
+      gl_FragColor = vec4(col, alpha);
+    } else {
+      gl_FragColor = vec4(col, 1.0);
+    }
 }
 `;
 
@@ -250,13 +250,13 @@ export default function Galaxy({
           },
           uGlowIntensity: { value: glowIntensity },
           uSaturation: { value: saturation },
-          uMouseRepulsion: { value: mouseRepulsion },
-          uTwinkleIntensity: { value: twinkleIntensity },
-          uRotationSpeed: { value: rotationSpeed },
-          uRepulsionStrength: { value: repulsionStrength },
-          uMouseActiveFactor: { value: 0.0 },
-          uAutoCenterRepulsion: { value: autoCenterRepulsion },
-          uTransparent: { value: transparent }
+          uMouseRepulsion: { value: mouseRepulsion ? 1.0 : 0.0 },
+            uTwinkleIntensity: { value: twinkleIntensity },
+            uRotationSpeed: { value: rotationSpeed },
+            uRepulsionStrength: { value: repulsionStrength },
+            uMouseActiveFactor: { value: 0.0 },
+            uAutoCenterRepulsion: { value: autoCenterRepulsion },
+            uTransparent: { value: transparent ? 1.0 : 0.0 }
         }
       });
   

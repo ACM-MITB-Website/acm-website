@@ -44,7 +44,7 @@ const Hero = () => {
     }, []);
 
     return (
-        <section ref={heroRef} id="home" className="relative h-screen w-full bg-transparent">
+        <section ref={heroRef} id="home" className="relative h-screen w-full bg-transparent z-10">
             {/* Contrast Overlay */}
             <div className="absolute inset-0 z-1 bg-black/30 pointer-events-none" />
 
