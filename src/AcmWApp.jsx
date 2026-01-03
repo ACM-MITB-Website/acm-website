@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Linkedin } from 'lucide-react';
-import { Canvas } from '@react-three/fiber';
-import { Float, MeshDistortMaterial, Sphere } from '@react-three/drei'; // Removed Stars
 import gsap from 'gsap';
 import EventShowcase from './components/EventShowcase';
 import Navbar from './components/NavbarOptimized';
@@ -24,11 +22,10 @@ const AcmWHero = () => {
     }, []);
 
     return (
-        <section className="relative h-[60vh] w-full overflow-hidden flex items-center justify-center pt-20">
+        <section className="relative h-[50vh] w-full overflow-hidden flex items-center justify-center pt-20">
             <div className="absolute inset-0 z-0">
                 <StarBackground />
             </div>
-            {/* 3D Sphere Overlay Removed for Moving Stars Effect */}
             <div className="relative z-10 text-center px-4">
                 <h1 ref={textRef} className="flex justify-center items-center">
                     <img
@@ -42,6 +39,32 @@ const AcmWHero = () => {
                 </p>
             </div>
         </section>
+    );
+};
+
+const TabNavigation = ({ activeTab, setActiveTab }) => {
+    const tabs = [
+        { id: 'about', label: 'About Us' },
+        { id: 'team', label: 'Crew Manifest' },
+        { id: 'events', label: 'Events Chronicle' },
+    ];
+
+    return (
+        <div className="flex justify-center gap-2 md:gap-4 px-4 py-6 max-w-4xl mx-auto">
+            {tabs.map((tab) => (
+                <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`px-4 md:px-8 py-3 font-mono text-sm md:text-base tracking-wider transition-all duration-300 rounded-lg border ${
+                        activeTab === tab.id
+                            ? 'bg-fuchsia-500/20 border-fuchsia-500 text-fuchsia-500 shadow-[0_0_20px_rgba(217,70,239,0.3)]'
+                            : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:border-white/20 hover:text-white'
+                    }`}
+                >
+                    {tab.label}
+                </button>
+            ))}
+        </div>
     );
 };
 
@@ -173,6 +196,7 @@ const AcmWApp = () => {
     const timelineRef = useRef(null);
     const [user, setUser] = useState(null);
     const [showProfileForm, setShowProfileForm] = useState(false);
+    const [activeTab, setActiveTab] = useState('about');
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -187,6 +211,23 @@ const AcmWApp = () => {
         return () => unsubscribe();
     }, []);
 
+    const renderTabContent = () => {
+        switch (activeTab) {
+            case 'about':
+                return <About />;
+            case 'team':
+                return <Team />;
+            case 'events':
+                return (
+                    <div ref={timelineRef}>
+                        <EventShowcase chapter="acm-w" />
+                    </div>
+                );
+            default:
+                return <About />;
+        }
+    };
+
     return (
         <div className="bg-black min-h-screen text-white selection:bg-fuchsia-500 selection:text-black">
             {showProfileForm && user && (
@@ -194,10 +235,9 @@ const AcmWApp = () => {
             )}
             <Navbar />
             <AcmWHero />
-            <About />
-            <Team />
-            <div ref={timelineRef}>
-                <EventShowcase chapter="acm-w" />
+            <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+            <div className="min-h-[50vh]">
+                {renderTabContent()}
             </div>
             <Footer />
         </div>
