@@ -1,13 +1,22 @@
 import React from 'react';
+import Lottie from 'lottie-react';
 
 const Loader = ({ onComplete }) => {
     const [isVisible, setIsVisible] = React.useState(true);
+    const [animationData, setAnimationData] = React.useState(null);
+
+    React.useEffect(() => {
+        fetch('https://lottie.host/5caef671-b7ea-4a3f-b589-51f7e8ee3797/r5BPfEYFrD.json')
+            .then(response => response.json())
+            .then(data => setAnimationData(data))
+            .catch(err => console.error('Failed to load animation:', err));
+    }, []);
 
     React.useEffect(() => {
         const timer = setTimeout(() => {
             setIsVisible(false);
             if (onComplete) onComplete();
-        }, 2000); // Set duration to 2.5 seconds or as preferred
+        }, 2000);
 
         return () => clearTimeout(timer);
     }, [onComplete]);
@@ -16,10 +25,15 @@ const Loader = ({ onComplete }) => {
 
     return (
         <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
-            <div className="w-16 h-16 relative">
-                <div className="absolute inset-0 border-4 border-transparent border-t-cyan-400 border-r-cyan-400 rounded-full animate-spin"></div>
-                <div className="absolute inset-2 border-4 border-transparent border-b-white border-l-white rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '0.8s' }}></div>
-            </div>
+            {animationData && (
+                <div style={{ filter: 'brightness(0) invert(1)' }}>
+                    <Lottie 
+                        animationData={animationData} 
+                        loop={true} 
+                        style={{ width: 150, height: 150 }}
+                    />
+                </div>
+            )}
         </div>
     );
 };
