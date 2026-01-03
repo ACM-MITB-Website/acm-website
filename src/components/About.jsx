@@ -3,8 +3,6 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { Target, Users, Lightbulb } from 'lucide-react';
 import TiltCard from './ui/TiltCard';
 
-import DotGrid from './ui/DotGrid';
-
 const Card = ({ icon: Icon, title, description, delay }) => {
     return (
         <TiltCard
@@ -47,23 +45,6 @@ const About = () => {
                     background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 20%, rgba(0,0,0,0.5) 100%)'
                 }}
             />
-
-            {/* Dot Grid Background */}
-            <div className="absolute inset-0 z-0 opacity-60">
-                <DotGrid
-                    dotSize={4}
-                    gap={24}
-                    baseColor="#a855f7"
-                    activeColor="#ff0000"
-                    proximity={180}
-                    scaleTrigger={3.0}
-                    maxDisplacement={25}
-                    canvasStyle={{
-                        maskImage: 'linear-gradient(to bottom, transparent, black 20%)',
-                        WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 20%)'
-                    }}
-                />
-            </div>
 
             {/* Background Gradients */}
             <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-acm-teal/5 blur-[120px] rounded-full pointer-events-none z-0" />
