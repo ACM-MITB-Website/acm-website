@@ -67,7 +67,7 @@ const Team = () => {
         { name: 'Surya R', role: 'Executive Secretary', image: '/assets/sigai-surya.jpg', linkedin: '#' },
         { name: 'Hemang Agarwal', role: 'Treasurer', image: '/assets/sigai-hemang.jpg', linkedin: '#' },
         { name: 'Shouraya Sharma', role: 'Web Master', image: '/assets/sigai-shouraya.jpg', linkedin: 'https://www.linkedin.com/in/shouraya-sharma-71bb2b329/' },
-        { name: 'Divi Jaiwnath', role: 'Graphic Designer', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel', linkedin: '#' },
+
         { name: 'Tejas N', role: 'Executive Member', image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Olivia', linkedin: '#' },
         { name: 'Aneesh Srivattsa', role: 'Executive Member', image: '/assets/sigai-aneesh.jpg', linkedin: '#' },
         { name: 'Chitra Singh', role: 'Executive Member', image: '/assets/sigai-chitra.jpg', linkedin: '#' },
