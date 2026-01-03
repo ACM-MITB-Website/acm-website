@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, Suspense } from 'react';
-import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import acmMitbLogo from '../assets/acm-mitb-logo.png';
 import { SplitText } from './ui/SplitText';
@@ -80,12 +79,12 @@ const Hero = () => {
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center lg:justify-end gap-6">
-                            <Link to="/membership" className="group relative px-8 py-4 bg-white text-black rounded-full font-bold tracking-wider overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.5)]">
+                            <a href="/membership.html" className="group relative px-8 py-4 bg-white text-black rounded-full font-bold tracking-wider overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.5)]">
                                 <span className="relative z-10 flex items-center gap-2">
                                     JOIN US <span className="transition-transform group-hover:translate-x-1">→</span>
                                 </span>
                                 <div className="absolute inset-0 bg-linear-to-r from-gray-200 to-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </Link>
+                            </a>
                         </div>
                     </div>
                 </div>

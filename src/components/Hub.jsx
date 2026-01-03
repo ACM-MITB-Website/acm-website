@@ -1,13 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 
 const chapters = [
     {
         id: 'acm-mitb',
         name: 'ACM MITB',
         role: 'Student Chapter',
-        link: '/acm-mitb',
+        link: '/acm-mitb.html',
         image: '/assets/team-1.png',
         logo: '/assets/acm-mitb-logo.png',
         gradient: 'from-blue-600 to-cyan-500',
@@ -16,7 +15,7 @@ const chapters = [
         id: 'acm-w',
         name: 'ACM-W',
         role: 'Women in Computing',
-        link: '/acm-w',
+        link: '/acm-w.html',
         image: '/assets/team-2.png',
         logo: '/assets/acm-w-logo.png',
         gradient: 'from-pink-500 to-rose-500',
@@ -25,7 +24,7 @@ const chapters = [
         id: 'sigsoft',
         name: 'SIGSOFT',
         role: 'Special Interest Group',
-        link: '/sigsoft',
+        link: '/sigsoft.html',
         image: '/assets/team-3.png',
         logo: '/assets/sigsoft-logo.png',
         gradient: 'from-purple-600 to-indigo-500',
@@ -35,7 +34,7 @@ const chapters = [
         id: 'sigai',
         name: 'SIG AI',
         role: 'Special Interest Group',
-        link: '/sigai',
+        link: '/sigai.html',
         image: '/assets/team-4.png',
         logo: '/assets/sigai-logo.png',
         gradient: 'from-emerald-500 to-teal-500',
@@ -44,8 +43,8 @@ const chapters = [
 
 const ChapterCard = ({ chapter }) => {
     return (
-        <Link
-            to={chapter.link}
+        <a
+            href={chapter.link}
             className="group relative block w-full aspect-video rounded-2xl overflow-hidden border border-white/10 bg-white/5 transition-transform duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-white/5"
         >
             {/* Background Image - Full Visibility */}
@@ -78,7 +77,7 @@ const ChapterCard = ({ chapter }) => {
 
             {/* Border highlight on hover */}
             <div className={`absolute inset-0 border-2 border-transparent transition-colors duration-300 rounded-2xl group-hover:border-white/20`} />
-        </Link>
+        </a>
     );
 };
 

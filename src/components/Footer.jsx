@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Linkedin, Instagram } from 'lucide-react';
 
 const Footer = () => {
@@ -39,11 +38,11 @@ const Footer = () => {
                             <div>
                                 <h4 className="text-lg font-semibold text-white mb-6">Quick Links</h4>
                                 <ul className="space-y-4">
-                                    <li><Link to="/" className="text-gray-400 hover:text-acm-teal transition-colors">Home</Link></li>
-                                    <li><Link to="/acm-mitb" className="text-gray-400 hover:text-acm-teal transition-colors">ACM MITB</Link></li>
-                                    <li><Link to="/sigsoft" className="text-gray-400 hover:text-acm-teal transition-colors">SIGSOFT</Link></li>
-                                    <li><Link to="/sigai" className="text-gray-400 hover:text-acm-teal transition-colors">SIG AI</Link></li>
-                                    <li><Link to="/acm-w" className="text-gray-400 hover:text-acm-teal transition-colors">ACM-W</Link></li>
+                                    <li><a href="/" className="text-gray-400 hover:text-acm-teal transition-colors">Home</a></li>
+                                    <li><a href="/acm-mitb.html" className="text-gray-400 hover:text-acm-teal transition-colors">ACM MITB</a></li>
+                                    <li><a href="/sigsoft.html" className="text-gray-400 hover:text-acm-teal transition-colors">SIGSOFT</a></li>
+                                    <li><a href="/sigai.html" className="text-gray-400 hover:text-acm-teal transition-colors">SIG AI</a></li>
+                                    <li><a href="/acm-w.html" className="text-gray-400 hover:text-acm-teal transition-colors">ACM-W</a></li>
                                 </ul>
                             </div>
                             <div>
