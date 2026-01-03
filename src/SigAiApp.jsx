@@ -62,7 +62,7 @@ const About = () => {
 const Team = () => {
     const members = [
         { name: 'K L Vaibhav Jyotish', role: 'Chair', image: '/assets/sigai-vaibhav.jpg', linkedin: '#' },
-        { name: 'Md.Zain Qureshi', role: 'Vice Chair', image: '/assets/sigai-zain.jpg', linkedin: '#' },
+        { name: 'Divi Jaiwanth', role: 'Vice Chair', image: '/assets/divi.jpg', linkedin: '#' },
         { name: 'Mahek Sethi', role: 'General Secretary', image: '/assets/sigai-mahek.jpg', linkedin: '#' },
         { name: 'Surya R', role: 'Executive Secretary', image: '/assets/sigai-surya.jpg', linkedin: '#' },
         { name: 'Hemang Agarwal', role: 'Treasurer', image: '/assets/sigai-hemang.jpg', linkedin: '#' },
