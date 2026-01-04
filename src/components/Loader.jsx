@@ -16,12 +16,14 @@ const Loader = ({ onComplete }) => {
     if (!isVisible) return null;
 
     return (
-        <div className="fixed inset-0 z-50 bg-gray-200 flex items-center justify-center">
-            <DotLottieReact
-                src="https://lottie.host/7c2d1d3b-879a-4095-a011-a6cf9c5a9f8e/IIhObujPvj.lottie"
-                loop
-                autoplay
-            />
+        <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
+            <div className="w-64 h-64 filter brightness-0 invert">
+                <DotLottieReact
+                    src="https://lottie.host/7c2d1d3b-879a-4095-a011-a6cf9c5a9f8e/IIhObujPvj.lottie"
+                    loop
+                    autoplay
+                />
+            </div>
         </div>
     );
 };
