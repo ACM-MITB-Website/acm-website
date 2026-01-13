@@ -9,21 +9,31 @@ const Robot = React.lazy(() => import('./ui/Robot'));
 const Hero = () => {
     const heroRef = useRef(null);
     const { scrollY } = useScroll();
+    const [isMobile, setIsMobile] = useState(false);
 
-    // Cinematic Zoom & Parallax Effects
-    const yRobot = useTransform(scrollY, [0, 1000], [0, 400]);
-    const scaleRobot = useTransform(scrollY, [0, 500], [1, 1.6]); // Zoom IN effect
-    const opacityRobot = useTransform(scrollY, [300, 600], [1, 0]); // Fade out to clear view
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.matchMedia("(max-width: 768px)").matches);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    // Cinematic Zoom & Parallax Effects (Reduced for Mobile)
+    const yRobot = useTransform(scrollY, [0, 1000], [0, isMobile ? 50 : 400]);
+    const scaleRobot = useTransform(scrollY, [0, 500], [1, isMobile ? 1.1 : 1.6]); // Reduced Zoom on Mobile
+    const opacityRobot = useTransform(scrollY, [300, 600], [1, 0]);
 
     // Bubble moves faster out of view
-    const yBubble = useTransform(scrollY, [0, 500], [0, -500]);
+    const yBubble = useTransform(scrollY, [0, 500], [0, isMobile ? -200 : -500]);
 
     // Background deep space zoom
-    const scaleGalaxy = useTransform(scrollY, [0, 1000], [1, 1.5]);
+    const scaleGalaxy = useTransform(scrollY, [0, 1000], [1, isMobile ? 1.1 : 1.5]);
 
-    // Smooth physics
-    const smoothYRobot = useSpring(yRobot, { stiffness: 60, damping: 20 });
-    const smoothScaleRobot = useSpring(scaleRobot, { stiffness: 60, damping: 20 });
+    // Smooth physics (Softer on mobile to prevent jitter)
+    const smoothYRobot = useSpring(yRobot, { stiffness: isMobile ? 40 : 60, damping: 20 });
+    const smoothScaleRobot = useSpring(scaleRobot, { stiffness: isMobile ? 40 : 60, damping: 20 });
     const smoothYBubble = useSpring(yBubble, { stiffness: 50, damping: 20 });
 
     return (
