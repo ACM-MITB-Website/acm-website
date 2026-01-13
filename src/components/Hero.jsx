@@ -105,38 +105,7 @@ const Hero = () => {
                         </div>
                     </div>
 
-                    {/* Next Event Widget - Middle Right */}
-                    {nextEvent && (
-                        <div className="mt-12 hidden md:block">
-                            <div className="bg-black/40 backdrop-blur-md border border-white/10 p-4 rounded-xl max-w-sm ml-auto hover:border-acm-teal/50 transition-all group">
-                                <div className="flex items-center gap-2 mb-3 border-b border-white/5 pb-2">
-                                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                                    <span className="text-xs font-mono text-gray-400 tracking-widest uppercase">UPCOMING TRANSMISSION</span>
-                                </div>
-                                <div className="flex gap-4">
-                                    {nextEvent.image && (
-                                        <div className="w-20 h-20 shrink-0 rounded-lg overflow-hidden border border-white/10">
-                                            <img src={nextEvent.image} alt={nextEvent.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                        </div>
-                                    )}
-                                    <div>
-                                        <h3 className="text-white font-bold leading-tight mb-1 group-hover:text-acm-teal transition-colors">
-                                            {nextEvent.title}
-                                        </h3>
-                                        <div className="flex items-center gap-2 text-xs text-acm-teal font-mono mb-2">
-                                            <Calendar size={12} />
-                                            <span>{nextEvent.date}</span>
-                                        </div>
-                                        {nextEvent.link && (
-                                            <a href={nextEvent.link} target="_blank" rel="noopener noreferrer" className="text-[10px] flex items-center gap-1 text-gray-400 hover:text-white transition-colors border border-white/10 px-2 py-1 rounded w-fit">
-                                                REGISTER <ExternalLink size={10} />
-                                            </a>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+
                 </motion.div>
 
                 {/* Aesthetic Scroll Indicator */}
