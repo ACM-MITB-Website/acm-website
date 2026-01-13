@@ -12,10 +12,10 @@ const Navbar = memo(() => {
         { name: 'HOME', href: '/' },
         { name: 'ABOUT', href: '/about' },
         { name: 'ACM MITB', href: '/acm-mitb' },
-        { name: 'EVENTS', href: '/events' },
         { name: 'SIG SOFT', href: '/sigsoft' },
         { name: 'SIG AI', href: '/sigai' },
         { name: 'ACM W', href: '/acm-w' },
+        { name: 'EVENTS', href: '/events' },
         { name: 'NEWS ROOM', href: '/news' },
     ];
 
