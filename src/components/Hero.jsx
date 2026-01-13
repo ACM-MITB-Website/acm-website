@@ -1,98 +1,93 @@
 import React, { useEffect, useRef, useState, Suspense } from 'react';
-import gsap from 'gsap';
-import acmMitbLogo from '../assets/acm-mitb-logo.png';
-import { SplitText } from './ui/SplitText';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import Galaxy from './ui/Galaxy';
+import { MessageSquare } from 'lucide-react';
 
-// Lazy Load Robot to prevent white screen crashes
+// Lazy Load Robot
 const Robot = React.lazy(() => import('./ui/Robot'));
 
 const Hero = () => {
-    const textRef = useRef(null);
-    const [showScroll, setShowScroll] = useState(true);
-
-    const [heroInView, setHeroInView] = useState(true);
     const heroRef = useRef(null);
+    const { scrollY } = useScroll();
 
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                setHeroInView(entry.isIntersecting);
-            },
-            { threshold: 0 }
-        );
-        if (heroRef.current) observer.observe(heroRef.current);
-        return () => {
-            if (heroRef.current) observer.unobserve(heroRef.current);
-        };
-    }, []);
+    // Cinematic Zoom & Parallax Effects
+    const yRobot = useTransform(scrollY, [0, 1000], [0, 400]);
+    const scaleRobot = useTransform(scrollY, [0, 500], [1, 1.6]); // Zoom IN effect
+    const opacityRobot = useTransform(scrollY, [300, 600], [1, 0]); // Fade out to clear view
 
-    useEffect(() => {
-        const tl = gsap.timeline();
-        // Text fade in
-        tl.fromTo(textRef.current,
-            { opacity: 0 },
-            { opacity: 1, duration: 1, ease: 'power3.out' }
-        );
+    // Bubble moves faster out of view
+    const yBubble = useTransform(scrollY, [0, 500], [0, -500]);
 
-        const handleScroll = () => {
-            setShowScroll(window.scrollY < 50);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    // Background deep space zoom
+    const scaleGalaxy = useTransform(scrollY, [0, 1000], [1, 1.5]);
+
+    // Smooth physics
+    const smoothYRobot = useSpring(yRobot, { stiffness: 60, damping: 20 });
+    const smoothScaleRobot = useSpring(scaleRobot, { stiffness: 60, damping: 20 });
+    const smoothYBubble = useSpring(yBubble, { stiffness: 50, damping: 20 });
 
     return (
-        <section ref={heroRef} id="home" className="relative h-screen w-full bg-transparent z-10">
-            {/* Contrast Overlay */}
-            <div className="absolute inset-0 z-1 bg-black/30 pointer-events-none" />
+        <section ref={heroRef} id="home" className="relative h-screen w-full bg-black overflow-hidden">
+            {/* Background with Slow Zoom */}
+            <motion.div
+                className="absolute inset-0 z-0"
+                style={{ scale: scaleGalaxy }}
+            >
+                <Galaxy density={0.5} />
+            </motion.div>
 
-            {/* Content Overlay - Split Layout */}
-            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 h-full w-full items-center px-4 md:px-12 pointer-events-none">
+            {/* Parallax Container */}
+            <div className="relative z-10 w-full h-full flex items-center justify-center">
 
-                {/* Left: Robot Interaction */}
-                <div className="h-[50vh] lg:h-full w-full flex items-center justify-center pointer-events-auto order-2 lg:order-1">
-                    <Suspense fallback={<div className="text-white/30 text-xs border border-white/10 p-4 rounded bg-black/50 tracking-widest">LOADING 3D...</div>}>
+                {/* Robot Centered with Zoom & Fade */}
+                <motion.div
+                    className="w-full h-full md:w-[80%] md:h-[90%] flex items-center justify-center"
+                    style={{ y: smoothYRobot, scale: smoothScaleRobot, opacity: opacityRobot }}
+                >
+                    <Suspense fallback={<div className="text-white/20 tracking-widest font-mono text-sm">INITIALIZING AI...</div>}>
                         <Robot />
                     </Suspense>
-                </div>
+                </motion.div>
 
-                {/* Right: Typography */}
-                <div ref={textRef} className="flex flex-col items-center lg:items-end text-center lg:text-right drop-shadow-2xl order-1 lg:order-2 lg:pr-32 pt-32 lg:pt-0">
-                    <div className="pointer-events-auto">
-                        <SplitText
-                            className="text-5xl lg:text-[5rem] leading-none font-bold tracking-tighter text-transparent bg-clip-text bg-linear-to-b from-white to-white/50 select-none pb-4"
-                            delay={0.1}
-                        >
-                            INNOVATE
-                        </SplitText>
+                {/* Thought Bubble - Aesthetic Glassmorphism */}
+                <motion.div
+                    className="absolute top-[15%] right-[5%] md:right-[10%] lg:top-[20%] lg:right-[10%] z-20"
+                    style={{ y: smoothYBubble }}
+                    initial={{ opacity: 0, scale: 0.8, x: 20 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    transition={{ delay: 1, duration: 0.8, type: "spring" }}
+                >
+                    <div className="relative group cursor-pointer">
+                        <div className="absolute -inset-1 bg-linear-to-r from-blue-500 to-cyan-500 opacity-30 blur-lg rounded-2xl group-hover:opacity-60 transition-opacity duration-500"></div>
+                        <div className="relative bg-black/40 backdrop-blur-xl border border-white/10 p-6 rounded-tl-3xl rounded-tr-3xl rounded-br-3xl rounded-bl-sm shadow-2xl max-w-xs md:max-w-sm">
+                            <div className="flex items-start space-x-3">
+                                <MessageSquare className="text-cyan-400 shrink-0 mt-1" size={20} />
+                                <div>
+                                    <h3 className="text-white font-bold text-lg mb-1 font-sans">System Online</h3>
+                                    <p className="text-gray-300 text-sm leading-relaxed font-sans font-light">
+                                        Welcome to <span className="text-cyan-300 font-medium">ACM MITB</span>.
+                                        We are ready to <span className="italic text-white">innovate</span>.
+                                    </p>
+                                </div>
+                            </div>
 
-                        <SplitText
-                            className="text-4xl lg:text-6xl font-bold tracking-tighter text-red-600 mt-2 mb-8 select-none"
-                            delay={0.3}
-                        >
-                            BUILD • LEAD
-                        </SplitText>
-
-                        <p className="max-w-xl ml-auto text-gray-200 text-sm md:text-lg mb-10 leading-relaxed font-medium">
-                            Collaborate with like-minded peers and industry experts to push the boundaries of technology.
-                        </p>
-
-                        <div className="flex flex-col sm:flex-row items-center lg:justify-end gap-6">
-                            <a href="/membership.html" className="group relative px-8 py-4 bg-white text-black rounded-full font-bold tracking-wider overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.5)]">
-                                <span className="relative z-10 flex items-center gap-2">
-                                    JOIN US <span className="transition-transform group-hover:translate-x-1">→</span>
-                                </span>
-                                <div className="absolute inset-0 bg-linear-to-r from-gray-200 to-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </a>
+                            {/* Connector Triangle */}
+                            <div className="absolute bottom-[-10px] left-0 w-0 h-0 border-t-[10px] border-t-white/10 border-r-[10px] border-r-transparent"></div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </motion.div>
 
-            {/* Scroll Indicator */}
-            <div className={`absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white/50 z-30 pointer-events-auto transition-all duration-500 ${showScroll ? 'opacity-100 translate-y-0 animate-bounce' : 'opacity-0 translate-y-4'}`}>
-                <span className="text-sm tracking-widest">SCROLL TO EXPLORE</span>
+                {/* Aesthetic Scroll Indicator */}
+                <motion.div
+                    className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 2, duration: 1 }}
+                >
+                    <div className="w-[1px] h-12 bg-linear-to-b from-transparent via-cyan-500 to-transparent opacity-50"></div>
+                    <span className="text-[10px] font-mono tracking-[0.3em] text-cyan-500/50 uppercase">Scroll to Explore</span>
+                </motion.div>
+
             </div>
         </section>
     );

@@ -17,6 +17,7 @@ import { auth, db } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { Shield } from 'lucide-react';
+import ScrollSection from './components/ui/ScrollSection';
 
 const App = () => {
     const { loading, setLoading } = useLoader();
@@ -75,10 +76,22 @@ const App = () => {
                         <EventSidebar />
                         <Navbar />
                         <Hero />
-                        <About />
-                        <Hub />
-                        <Sponsors />
-                        <Footer />
+
+                        <ScrollSection>
+                            <About />
+                        </ScrollSection>
+
+                        <ScrollSection>
+                            <Hub />
+                        </ScrollSection>
+
+                        <ScrollSection>
+                            <Sponsors />
+                        </ScrollSection>
+
+                        <ScrollSection>
+                            <Footer />
+                        </ScrollSection>
 
                         {/* Townhall Access Button - Only for special users */}
                         {hasTownhallAccess && (

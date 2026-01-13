@@ -58,11 +58,10 @@ const TabNavigation = ({ activeTab, setActiveTab }) => {
                 <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`px-4 md:px-8 py-3 font-mono text-sm md:text-base tracking-wider transition-all duration-300 rounded-lg border ${
-                        activeTab === tab.id
+                    className={`px-4 md:px-8 py-3 font-mono text-sm md:text-base tracking-wider transition-all duration-300 rounded-lg border ${activeTab === tab.id
                             ? 'bg-blue-600/20 border-blue-600 text-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.3)]'
                             : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:border-white/20 hover:text-white'
-                    }`}
+                        }`}
                 >
                     {tab.label}
                 </button>
@@ -93,7 +92,6 @@ const Team = () => {
         { name: 'Anushka Mishra', role: 'Executive Secretary', image: '/assets/anushka-mishra.jpg', linkedin: 'https://www.linkedin.com/in/anushka-mishra-355049315/' },
         { name: 'Romansh Rathee', role: 'Treasurer', image: '/assets/romansh-rathee.jpg', linkedin: 'https://www.linkedin.com/in/romansh-rathee/' },
         { name: 'Ryan Gupta', role: 'Web Master', image: '/assets/ryan-gupta.jpg', linkedin: 'https://www.linkedin.com/in/ryan-gupta/' },
-        { name: 'Ekalvya Sethi', role: 'Media Head', image: '/assets/ekalvya-sethi.jpg', linkedin: 'https://www.linkedin.com/in/eklavya-sethi-565631346/' },
         { name: 'Nidheesh Jakkula', role: 'Graphic Designer', image: '/assets/nidheesh-jakkula.jpg', linkedin: '#' },
         { name: 'Sanvi Sharma', role: 'Executive Member', image: '/assets/sanvi-sharma.jpg', linkedin: 'https://www.linkedin.com/in/sanvi-sharma-ai/' },
         { name: 'Yash Bharadwaj', role: 'Executive Member', image: '/assets/yash-bharadwaj.jpg', linkedin: '#' },

@@ -2,7 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ErrorBoundary from './components/ErrorBoundary';
 import Loader from './components/Loader';
-import { LoaderProvider } from './context/LoaderContext';
+import { LoaderProvider, useLoader } from './context/LoaderContext';
 
 // Lazy load pages for code splitting
 const HomePage = lazy(() => import('./App'));
@@ -35,6 +35,14 @@ const RedirectToHome = () => {
     return null;
 };
 
+const SuspenseFallback = () => {
+    const { loading } = useLoader();
+    // Only show the loader in the fallback if the global loading state is true
+    // (i.e., first visit). Otherwise, show nothing or a minimal spinner 
+    // to avoid the "full entry animation" reappearing.
+    return loading ? <Loader /> : null;
+};
+
 const AppRouter = () => {
     return (
         <ErrorBoundary>
@@ -42,7 +50,7 @@ const AppRouter = () => {
                 <Router>
                     <ScrollToTop />
                     <RedirectToHome />
-                    <Suspense fallback={<Loader />}>
+                    <Suspense fallback={<SuspenseFallback />}>
                         <Routes>
                             <Route path="/" element={<HomePage />} />
                             <Route path="/about" element={<AboutPage />} />
