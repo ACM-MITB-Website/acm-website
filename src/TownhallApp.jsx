@@ -146,14 +146,14 @@ const TownhallApp = () => {
 
                 {/* Tags Navigation */}
                 <div className="flex space-x-2 overflow-x-auto mb-8 border-b border-white/10 pb-2">
-                    {['sponsors', 'events', 'stories', 'news'].map(tab => (
+                    {['sponsors', 'events', 'stories', 'news', 'next-event'].map(tab => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
                             className={`px-6 py-2 rounded-t-lg font-bold tracking-wide uppercase transition-colors ${activeTab === tab ? 'bg-white/10 text-acm-teal border-b-2 border-acm-teal' : 'text-gray-500 hover:text-white'
                                 }`}
                         >
-                            {tab}
+                            {tab.replace('-', ' ')}
                         </button>
                     ))}
                 </div>
@@ -164,6 +164,7 @@ const TownhallApp = () => {
                     {activeTab === 'events' && <EventsManager data={events} onAdd={(d) => handleAdd('events', d)} onDelete={(id) => handleDelete('events', id)} onUpdate={(id, d) => handleUpdate('events', id, d)} />}
                     {activeTab === 'stories' && <StoriesManager data={stories} onAdd={(d) => handleAdd('stories', d)} onDelete={(id) => handleDelete('stories', id)} />}
                     {activeTab === 'news' && <NewsManager data={news} onAdd={(d) => handleAdd('news', d)} onDelete={(id) => handleDelete('news', id)} />}
+                    {activeTab === 'next-event' && <NextEventManager />}
                 </div>
             </div>
             <Footer />
@@ -172,6 +173,100 @@ const TownhallApp = () => {
 };
 
 // --- Sub-Managers ---
+
+const NextEventManager = () => {
+    const [form, setForm] = useState({ title: '', date: '', image: '', link: '' });
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchNextEvent = async () => {
+            const docRef = doc(db, "settings", "nextEvent");
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                setForm(docSnap.data());
+            }
+            setLoading(false);
+        };
+        fetchNextEvent();
+    }, []);
+
+    const handleSave = async (e) => {
+        e.preventDefault();
+        try {
+            await window.confirm("Are you sure you want to update the Home Page Next Event?")
+            await updateDoc(doc(db, "settings", "nextEvent"), form).catch(async () => {
+                // If doc doesn't exist, create it (setDoc would be better but keeping it simple)
+                const { setDoc } = await import('firebase/firestore');
+                await setDoc(doc(db, "settings", "nextEvent"), form);
+            });
+            alert("Next Event Updated Successfully!");
+        } catch (error) {
+            console.error(error);
+            alert("Error updating: " + error.message);
+        }
+    };
+
+    if (loading) return <div>Loading...</div>;
+
+    return (
+        <div>
+            <h2 className="text-2xl font-bold mb-6">Manage "Next Event" (Home Page Widget)</h2>
+            <form onSubmit={handleSave} className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-black/20 p-6 rounded-xl border border-white/5">
+                <div className="space-y-4">
+                    <div>
+                        <label className="text-sm text-gray-400">Event Title</label>
+                        <input
+                            value={form.title}
+                            onChange={e => setForm({ ...form, title: e.target.value })}
+                            className="w-full bg-black/40 border border-white/10 p-3 rounded-lg text-white"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="text-sm text-gray-400">Date/Time (Display Text)</label>
+                        <input
+                            value={form.date}
+                            onChange={e => setForm({ ...form, date: e.target.value })}
+                            className="w-full bg-black/40 border border-white/10 p-3 rounded-lg text-white"
+                            placeholder="e.g. Feb 28, 5:00 PM"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="text-sm text-gray-400">Registration Link</label>
+                        <input
+                            value={form.link}
+                            onChange={e => setForm({ ...form, link: e.target.value })}
+                            className="w-full bg-black/40 border border-white/10 p-3 rounded-lg text-white"
+                            placeholder="https://..."
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-4">
+                    <label className="text-sm text-gray-400">Event Banner / Image</label>
+                    <ImageUpload
+                        folder="settings/nextEvent"
+                        onUpload={(url) => setForm(prev => ({ ...prev, image: url }))}
+                    />
+                    {form.image && (
+                        <div className="mt-2">
+                            <img src={form.image} alt="Preview" className="w-full h-40 object-cover rounded-lg border border-white/10" />
+                            <p className="text-xs text-green-400 mt-1 break-all">{form.image}</p>
+                        </div>
+                    )}
+                </div>
+
+                <div className="md:col-span-2">
+                    <button type="submit" className="w-full bg-acm-teal text-black font-bold p-4 rounded-lg hover:bg-white transition flex items-center justify-center gap-2">
+                        <Save size={20} /> SYNC TO HOME PAGE
+                    </button>
+                    <p className="text-center text-xs text-gray-500 mt-2">This will immediately update the 'Next Event' tab on the Home Page.</p>
+                </div>
+            </form>
+        </div>
+    );
+};
 
 const SponsorsManager = ({ data, onAdd, onDelete }) => {
     const [form, setForm] = useState({ name: '', logo: '' });
