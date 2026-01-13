@@ -72,7 +72,10 @@ const Hero = () => {
                     transition={{ delay: 1, duration: 1, ease: "easeOut" }}
                 >
                     <div className="flex flex-col items-end">
-                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black font-sans tracking-tighter text-white mb-2 drop-shadow-2xl">
+                        <p className="text-cyan-400 font-mono text-sm md:text-xl tracking-[0.2em] mb-0 mr-1 animate-pulse">
+                            WELCOME TO
+                        </p>
+                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black font-sans tracking-tighter text-white mb-2 drop-shadow-2xl text-right">
                             ACM <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">MITB</span>
                         </h1>
                         <div className="flex items-center gap-4">
