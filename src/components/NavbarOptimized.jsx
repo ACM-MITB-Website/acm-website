@@ -1,5 +1,6 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import AuthButton from './AuthButton';
 import acmMitbLogo from '../assets/acm-mitb-logo.png';
 
@@ -9,12 +10,13 @@ const Navbar = memo(() => {
 
     const navLinks = [
         { name: 'HOME', href: '/' },
-        { name: 'ABOUT', href: '/about.html' },
-        { name: 'ACM MITB', href: '/acm-mitb.html' },
-        { name: 'SIG SOFT', href: '/sigsoft.html' },
-        { name: 'SIG AI', href: '/sigai.html' },
-        { name: 'ACM W', href: '/acm-w.html' },
-        { name: 'NEWS ROOM', href: '/news.html' },
+        { name: 'ABOUT', href: '/about' },
+        { name: 'ACM MITB', href: '/acm-mitb' },
+        { name: 'EVENTS', href: '/events' },
+        { name: 'SIG SOFT', href: '/sigsoft' },
+        { name: 'SIG AI', href: '/sigai' },
+        { name: 'ACM W', href: '/acm-w' },
+        { name: 'NEWS ROOM', href: '/news' },
     ];
 
     useEffect(() => {
@@ -42,8 +44,8 @@ const Navbar = memo(() => {
 
     return (
         <>
-            <a
-                href="/"
+            <Link
+                to="/"
                 className="fixed top-6 left-6 z-50 transition-transform duration-300 hover:scale-105 hidden md:block"
                 aria-label="ACM MITB Home"
             >
@@ -55,7 +57,7 @@ const Navbar = memo(() => {
                     width="auto"
                     height="48"
                 />
-            </a>
+            </Link>
 
             <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] md:w-auto transition-all duration-300">
                 <div className={`transition-all duration-300 rounded-full px-6 py-3 flex items-center justify-between md:justify-start md:space-x-6 ${isScrolled
@@ -64,35 +66,35 @@ const Navbar = memo(() => {
                     }`}>
 
                     <div className="md:hidden">
-                        <a href="/">
+                        <Link to="/">
                             <img
                                 src={acmMitbLogo}
                                 alt="ACM MITB"
                                 className="h-8 w-auto object-contain"
                             />
-                        </a>
+                        </Link>
                     </div>
 
                     <div className="hidden md:flex items-center space-x-6">
                         {navLinks.map((link) => (
-                            <a
+                            <Link
                                 key={link.name}
-                                href={link.href}
+                                to={link.href}
                                 className="group relative text-sm font-medium text-gray-300 hover:text-white transition-colors uppercase tracking-wider whitespace-nowrap"
                             >
                                 {link.name}
                                 <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-acm-teal transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
-                            </a>
+                            </Link>
                         ))}
                     </div>
 
                     <div className="flex items-center space-x-4 md:pl-4 md:border-l md:border-white/10">
-                        <a
-                            href="/membership.html"
+                        <Link
+                            to="/membership"
                             className="px-3 py-1.5 bg-transparent border border-acm-teal text-acm-teal text-xs font-bold rounded-full hover:bg-acm-teal hover:text-black transition duration-200 whitespace-nowrap hidden lg:block"
                         >
                             BECOME A MEMBER
-                        </a>
+                        </Link>
 
                         <a
                             href="#contact"
@@ -124,22 +126,22 @@ const Navbar = memo(() => {
                 >
                     <div className="flex flex-col items-center justify-center h-full space-y-8 pt-20">
                         {navLinks.map((link) => (
-                            <a
+                            <Link
                                 key={link.name}
-                                href={link.href}
+                                to={link.href}
                                 onClick={closeMenu}
                                 className="text-2xl font-bold text-gray-300 hover:text-white transition-colors uppercase tracking-wider"
                             >
                                 {link.name}
-                            </a>
+                            </Link>
                         ))}
-                        <a
-                            href="/membership.html"
+                        <Link
+                            to="/membership"
                             onClick={closeMenu}
                             className="mt-8 px-6 py-3 bg-transparent border-2 border-acm-teal text-acm-teal font-bold rounded-full hover:bg-acm-teal hover:text-black transition duration-200"
                         >
                             BECOME A MEMBER
-                        </a>
+                        </Link>
                     </div>
                 </div>
             )}

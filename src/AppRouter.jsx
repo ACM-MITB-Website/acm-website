@@ -14,6 +14,7 @@ const MembershipPage = lazy(() => import('./MembershipApp'));
 const SigAiPage = lazy(() => import('./SigAiApp'));
 const SigSoftPage = lazy(() => import('./SigSoftApp'));
 const TownhallPage = lazy(() => import('./TownhallApp'));
+const EventsPage = lazy(() => import('./EventsApp')); // New Page
 
 import ScrollToTop from './components/ScrollToTop';
 
@@ -58,6 +59,7 @@ const AppRouter = () => {
                             <Route path="/acm-w" element={<AcmWPage />} />
                             <Route path="/news" element={<NewsPage />} />
                             <Route path="/membership" element={<MembershipPage />} />
+                            <Route path="/events" element={<EventsPage />} /> {/* New Route */}
                             <Route path="/sigai" element={<SigAiPage />} />
                             <Route path="/sigsoft" element={<SigSoftPage />} />
                             <Route path="/townhall" element={<TownhallPage />} />

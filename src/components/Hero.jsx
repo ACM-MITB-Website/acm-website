@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, Suspense } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import Galaxy from './ui/Galaxy';
-import { MessageSquare } from 'lucide-react';
 
 // Lazy Load Robot
 const Robot = React.lazy(() => import('./ui/Robot'));
@@ -47,42 +46,40 @@ const Hero = () => {
             </motion.div>
 
             {/* Parallax Container */}
-            <div className="relative z-10 w-full h-full flex items-center justify-center">
+            <div className="relative z-10 w-full h-full pointer-events-none">
 
-                {/* Robot Centered with Zoom & Fade */}
+                {/* Robot Left-Aligned (Force Shift) */}
                 <motion.div
-                    className="w-full h-full md:w-[80%] md:h-[90%] flex items-center justify-center"
-                    style={{ y: smoothYRobot, scale: smoothScaleRobot, opacity: opacityRobot }}
+                    className="absolute inset-0 md:w-[70%] md:right-auto flex items-center justify-center md:justify-start pointer-events-auto"
+                    style={{
+                        y: smoothYRobot,
+                        scale: smoothScaleRobot,
+                        opacity: opacityRobot,
+                        x: isMobile ? 0 : -50 // Slight extra push left on desktop
+                    }}
                 >
                     <Suspense fallback={<div className="text-white/20 tracking-widest font-mono text-sm">INITIALIZING AI...</div>}>
                         <Robot />
                     </Suspense>
                 </motion.div>
 
-                {/* Thought Bubble - Aesthetic Glassmorphism */}
+                {/* Minimalist Right-Aligned Label */}
                 <motion.div
-                    className="absolute top-[15%] right-[5%] md:right-[10%] lg:top-[20%] lg:right-[10%] z-20"
+                    className="absolute top-[30%] right-[5%] md:top-[35%] md:right-[10%] z-20 text-right"
                     style={{ y: smoothYBubble }}
-                    initial={{ opacity: 0, scale: 0.8, x: 20 }}
-                    animate={{ opacity: 1, scale: 1, x: 0 }}
-                    transition={{ delay: 1, duration: 0.8, type: "spring" }}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 1, duration: 1, ease: "easeOut" }}
                 >
-                    <div className="relative group cursor-pointer">
-                        <div className="absolute -inset-1 bg-linear-to-r from-blue-500 to-cyan-500 opacity-30 blur-lg rounded-2xl group-hover:opacity-60 transition-opacity duration-500"></div>
-                        <div className="relative bg-black/40 backdrop-blur-xl border border-white/10 p-6 rounded-tl-3xl rounded-tr-3xl rounded-br-3xl rounded-bl-sm shadow-2xl max-w-xs md:max-w-sm">
-                            <div className="flex items-start space-x-3">
-                                <MessageSquare className="text-cyan-400 shrink-0 mt-1" size={20} />
-                                <div>
-                                    <h3 className="text-white font-bold text-lg mb-1 font-sans">System Online</h3>
-                                    <p className="text-gray-300 text-sm leading-relaxed font-sans font-light">
-                                        Welcome to <span className="text-cyan-300 font-medium">ACM MITB</span>.
-                                        We are ready to <span className="italic text-white">innovate</span>.
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Connector Triangle */}
-                            <div className="absolute bottom-[-10px] left-0 w-0 h-0 border-t-[10px] border-t-white/10 border-r-[10px] border-r-transparent"></div>
+                    <div className="flex flex-col items-end">
+                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black font-sans tracking-tighter text-white mb-2 drop-shadow-2xl">
+                            ACM <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">MITB</span>
+                        </h1>
+                        <div className="flex items-center gap-4">
+                            <div className="h-[1px] w-12 md:w-24 bg-gradient-to-l from-cyan-500 to-transparent"></div>
+                            <p className="text-gray-300 font-mono text-sm md:text-lg tracking-[0.3em] uppercase">
+                                Student Chapter
+                            </p>
                         </div>
                     </div>
                 </motion.div>

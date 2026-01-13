@@ -10,9 +10,13 @@ const EventShowcase = ({ chapter }) => {
     const textCardsRef = useRef([]);
 
     useEffect(() => {
-        if (!chapter) return;
+        let q;
+        if (chapter) {
+            q = query(collection(db, "stories"), where("chapters", "array-contains", chapter));
+        } else {
+            q = query(collection(db, "stories"));
+        }
 
-        const q = query(collection(db, "stories"), where("chapters", "array-contains", chapter));
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             // Sort by date descending (newest first)
