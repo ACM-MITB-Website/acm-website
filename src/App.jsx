@@ -63,9 +63,9 @@ const App = () => {
                             <Galaxy
                                 mouseRepulsion={false}
                                 mouseInteraction={false}
-                                density={1.5}
-                                glowIntensity={0.5}
-                                saturation={0.8}
+                                density={1.2}
+                                glowIntensity={0.3}
+                                saturation={0.6}
                                 hueShift={240}
                             />
                         </div>

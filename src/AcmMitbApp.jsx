@@ -59,8 +59,8 @@ const TabNavigation = ({ activeTab, setActiveTab }) => {
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     className={`px-4 md:px-8 py-3 font-mono text-sm md:text-base tracking-wider transition-all duration-300 rounded-lg border ${activeTab === tab.id
-                            ? 'bg-blue-600/20 border-blue-600 text-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.3)]'
-                            : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:border-white/20 hover:text-white'
+                        ? 'bg-blue-600/20 border-blue-600 text-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.3)]'
+                        : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:border-white/20 hover:text-white'
                         }`}
                 >
                     {tab.label}
@@ -137,7 +137,7 @@ const Team = () => {
                 {members.map((member, index) => (
                     <div
                         key={index}
-                        className="team-card group relative h-80 rounded-xl bg-white/5 border border-white/10 overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(37,99,235,0.2)]"
+                        className="team-card group relative h-[28rem] md:h-80 rounded-xl bg-white/5 border border-white/10 overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(37,99,235,0.2)]"
                     >
                         <div
                             className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-0"
@@ -151,7 +151,7 @@ const Team = () => {
                                 <img
                                     src={member.image}
                                     alt={member.name}
-                                    className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 grayscale group-hover:grayscale-0"
+                                    className="w-full h-full object-cover object-top opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 grayscale group-hover:grayscale-0"
                                 />
                                 <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] opacity-20 pointer-events-none"></div>
                             </div>

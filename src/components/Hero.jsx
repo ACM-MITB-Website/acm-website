@@ -43,7 +43,7 @@ const Hero = () => {
                 className="absolute inset-0 z-0"
                 style={{ scale: scaleGalaxy }}
             >
-                <Galaxy density={0.5} />
+                <Galaxy density={0.4} glowIntensity={0.2} />
             </motion.div>
 
             {/* Parallax Container */}

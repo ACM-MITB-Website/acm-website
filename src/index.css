@@ -18,6 +18,7 @@ body {
   background: radial-gradient(circle at center, #1e1b4b 0%, #000000 100%);
   color: white;
   overflow-x: hidden;
+  font-family: var(--font-sans);
 }
 
 /* Hide Spline Watermark */
