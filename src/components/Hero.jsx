@@ -90,7 +90,7 @@ const Hero = () => {
                     transition={{ delay: 1, duration: 1, ease: "easeOut" }}
                 >
                     <div className="flex flex-col items-center">
-                        <p className="text-cyan-400 font-mono text-xl md:text-3xl tracking-[0.2em] mb-3 animate-pulse text-center font-bold">
+                        <p className="text-white font-mono text-xl md:text-3xl tracking-[0.2em] mb-3 animate-pulse text-center font-bold">
                             WELCOME TO
                         </p>
                         <h1 className="text-6xl md:text-8xl lg:text-9xl font-black font-sans tracking-tighter text-white mb-4 drop-shadow-2xl text-center">
