@@ -48,7 +48,7 @@ const Navbar = memo(() => {
                 href="https://mitb.acm.org"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="fixed top-6 left-6 z-50 transition-transform duration-300 hover:scale-105 hidden md:block"
+                className="fixed top-6 left-6 z-50 transition-transform duration-300 hover:scale-105 hidden xl:block"
                 aria-label="ACM MITB Home"
             >
                 <img
@@ -67,7 +67,7 @@ const Navbar = memo(() => {
                     : 'bg-transparent border border-transparent'
                     }`}>
 
-                    <div className="md:hidden">
+                    <div className="xl:hidden">
                         <a href="https://mitb.acm.org" target="_blank" rel="noopener noreferrer">
                             <img
                                 src={acmMitbLogo}
