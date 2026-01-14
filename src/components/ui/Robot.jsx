@@ -6,6 +6,24 @@ export default function Robot() {
   const containerRef = useRef(null);
 
   useEffect(() => {
+    // Aggressive JS to remove watermark
+    const removeWatermark = () => {
+      const links = document.querySelectorAll('a[href^="https://spline.design"]');
+      links.forEach(link => {
+        link.style.display = 'none';
+        link.style.opacity = '0';
+        link.style.pointerEvents = 'none';
+        link.remove();
+      });
+    };
+
+    const intervalId = setInterval(removeWatermark, 100);
+    setTimeout(() => clearInterval(intervalId), 5000); // Stop checking after 5s
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         // Only show if intersecting. 
