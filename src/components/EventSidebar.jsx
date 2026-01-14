@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, ChevronRight, ChevronLeft, X } from 'lucide-react';
+import { db } from '../firebase';
+import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 
-const EventSidebar = () => {
+const EventSidebar = React.memo(() => {
     const [isExpanded, setIsExpanded] = useState(false);
-    const [isVisible, setIsVisible] = useState(true);
     const [isInHero, setIsInHero] = useState(true);
+    const [events, setEvents] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -21,7 +35,40 @@ const EventSidebar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    if (!isVisible || !isInHero) return null;
+    useEffect(() => {
+        // Fetch up to 6 events from Firebase
+        const q = query(
+            collection(db, "nextEvents"), 
+            orderBy("order", "asc"),
+            limit(6)
+        );
+
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const eventsData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setEvents(eventsData.filter(e => e.status !== 'hidden'));
+            setLoading(false);
+        }, (error) => {
+            console.error("Error fetching events:", error);
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    const nextEvent = () => {
+        setCurrentIndex((prev) => (prev + 1) % events.length);
+    };
+
+    const prevEvent = () => {
+        setCurrentIndex((prev) => (prev - 1 + events.length) % events.length);
+    };
+
+    if (!isInHero || loading || events.length === 0) return null;
+
+    const currentEvent = events[currentIndex];
 
     return (
         <>
@@ -72,60 +119,110 @@ const EventSidebar = () => {
                                 <ChevronRight size={20} />
                             </button>
 
-                            {/* Dismiss Button */}
-                            <button
-                                onClick={() => setIsVisible(false)}
-                                className="absolute top-3 left-3 p-1.5 text-gray-400 hover:text-red-400 transition-colors z-20 rounded-full hover:bg-white/10"
-                                title="Dismiss"
-                            >
-                                <X size={16} />
-                            </button>
 
-                            {/* Content */}
                             <div className="relative z-10 p-6 pt-10">
                                 {/* Event Badge */}
-                                <div className="flex items-center gap-2 mb-4">
+                                <div className="flex items-center justify-between mb-4">
                                     <div className="flex items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1">
                                         <Calendar size={12} className="text-red-400" />
-                                        <span className="text-xs font-mono text-red-400">UPCOMING</span>
+                                        <span className="text-xs font-mono text-red-400">
+                                            {currentEvent.status === 'live' ? 'LIVE NOW' : 'UPCOMING'}
+                                        </span>
                                     </div>
+                                    {events.length > 1 && (
+                                        <span className="text-xs font-mono text-gray-500">
+                                            {currentIndex + 1} / {events.length}
+                                        </span>
+                                    )}
                                 </div>
 
-                                {/* Event Title */}
-                                <h3 className="text-2xl font-bold text-white tracking-tight mb-1">
-                                    TURINGER 2026
-                                </h3>
-                                <p className="text-purple-400 font-mono text-sm mb-4">
-                                    The Ultimate Coding Showdown
-                                </p>
+                                {/* Event Content */}
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={currentEvent.id}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        {/* Event Title */}
+                                        <h3 className="text-2xl font-bold text-white tracking-tight mb-1">
+                                            {currentEvent.title}
+                                        </h3>
+                                        {currentEvent.subtitle && (
+                                            <p className="text-purple-400 font-mono text-sm mb-4">
+                                                {currentEvent.subtitle}
+                                            </p>
+                                        )}
 
-                                {/* Date */}
-                                <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 mb-4">
-                                    <div className="flex flex-col">
-                                        <span className="text-xs text-gray-400 uppercase">Date</span>
-                                        <span className="text-white font-semibold">30th Jan - 1st Feb 2026</span>
+                                        {/* Date */}
+                                        <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 mb-4">
+                                            <div className="flex flex-col">
+                                                <span className="text-xs text-gray-400 uppercase">Date</span>
+                                                <span className="text-white font-semibold">{currentEvent.date}</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Description */}
+                                        {currentEvent.description && (
+                                            <p className="text-gray-400 text-sm mb-6 line-clamp-3">
+                                                {currentEvent.description}
+                                            </p>
+                                        )}
+
+                                        {/* Register Button */}
+                                        {currentEvent.link && (
+                                            <a
+                                                href={currentEvent.link}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="group relative w-full inline-flex items-center justify-center overflow-hidden rounded-lg bg-linear-to-r from-red-600 to-purple-600 px-6 py-3 font-bold text-white transition-all hover:from-red-500 hover:to-purple-500 hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(220,38,38,0.5)]"
+                                            >
+                                                <span className="relative z-10 flex items-center gap-2">
+                                                    {currentEvent.status === 'live' ? 'JOIN NOW' : 'REGISTER NOW'}
+                                                    <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                                </span>
+                                            </a>
+                                        )}
+                                    </motion.div>
+                                </AnimatePresence>
+
+                                {/* Navigation Arrows */}
+                                {events.length > 1 && (
+                                    <div className="flex items-center justify-center gap-4 mt-6 pt-4 border-t border-white/10">
+                                        <button
+                                            onClick={prevEvent}
+                                            className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all hover:scale-110"
+                                            aria-label="Previous event"
+                                        >
+                                            <ChevronLeft size={20} />
+                                        </button>
+                                        
+                                        {/* Dots Indicator */}
+                                        <div className="flex gap-2">
+                                            {events.map((_, index) => (
+                                                <button
+                                                    key={index}
+                                                    onClick={() => setCurrentIndex(index)}
+                                                    className={`w-2 h-2 rounded-full transition-all ${
+                                                        index === currentIndex 
+                                                            ? 'bg-red-500 w-6' 
+                                                            : 'bg-white/20 hover:bg-white/40'
+                                                    }`}
+                                                    aria-label={`Go to event ${index + 1}`}
+                                                />
+                                            ))}
+                                        </div>
+
+                                        <button
+                                            onClick={nextEvent}
+                                            className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all hover:scale-110"
+                                            aria-label="Next event"
+                                        >
+                                            <ChevronRight size={20} />
+                                        </button>
                                     </div>
-                                </div>
-
-                                {/* Description */}
-                                <p className="text-gray-400 text-sm mb-6">
-                                    Join the ultimate coding showdown. Prove your skills. Win glory.
-                                </p>
-
-                                {/* Register Button */}
-                                <a
-                                    href="#"
-                                    className="group relative w-full inline-flex items-center justify-center overflow-hidden rounded-lg bg-linear-to-r from-red-600 to-purple-600 px-6 py-3 font-bold text-white transition-all hover:from-red-500 hover:to-purple-500 hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(220,38,38,0.5)]"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        // Add registration logic here
-                                    }}
-                                >
-                                    <span className="relative z-10 flex items-center gap-2">
-                                        REGISTER NOW
-                                        <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                                    </span>
-                                </a>
+                                )}
                             </div>
 
                             {/* Decorative Line */}
@@ -143,6 +240,6 @@ const EventSidebar = () => {
             `}</style>
         </>
     );
-};
+});
 
 export default EventSidebar;

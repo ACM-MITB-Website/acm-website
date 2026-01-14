@@ -16,31 +16,49 @@ import ProfileCompletion from './components/ProfileCompletion';
 import { auth, db } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { Shield } from 'lucide-react';
 import ScrollSection from './components/ui/ScrollSection';
 
 const App = () => {
     const { loading, setLoading } = useLoader();
     const [user, setUser] = useState(null);
     const [showProfileForm, setShowProfileForm] = useState(false);
-    const [hasTownhallAccess, setHasTownhallAccess] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    // Mobile Detection
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768 || window.matchMedia('(pointer: coarse)').matches);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            console.log('🔐 Auth state changed:', currentUser ? 'User logged in' : 'No user');
             setUser(currentUser);
             if (currentUser) {
-                // Check if user profile exists
-                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-                if (!userDoc.exists()) {
-                    setShowProfileForm(true);
-                } else {
+                console.log('👤 User UID:', currentUser.uid);
+                try {
+                    // Check if user profile exists
+                    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                    console.log('📄 User document exists:', userDoc.exists());
+                    if (!userDoc.exists()) {
+                        console.log('✅ Showing profile form - user document does not exist');
+                        setShowProfileForm(true);
+                    } else {
+                        console.log('✅ User profile exists, hiding form');
+                        console.log('📊 User data:', userDoc.data());
+                        setShowProfileForm(false);
+                    }
+                } catch (error) {
+                    console.error('❌ Error checking user document:', error);
                     setShowProfileForm(false);
-                    // Check townhall access
-                    setHasTownhallAccess(userDoc.data()?.townhall === true);
                 }
             } else {
+                console.log('❌ No user, hiding form');
                 setShowProfileForm(false);
-                setHasTownhallAccess(false);
             }
         });
         return () => unsubscribe();
@@ -58,54 +76,52 @@ const App = () => {
                         setLoading(false);
                     }} />
                 ) : (
-                    <div key="main-content" className="bg-black min-h-screen text-white selection:bg-green-500 selection:text-black overflow-x-hidden">
-                        <div className="fixed inset-0 w-screen h-screen z-0 pointer-events-none">
-                            <Galaxy
-                                mouseRepulsion={false}
-                                mouseInteraction={false}
-                                density={1.2}
-                                glowIntensity={0.3}
-                                saturation={0.6}
-                                hueShift={240}
-                            />
-                        </div>
-                        {showProfileForm && user && (
-                            <ProfileCompletion user={user} onComplete={handleProfileComplete} />
+                    <div key="main-content" className="relative bg-black min-h-screen text-white selection:bg-green-500 selection:text-black overflow-x-hidden">
+                        {/* Black background layer - always visible */}
+                        <div className="fixed inset-0 w-screen h-screen bg-black z-0" />
+                        
+                        {/* Disable Galaxy on mobile for performance */}
+                        {!isMobile && (
+                            <div className="fixed inset-0 w-screen h-screen z-0 pointer-events-none will-change-transform">
+                                <Galaxy
+                                    mouseRepulsion={false}
+                                    mouseInteraction={false}
+                                    density={0.8}
+                                    glowIntensity={0.2}
+                                    saturation={0.5}
+                                    hueShift={240}
+                                />
+                            </div>
+                        )}                        
+                        {/* Mobile gradient background */}
+                        {isMobile && (
+                            <div className="fixed inset-0 w-screen h-screen z-0 bg-linear-to-b from-black via-gray-900 to-black" />
+                        )}                        {showProfileForm && user && (
+                            <>
+                                {console.log('🎨 Rendering ProfileCompletion form') || null}
+                                <ProfileCompletion user={user} onComplete={handleProfileComplete} />
+                            </>
                         )}
                         <PopupBanner />
                         <EventSidebar />
                         <Navbar />
                         <Hero />
 
-                        <ScrollSection>
+                        <ScrollSection className="relative z-10">
                             <About />
                         </ScrollSection>
 
-                        <ScrollSection>
+                        <ScrollSection className="relative z-10">
                             <Hub />
                         </ScrollSection>
 
-                        <ScrollSection>
+                        <ScrollSection className="relative z-10">
                             <Sponsors />
                         </ScrollSection>
 
-                        <ScrollSection>
+                        <ScrollSection className="relative z-10">
                             <Footer />
                         </ScrollSection>
-
-                        {/* Townhall Access Button - Only for special users */}
-                        {hasTownhallAccess && (
-                            <a
-                                href="/townhall.html"
-                                className="fixed bottom-6 right-6 z-50 group bg-linear-to-r from-purple-600 to-pink-600 p-4 rounded-full shadow-2xl hover:shadow-purple-500/50 transition-all hover:scale-110 animate-pulse hover:animate-none"
-                                title="Townhall Admin Access"
-                            >
-                                <Shield className="text-white" size={28} />
-                                <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-black/90 text-white px-3 py-1 rounded-lg text-sm font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-                                    Townhall Admin
-                                </span>
-                            </a>
-                        )}
                     </div>
                 )}
             </AnimatePresence>

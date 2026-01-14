@@ -80,7 +80,7 @@ const PopupBanner = () => {
         >
             <div
                 ref={bannerRef}
-                className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-black/90 shadow-[0_0_50px_rgba(34,197,94,0.3)]"
+                className="relative w-full max-w-lg overflow-hidden rounded-2xl md:border md:border-white/10 bg-black/90 shadow-[0_0_50px_rgba(34,197,94,0.3)]"
             >
                 {/* Background Effects */}
                 <div className="absolute inset-0 bg-linear-to-br from-green-500/10 via-transparent to-blue-500/10 pointer-events-none"></div>

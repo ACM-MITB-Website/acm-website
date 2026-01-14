@@ -44,8 +44,10 @@ const Navbar = memo(() => {
 
     return (
         <>
-            <Link
-                to="/"
+            <a
+                href="https://mitb.acm.org"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="fixed top-6 left-6 z-50 transition-transform duration-300 hover:scale-105 hidden md:block"
                 aria-label="ACM MITB Home"
             >
@@ -57,22 +59,22 @@ const Navbar = memo(() => {
                     width="auto"
                     height="48"
                 />
-            </Link>
+            </a>
 
             <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] md:w-auto transition-all duration-300">
                 <div className={`transition-all duration-300 rounded-full px-6 py-3 flex items-center justify-between md:justify-start md:space-x-6 ${isScrolled
-                    ? 'bg-black/80 backdrop-blur-xl border border-white/10 shadow-[0_0_20px_rgba(34,197,94,0.1)]'
+                    ? 'bg-black/80 backdrop-blur-xl md:border md:border-white/10 shadow-[0_0_20px_rgba(34,197,94,0.1)]'
                     : 'bg-transparent border border-transparent'
                     }`}>
 
                     <div className="md:hidden">
-                        <Link to="/">
+                        <a href="https://mitb.acm.org" target="_blank" rel="noopener noreferrer">
                             <img
                                 src={acmMitbLogo}
                                 alt="ACM MITB"
                                 className="h-8 w-auto object-contain"
                             />
-                        </Link>
+                        </a>
                     </div>
 
                     <div className="hidden md:flex items-center space-x-6">

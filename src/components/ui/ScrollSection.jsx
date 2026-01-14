@@ -22,7 +22,7 @@ const ScrollSection = ({ children, className = "" }) => {
     return (
         <motion.div
             ref={ref}
-            className={className}
+            className={`${className}`}
             style={{
                 scale,
                 opacity,

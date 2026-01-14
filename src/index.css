@@ -11,14 +11,23 @@
 
 
 html {
-  background-color: black;
+  background-color: #000000;
+  height: 100%;
+  width: 100%;
+  overscroll-behavior: none;
 }
 
 body {
-  background: radial-gradient(circle at center, #1e1b4b 0%, #000000 100%);
+  background-color: #000000;
   color: white;
   overflow-x: hidden;
   font-family: var(--font-sans);
+  min-height: 100%;
+  width: 100%;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Hide Spline Watermark */

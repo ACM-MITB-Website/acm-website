@@ -4,14 +4,14 @@ import { doc, setDoc, collection, query, where, getDocs } from 'firebase/firesto
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 
 const DEPARTMENTS = [
-    { value: "CSE Core", label: "Computer Science & Engineering (Core)" },
-    { value: "AI", label: "Artificial Intelligence & Machine Learning" },
-    { value: "DS", label: "Data Science" },
-    { value: "Cybersec", label: "Cybersecurity" },
-    { value: "ECE", label: "Electronics & Communication Engineering" },
-    { value: "ECM", label: "Electronics & Computer Engineering" },
-    { value: "VLSI", label: "VLSI Design & Technology" },
-    { value: "IT", label: "Information Technology" },
+    { value: "CSE Core", label: "CSE Core" },
+    { value: "AI", label: "AI" },
+    { value: "DS", label: "DS" },
+    { value: "Cybersecurity", label: "Cybersecurity" },
+    { value: "IT", label: "IT" },
+    { value: "ECE", label: "ECE" },
+    { value: "ECM", label: "ECM" },
+    { value: "VLSI", label: "VLSI" },
     { value: "Others", label: "Others" }
 ];
 
@@ -74,6 +74,8 @@ const ProfileCompletion = ({ user, onComplete }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log('📝 Form submitted');
+        console.log('📋 Form data:', formData);
         setError(null);
         setLoading(true);
 
@@ -98,8 +100,8 @@ const ProfileCompletion = ({ user, onComplete }) => {
                 if (!formData.customDepartment.trim()) {
                     throw new Error("Please specify your department.");
                 }
-                if (formData.customDepartment.length > 25) {
-                    throw new Error("Department name must be 25 characters or less.");
+                if (formData.customDepartment.length > 30) {
+                    throw new Error("Department name must be 30 characters or less.");
                 }
             }
 
@@ -108,7 +110,7 @@ const ProfileCompletion = ({ user, onComplete }) => {
             if (uniqueError) throw new Error(uniqueError);
 
             // Save to Firestore
-            await setDoc(doc(db, "users", user.uid), {
+            const userData = {
                 uid: user.uid,
                 authEmail: user.email,
                 name: formData.name,
@@ -120,9 +122,13 @@ const ProfileCompletion = ({ user, onComplete }) => {
                 phone: formData.phone,
                 townhall: false, // Default - hidden attribute
                 createdAt: new Date().toISOString()
-            });
+            };
+            console.log('💾 Saving to Firebase:', userData);
+            await setDoc(doc(db, "users", user.uid), userData);
+            console.log('✅ Successfully saved to Firebase!');
 
             onComplete(); // Callback to parent to close modal/refresh state
+            console.log('✅ Profile completion callback executed');
 
         } catch (err) {
             setError(err.message);
@@ -132,7 +138,7 @@ const ProfileCompletion = ({ user, onComplete }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
             <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
                 <div className="bg-linear-to-r from-blue-900/20 to-purple-900/20 p-4 border-b border-white/10 shrink-0">
                     <h2 className="text-xl font-bold text-white">Complete Your Profile</h2>
@@ -216,17 +222,17 @@ const ProfileCompletion = ({ user, onComplete }) => {
 
                     {formData.department === 'Others' && (
                         <div>
-                            <label className="block text-[10px] font-mono text-gray-400 mb-1">CUSTOM DEPARTMENT (MAX 25 CHARS)</label>
+                            <label className="block text-[10px] font-mono text-gray-400 mb-1">CUSTOM DEPARTMENT (MAX 30 CHARS)</label>
                             <input
                                 type="text"
                                 value={formData.customDepartment}
                                 onChange={(e) => setFormData({ ...formData, customDepartment: e.target.value })}
-                                maxLength={25}
+                                maxLength={30}
                                 placeholder="Enter your department"
                                 className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
                                 required
                             />
-                            <p className="text-[10px] text-gray-500 mt-1">{formData.customDepartment.length}/25 characters</p>
+                            <p className="text-[10px] text-gray-500 mt-1">{formData.customDepartment.length}/30 characters</p>
                         </div>
                     )}
 

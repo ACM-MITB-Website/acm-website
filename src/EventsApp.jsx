@@ -3,7 +3,7 @@ import Navbar from './components/NavbarOptimized';
 import Footer from './components/Footer';
 import Galaxy from './components/ui/Galaxy';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy, onSnapshot, doc, getDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import { Calendar, Clock, MapPin, ArrowRight, ExternalLink } from 'lucide-react';
 
@@ -148,49 +148,38 @@ const HolographicCard = ({ event }) => {
 const EventsApp = () => {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [nextEvent, setNextEvent] = useState(null);
+    const [countdownEvent, setCountdownEvent] = useState(null);
 
     useEffect(() => {
-        const fetchEvents = async () => {
+        // Fetch countdown timer event
+        const fetchCountdown = async () => {
             try {
-                // Fetch all stories/events
-                const q = query(
-                    collection(db, 'stories'),
-                    // where('date', '>=', new Date().toISOString().split('T')[0]), // In a real app we'd filter by date
-                    // orderBy('date', 'asc')
-                );
-
-                const snapshot = await getDocs(q);
-                let fetchedEvents = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                // Client-side sort/filter for demo if Firebase index missing
-                fetchedEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-                // Filter out past events
-                const now = new Date();
-                const upcoming = fetchedEvents.filter(e => new Date(e.date) >= now);
-
-                // If no upcoming, use dummy data for visualization
-                if (upcoming.length === 0) {
-                    const dummyEvents = [
-                        { id: 1, title: 'AI Revolution Summit', date: '2026-02-15', time: '14:00', location: 'Main Auditorium', chapter: 'SIG AI', description: 'Explore the cutting edge of Generative AI and its implications with industry leaders.', image: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80&w=1965' },
-                        { id: 2, title: 'Hack the Future', date: '2026-03-01', time: '09:00', location: 'Innovation Lab', chapter: 'ACM MITB', description: 'A 24-hour hackathon to build solutions for sustainable smart cities.', image: 'https://images.unsplash.com/photo-1504384308090-c54be3855833?auto=format&fit=crop&q=80&w=1887' },
-                        { id: 3, title: 'Cyber Defense Workshop', date: '2026-03-10', time: '16:00', location: 'Lab 304', chapter: 'ACM W', description: 'Hands-on workshop on network security and ethical hacking basics.', image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=2070' },
-                    ];
-                    setEvents(dummyEvents);
-                    setNextEvent(dummyEvents[0]);
-                } else {
-                    setEvents(upcoming);
-                    setNextEvent(upcoming[0]);
+                const docSnap = await getDoc(doc(db, "eventsPage", "countdown"));
+                if (docSnap.exists()) {
+                    setCountdownEvent(docSnap.data());
                 }
             } catch (error) {
-                console.error("Error fetching events:", error);
-            } finally {
-                setLoading(false);
+                console.error("Error fetching countdown:", error);
             }
         };
+        fetchCountdown();
 
-        fetchEvents();
+        // Real-time listener for incoming events
+        const q = query(
+            collection(db, "eventsPageEvents"),
+            orderBy("date", "asc")
+        );
+
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const fetchedEvents = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setEvents(fetchedEvents);
+            setLoading(false);
+        }, (error) => {
+            console.error("Error fetching events:", error);
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
     }, []);
 
     // Scroll opacity for Hero
@@ -226,16 +215,16 @@ const EventsApp = () => {
                             </span>
                         </div>
                         <h1 className="text-6xl md:text-9xl font-black tracking-tighter text-white mb-2 leading-none">
-                            NEXT <span className="text-transparent bg-clip-text bg-gradient-to-r from-acm-teal to-blue-600">MISSION</span>
+                            {countdownEvent?.title || "TURINGER"}
                         </h1>
                         <p className="text-xl md:text-2xl text-gray-400 font-light tracking-wide mb-12">
-                            {nextEvent ? nextEvent.title : "CALIBRATING SENORS..."}
+                            {countdownEvent?.subtitle || "The Ultimate Coding Showdown"}
                         </p>
                     </motion.div>
 
                     {/* Countdown */}
                     <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 md:p-10 mb-10 shadow-[0_0_50px_rgba(34,197,94,0.1)] inline-block">
-                        <CountdownTimer targetDate={nextEvent?.date + 'T' + (nextEvent?.time || '00:00')} />
+                        <CountdownTimer targetDate={countdownEvent?.targetDate || '2026-01-30T00:00:00'} />
                     </div>
 
                     <motion.p
