@@ -30,11 +30,17 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Hide Spline Watermark */
+/* Hide Spline Watermark - Aggressive */
 a[href^="https://spline.design"],
-#spline-watermark {
+#spline-watermark,
+.spline-watermark,
+[class*="spline-watermark"] {
   display: none !important;
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  z-index: -9999 !important;
 }
