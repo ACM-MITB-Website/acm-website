@@ -6,24 +6,6 @@ export default function Robot() {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    // Aggressive JS to remove watermark
-    const removeWatermark = () => {
-      const links = document.querySelectorAll('a[href^="https://spline.design"]');
-      links.forEach(link => {
-        link.style.display = 'none';
-        link.style.opacity = '0';
-        link.style.pointerEvents = 'none';
-        link.remove();
-      });
-    };
-
-    const intervalId = setInterval(removeWatermark, 100);
-    setTimeout(() => clearInterval(intervalId), 5000); // Stop checking after 5s
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         // Only show if intersecting. 
@@ -45,17 +27,16 @@ export default function Robot() {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full h-full flex items-center justify-center relative" style={{ filter: 'brightness(1.3) sepia(1) hue-rotate(300deg) saturate(4)' }}>
+    <div ref={containerRef} className="w-full h-full flex items-center justify-center relative overflow-hidden" style={{ filter: 'brightness(1.3) sepia(1) hue-rotate(300deg) saturate(4)' }}>
       {isVisible ? (
         <Suspense fallback={<div className="text-white/30 text-xs tracking-widest">LOADING 3D...</div>}>
-          <Spline scene="https://prod.spline.design/OIObz2Hkucw6JwXb/scene.splinecode" />
+          <div className="w-[120%] h-[120%] flex items-center justify-center -mb-10 -mr-10">
+            <Spline scene="https://prod.spline.design/OIObz2Hkucw6JwXb/scene.splinecode" />
+          </div>
         </Suspense>
       ) : (
         <div className="w-full h-full" /> // Placeholder to maintain layout
       )}
-
-      {/* Watermark Mask */}
-
     </div>
   );
 }
