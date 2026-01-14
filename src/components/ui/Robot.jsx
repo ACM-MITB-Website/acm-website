@@ -37,7 +37,7 @@ export default function Robot() {
       )}
 
       {/* Watermark Mask */}
-      <div className="absolute bottom-2 right-2 w-48 h-12 bg-black z-50 pointer-events-none" style={{ filter: 'none' }} />
+
     </div>
   );
 }
