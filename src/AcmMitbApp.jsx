@@ -25,7 +25,7 @@ const AcmMitbHero = () => {
     }, []);
 
     return (
-        <section className="relative h-[50vh] w-full overflow-hidden flex items-center justify-center pt-20">
+        <section className="relative h-[50vh] w-full overflow-hidden flex items-center justify-center pt-32">
             <div className="absolute inset-0 z-0">
                 <StarBackground />
             </div>

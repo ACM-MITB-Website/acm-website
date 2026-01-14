@@ -36,7 +36,7 @@ const AboutPageApp = () => {
                 <ProfileCompletion user={user} onComplete={() => setShowProfileForm(false)} />
             )}
             <Navbar />
-            <div className="pt-20"> {/* Add padding for fixed navbar */}
+            <div className="pt-32"> {/* Add padding for fixed navbar */}
                 <AboutSection />
             </div>
             <Footer />
