@@ -36,20 +36,19 @@ const App = () => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-            console.log('🔐 Auth state changed:', currentUser ? 'User logged in' : 'No user');
+
             setUser(currentUser);
             if (currentUser) {
-                console.log('👤 User UID:', currentUser.uid);
+
                 try {
                     // Check if user profile exists
                     const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-                    console.log('📄 User document exists:', userDoc.exists());
+
                     if (!userDoc.exists()) {
-                        console.log('✅ Showing profile form - user document does not exist');
+
                         setShowProfileForm(true);
                     } else {
-                        console.log('✅ User profile exists, hiding form');
-                        console.log('📊 User data:', userDoc.data());
+
                         setShowProfileForm(false);
                     }
                 } catch (error) {
@@ -57,7 +56,7 @@ const App = () => {
                     setShowProfileForm(false);
                 }
             } else {
-                console.log('❌ No user, hiding form');
+
                 setShowProfileForm(false);
             }
         });
@@ -79,7 +78,7 @@ const App = () => {
                     <div key="main-content" className="relative bg-black min-h-screen text-white selection:bg-green-500 selection:text-black overflow-x-hidden">
                         {/* Black background layer - always visible */}
                         <div className="fixed inset-0 w-screen h-screen bg-black z-0" />
-                        
+
                         {/* Disable Galaxy on mobile for performance */}
                         {!isMobile && (
                             <div className="fixed inset-0 w-screen h-screen z-0 pointer-events-none will-change-transform">
@@ -92,13 +91,13 @@ const App = () => {
                                     hueShift={240}
                                 />
                             </div>
-                        )}                        
+                        )}
                         {/* Mobile gradient background */}
                         {isMobile && (
                             <div className="fixed inset-0 w-screen h-screen z-0 bg-linear-to-b from-black via-gray-900 to-black" />
                         )}                        {showProfileForm && user && (
                             <>
-                                {console.log('🎨 Rendering ProfileCompletion form') || null}
+
                                 <ProfileCompletion user={user} onComplete={handleProfileComplete} />
                             </>
                         )}

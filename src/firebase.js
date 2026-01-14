@@ -14,7 +14,7 @@ const firebaseConfig = {
   measurementId: "G-2ZJF01Y7KJ"
 };
 
-console.log("Initializing Firebase...");
+
 let app;
 let auth;
 let googleProvider;
@@ -29,7 +29,7 @@ try {
   db = getFirestore(app);
   analytics = getAnalytics(app);
   storage = getStorage(app);
-  console.log("Firebase initialized successfully");
+
 } catch (error) {
   console.error("Firebase initialization failed:", error);
   // Fallback to prevent app crash on White Screen

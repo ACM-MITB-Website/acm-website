@@ -74,8 +74,7 @@ const ProfileCompletion = ({ user, onComplete }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('📝 Form submitted');
-        console.log('📋 Form data:', formData);
+
         setError(null);
         setLoading(true);
 
@@ -123,12 +122,12 @@ const ProfileCompletion = ({ user, onComplete }) => {
                 townhall: false, // Default - hidden attribute
                 createdAt: new Date().toISOString()
             };
-            console.log('💾 Saving to Firebase:', userData);
+
             await setDoc(doc(db, "users", user.uid), userData);
-            console.log('✅ Successfully saved to Firebase!');
+
 
             onComplete(); // Callback to parent to close modal/refresh state
-            console.log('✅ Profile completion callback executed');
+
 
         } catch (err) {
             setError(err.message);

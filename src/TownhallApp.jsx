@@ -25,29 +25,27 @@ const TownhallApp = () => {
     // Logic to check access
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-            console.log('🔐 Auth State Changed:', currentUser ? 'User logged in' : 'No user');
+
             setUser(currentUser);
             if (currentUser) {
                 try {
-                    console.log('📋 Checking townhall access for user...');
+
                     const userRef = doc(db, "users", currentUser.uid);
                     const userSnap = await getDoc(userRef);
 
                     if (userSnap.exists()) {
                         const userData = userSnap.data();
-                        console.log('✅ User document exists');
-                        console.log('🔑 Townhall field value:', userData.townhall);
-                        console.log('🔑 Townhall field type:', typeof userData.townhall);
-                        
+
+
                         if (userData.townhall === true) {
-                            console.log('✅ TOWNHALL ACCESS GRANTED');
+
                             setIsTownhall(true);
                         } else {
-                            console.log('❌ Townhall field is not true. Value:', userData.townhall);
+
                             setIsTownhall(false);
                         }
                     } else {
-                        console.log('❌ User document does not exist in Firestore');
+
                         setIsTownhall(false);
                     }
                 } catch (error) {
@@ -156,7 +154,7 @@ const TownhallApp = () => {
                 <div className="max-w-2xl text-center space-y-4">
                     <h1 className="text-5xl font-bold text-red-500 mb-4">🔒 Access Denied</h1>
                     <p className="text-xl text-gray-300">You do not have Townhall Admin privileges.</p>
-                    
+
                     <div className="bg-white/5 border border-white/10 rounded-xl p-6 mt-8 text-left">
                         <h2 className="text-lg font-bold text-acm-teal mb-3">To gain access:</h2>
                         <ol className="list-decimal list-inside space-y-2 text-gray-400">
@@ -165,7 +163,7 @@ const TownhallApp = () => {
                             <li>Administrator will update your account permissions</li>
                             <li>After access is granted, refresh this page</li>
                         </ol>
-                        
+
                         <div className="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
                             <p className="text-yellow-500 text-sm font-semibold mb-2">💡 Troubleshooting:</p>
                             <ul className="text-gray-400 text-xs space-y-1 list-disc list-inside">
@@ -176,7 +174,7 @@ const TownhallApp = () => {
                             </ul>
                         </div>
                     </div>
-                    
+
                     <div className="mt-8 space-y-4">
                         <button
                             onClick={() => window.location.reload()}
@@ -187,8 +185,8 @@ const TownhallApp = () => {
                         <div className="scale-125">
                             <AuthButton />
                         </div>
-                        <a 
-                            href="/" 
+                        <a
+                            href="/"
                             className="inline-block px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors"
                         >
                             ← Back to Home
@@ -245,19 +243,19 @@ const TownhallApp = () => {
 // --- Sub-Managers ---
 
 const AllEventsPageManager = ({ data, onAdd, onDelete, onUpdate }) => {
-    const [countdownForm, setCountdownForm] = useState({ 
-        title: 'TURINGER', 
-        subtitle: 'The Ultimate Coding Showdown', 
-        targetDate: '2026-01-30T00:00:00' 
+    const [countdownForm, setCountdownForm] = useState({
+        title: 'TURINGER',
+        subtitle: 'The Ultimate Coding Showdown',
+        targetDate: '2026-01-30T00:00:00'
     });
-    const [eventForm, setEventForm] = useState({ 
-        title: '', 
-        date: '', 
-        time: '', 
-        location: '', 
-        chapter: '', 
-        description: '', 
-        image: '' 
+    const [eventForm, setEventForm] = useState({
+        title: '',
+        date: '',
+        time: '',
+        location: '',
+        chapter: '',
+        description: '',
+        image: ''
     });
     const [editingId, setEditingId] = useState(null);
     const [loadingCountdown, setLoadingCountdown] = useState(true);
@@ -359,39 +357,39 @@ const AllEventsPageManager = ({ data, onAdd, onDelete, onUpdate }) => {
             <div>
                 <h3 className="text-xl font-bold mb-4 text-acm-teal">Incoming Events</h3>
                 <form onSubmit={handleEventSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-black/20 p-6 rounded-xl border border-white/5">
-                    <input 
-                        placeholder="Event Title *" 
-                        value={eventForm.title} 
-                        onChange={e => setEventForm({ ...eventForm, title: e.target.value })} 
-                        className="bg-black/40 border border-white/10 p-3 rounded-lg text-white" 
-                        required 
+                    <input
+                        placeholder="Event Title *"
+                        value={eventForm.title}
+                        onChange={e => setEventForm({ ...eventForm, title: e.target.value })}
+                        className="bg-black/40 border border-white/10 p-3 rounded-lg text-white"
+                        required
                     />
-                    <input 
+                    <input
                         type="date"
-                        placeholder="Date *" 
-                        value={eventForm.date} 
-                        onChange={e => setEventForm({ ...eventForm, date: e.target.value })} 
-                        className="bg-black/40 border border-white/10 p-3 rounded-lg text-white" 
-                        required 
+                        placeholder="Date *"
+                        value={eventForm.date}
+                        onChange={e => setEventForm({ ...eventForm, date: e.target.value })}
+                        className="bg-black/40 border border-white/10 p-3 rounded-lg text-white"
+                        required
                     />
-                    <input 
+                    <input
                         type="time"
-                        placeholder="Time" 
-                        value={eventForm.time} 
-                        onChange={e => setEventForm({ ...eventForm, time: e.target.value })} 
-                        className="bg-black/40 border border-white/10 p-3 rounded-lg text-white" 
+                        placeholder="Time"
+                        value={eventForm.time}
+                        onChange={e => setEventForm({ ...eventForm, time: e.target.value })}
+                        className="bg-black/40 border border-white/10 p-3 rounded-lg text-white"
                     />
-                    <input 
-                        placeholder="Location (e.g. Main Auditorium)" 
-                        value={eventForm.location} 
-                        onChange={e => setEventForm({ ...eventForm, location: e.target.value })} 
-                        className="bg-black/40 border border-white/10 p-3 rounded-lg text-white" 
+                    <input
+                        placeholder="Location (e.g. Main Auditorium)"
+                        value={eventForm.location}
+                        onChange={e => setEventForm({ ...eventForm, location: e.target.value })}
+                        className="bg-black/40 border border-white/10 p-3 rounded-lg text-white"
                     />
-                    <input 
-                        placeholder="Chapter (e.g. SIG AI, ACM MITB)" 
-                        value={eventForm.chapter} 
-                        onChange={e => setEventForm({ ...eventForm, chapter: e.target.value })} 
-                        className="bg-black/40 border border-white/10 p-3 rounded-lg text-white" 
+                    <input
+                        placeholder="Chapter (e.g. SIG AI, ACM MITB)"
+                        value={eventForm.chapter}
+                        onChange={e => setEventForm({ ...eventForm, chapter: e.target.value })}
+                        className="bg-black/40 border border-white/10 p-3 rounded-lg text-white"
                     />
 
                     <div className="md:col-span-2">
@@ -408,12 +406,12 @@ const AllEventsPageManager = ({ data, onAdd, onDelete, onUpdate }) => {
                         )}
                     </div>
 
-                    <textarea 
-                        placeholder="Description" 
-                        value={eventForm.description} 
-                        onChange={e => setEventForm({ ...eventForm, description: e.target.value })} 
-                        className="bg-black/40 border border-white/10 p-3 rounded-lg text-white md:col-span-2 h-24" 
-                        required 
+                    <textarea
+                        placeholder="Description"
+                        value={eventForm.description}
+                        onChange={e => setEventForm({ ...eventForm, description: e.target.value })}
+                        className="bg-black/40 border border-white/10 p-3 rounded-lg text-white md:col-span-2 h-24"
+                        required
                     />
 
                     <div className="flex gap-2 md:col-span-2">
@@ -421,12 +419,12 @@ const AllEventsPageManager = ({ data, onAdd, onDelete, onUpdate }) => {
                             {editingId ? 'UPDATE EVENT' : 'ADD EVENT'}
                         </button>
                         {editingId && (
-                            <button 
-                                type="button" 
-                                onClick={() => { 
-                                    setEditingId(null); 
-                                    setEventForm({ title: '', date: '', time: '', location: '', chapter: '', description: '', image: '' }); 
-                                }} 
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setEditingId(null);
+                                    setEventForm({ title: '', date: '', time: '', location: '', chapter: '', description: '', image: '' });
+                                }}
                                 className="bg-red-500 text-white p-3 rounded-lg"
                             >
                                 <X />
@@ -463,13 +461,13 @@ const AllEventsPageManager = ({ data, onAdd, onDelete, onUpdate }) => {
 };
 
 const NextEventsManager = ({ data, onAdd, onDelete, onUpdate }) => {
-    const [form, setForm] = useState({ 
-        title: '', 
-        subtitle: '', 
-        date: '', 
-        description: '', 
-        image: '', 
-        link: '', 
+    const [form, setForm] = useState({
+        title: '',
+        subtitle: '',
+        date: '',
+        description: '',
+        image: '',
+        link: '',
         status: 'active',
         order: data.length + 1
     });
@@ -530,52 +528,52 @@ const NextEventsManager = ({ data, onAdd, onDelete, onUpdate }) => {
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-black/20 p-6 rounded-xl border border-white/5">
                 <div className="space-y-2">
                     <label className="text-sm text-gray-400">Event Title *</label>
-                    <input 
-                        placeholder="e.g. TURINGER 2026" 
-                        value={form.title} 
-                        onChange={e => setForm({ ...form, title: e.target.value })} 
-                        className="w-full bg-black/40 border border-white/10 p-3 rounded-lg text-white" 
-                        required 
+                    <input
+                        placeholder="e.g. TURINGER 2026"
+                        value={form.title}
+                        onChange={e => setForm({ ...form, title: e.target.value })}
+                        className="w-full bg-black/40 border border-white/10 p-3 rounded-lg text-white"
+                        required
                     />
                 </div>
 
                 <div className="space-y-2">
                     <label className="text-sm text-gray-400">Event Subtitle *</label>
-                    <input 
-                        placeholder="e.g. The Ultimate Coding Showdown" 
-                        value={form.subtitle} 
-                        onChange={e => setForm({ ...form, subtitle: e.target.value })} 
-                        className="w-full bg-black/40 border border-white/10 p-3 rounded-lg text-white" 
-                        required 
+                    <input
+                        placeholder="e.g. The Ultimate Coding Showdown"
+                        value={form.subtitle}
+                        onChange={e => setForm({ ...form, subtitle: e.target.value })}
+                        className="w-full bg-black/40 border border-white/10 p-3 rounded-lg text-white"
+                        required
                     />
                 </div>
 
                 <div className="space-y-2">
                     <label className="text-sm text-gray-400">Date Range *</label>
-                    <input 
-                        placeholder="e.g. 30th Jan - 1st Feb 2026" 
-                        value={form.date} 
-                        onChange={e => setForm({ ...form, date: e.target.value })} 
-                        className="w-full bg-black/40 border border-white/10 p-3 rounded-lg text-white" 
-                        required 
+                    <input
+                        placeholder="e.g. 30th Jan - 1st Feb 2026"
+                        value={form.date}
+                        onChange={e => setForm({ ...form, date: e.target.value })}
+                        className="w-full bg-black/40 border border-white/10 p-3 rounded-lg text-white"
+                        required
                     />
                 </div>
 
                 <div className="space-y-2">
                     <label className="text-sm text-gray-400">Registration Link</label>
-                    <input 
-                        placeholder="https://..." 
-                        value={form.link} 
-                        onChange={e => setForm({ ...form, link: e.target.value })} 
-                        className="w-full bg-black/40 border border-white/10 p-3 rounded-lg text-white" 
+                    <input
+                        placeholder="https://..."
+                        value={form.link}
+                        onChange={e => setForm({ ...form, link: e.target.value })}
+                        className="w-full bg-black/40 border border-white/10 p-3 rounded-lg text-white"
                     />
                 </div>
 
                 <div className="space-y-2">
                     <label className="text-sm text-gray-400">Status</label>
-                    <select 
-                        value={form.status} 
-                        onChange={e => setForm({ ...form, status: e.target.value })} 
+                    <select
+                        value={form.status}
+                        onChange={e => setForm({ ...form, status: e.target.value })}
                         className="w-full bg-black/40 border border-white/10 p-3 rounded-lg text-white"
                     >
                         <option value="active">Active (Visible)</option>
@@ -586,11 +584,11 @@ const NextEventsManager = ({ data, onAdd, onDelete, onUpdate }) => {
 
                 <div className="space-y-2 md:col-span-2">
                     <label className="text-sm text-gray-400">Event Description</label>
-                    <textarea 
-                        placeholder="e.g. Join the ultimate coding showdown. Prove your skills. Win glory." 
-                        value={form.description} 
-                        onChange={e => setForm({ ...form, description: e.target.value })} 
-                        className="w-full bg-black/40 border border-white/10 p-3 rounded-lg text-white h-20" 
+                    <textarea
+                        placeholder="e.g. Join the ultimate coding showdown. Prove your skills. Win glory."
+                        value={form.description}
+                        onChange={e => setForm({ ...form, description: e.target.value })}
+                        className="w-full bg-black/40 border border-white/10 p-3 rounded-lg text-white h-20"
                     />
                 </div>
 
@@ -609,20 +607,20 @@ const NextEventsManager = ({ data, onAdd, onDelete, onUpdate }) => {
                 </div>
 
                 <div className="flex gap-2 md:col-span-2">
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         disabled={data.length >= 6 && !editingId}
                         className="flex-1 bg-acm-teal text-black font-bold p-3 rounded-lg hover:bg-white transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                         {editingId ? <><Save size={18} /> UPDATE EVENT</> : <><Plus size={18} /> ADD EVENT ({data.length}/6)</>}
                     </button>
                     {editingId && (
-                        <button 
-                            type="button" 
-                            onClick={() => { 
-                                setEditingId(null); 
-                                setForm({ title: '', subtitle: '', date: '', description: '', image: '', link: '', status: 'active', order: data.length + 1 }); 
-                            }} 
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setEditingId(null);
+                                setForm({ title: '', subtitle: '', date: '', description: '', image: '', link: '', status: 'active', order: data.length + 1 });
+                            }}
                             className="bg-red-500 text-white p-3 rounded-lg hover:bg-red-600 transition"
                         >
                             <X />
@@ -640,16 +638,16 @@ const NextEventsManager = ({ data, onAdd, onDelete, onUpdate }) => {
                         <div key={item.id} className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10 hover:border-acm-teal/30 transition">
                             {/* Order Controls */}
                             <div className="flex flex-col gap-1">
-                                <button 
-                                    onClick={() => moveUp(item)} 
+                                <button
+                                    onClick={() => moveUp(item)}
                                     disabled={item.order === 1}
                                     className="p-1 bg-white/5 rounded hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition"
                                 >
                                     <ChevronUp size={14} />
                                 </button>
                                 <span className="text-xs text-center font-mono text-gray-500">{item.order}</span>
-                                <button 
-                                    onClick={() => moveDown(item)} 
+                                <button
+                                    onClick={() => moveDown(item)}
                                     disabled={item.order === sortedData.length}
                                     className="p-1 bg-white/5 rounded hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition"
                                 >
@@ -668,11 +666,10 @@ const NextEventsManager = ({ data, onAdd, onDelete, onUpdate }) => {
                                 {item.subtitle && <p className="text-sm text-gray-400 mb-1">{item.subtitle}</p>}
                                 <div className="flex items-center gap-4 text-xs">
                                     <span className="text-acm-teal font-mono">📅 {item.date}</span>
-                                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                                        item.status === 'active' ? 'bg-green-900/30 text-green-400' : 
-                                        item.status === 'live' ? 'bg-red-900/30 text-red-400' : 
-                                        'bg-gray-700/30 text-gray-500'
-                                    }`}>
+                                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${item.status === 'active' ? 'bg-green-900/30 text-green-400' :
+                                            item.status === 'live' ? 'bg-red-900/30 text-red-400' :
+                                                'bg-gray-700/30 text-gray-500'
+                                        }`}>
                                         {item.status.toUpperCase()}
                                     </span>
                                 </div>
@@ -680,14 +677,14 @@ const NextEventsManager = ({ data, onAdd, onDelete, onUpdate }) => {
 
                             {/* Actions */}
                             <div className="flex gap-2">
-                                <button 
-                                    onClick={() => startEdit(item)} 
+                                <button
+                                    onClick={() => startEdit(item)}
                                     className="p-2 bg-blue-600/30 rounded-lg hover:bg-blue-600/50 transition"
                                 >
                                     <Edit2 size={16} />
                                 </button>
-                                <button 
-                                    onClick={() => onDelete(item.id)} 
+                                <button
+                                    onClick={() => onDelete(item.id)}
                                     className="p-2 bg-red-600/30 rounded-lg hover:bg-red-600/50 transition"
                                 >
                                     <Trash2 size={16} />
