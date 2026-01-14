@@ -90,7 +90,7 @@ const Team = () => {
         { name: 'Medha Udupa', role: 'Vice Chair', image: medhaImg, linkedin: 'https://www.linkedin.com/in/medha-udupa-b55352227' },
         { name: 'S.P. Bharath', role: 'General Secretary', image: '/assets/sp-bharath.jpg', linkedin: '#' },
         { name: 'Anushka Mishra', role: 'Executive Secretary', image: '/assets/anushka-mishra.jpg', linkedin: 'https://www.linkedin.com/in/anushka-mishra-355049315/' },
-        { name: 'Romansh Rathee', role: 'Treasurer', image: '/assets/romansh-rathee.jpg', linkedin: 'https://www.linkedin.com/in/romansh-rathee/' },
+        { name: 'Romansh Rathee', role: 'Treasurer', image: '/assets/romansh-rathee.jpg', linkedin: 'https://www.linkedin.com/in/romansh-rathee/', alignment: 'object-top' },
         { name: 'Ryan Gupta', role: 'Web Master', image: '/assets/ryan-gupta.jpg', linkedin: 'https://www.linkedin.com/in/ryan-gupta/' },
         { name: 'Nidheesh Jakkula', role: 'Graphic Designer', image: '/assets/nidheesh-jakkula.jpg', linkedin: '#' },
         { name: 'Sanvi Sharma', role: 'Executive Member', image: '/assets/sanvi-sharma.jpg', linkedin: 'https://www.linkedin.com/in/sanvi-sharma-ai/' },
@@ -151,7 +151,7 @@ const Team = () => {
                                 <img
                                     src={member.image}
                                     alt={member.name}
-                                    className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 grayscale group-hover:grayscale-0"
+                                    className={`w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 grayscale group-hover:grayscale-0 ${member.alignment || 'object-center'}`}
                                 />
                                 <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] opacity-20 pointer-events-none"></div>
                             </div>
