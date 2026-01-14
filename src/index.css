@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --color-acm-blue: #0f172a;
+  --color-acm-teal: #00d4ff;
+  --color-acm-dark: #020617;
+  --color-acm-purple: #7c3aed;
+  --font-sans: 'Outfit', sans-serif;
+  --font-mono: 'Space Grotesk', monospace;
+}
+
+
+html {
+  background-color: #000000;
+  height: 100%;
+  width: 100%;
+  overscroll-behavior: none;
+}
+
+body {
+  background-color: #000000;
+  color: white;
+  overflow-x: hidden;
+  font-family: var(--font-sans);
+  min-height: 100%;
+  width: 100%;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hide Spline Watermark - Aggressive */
+a[href^="https://spline.design"],
+#spline-watermark,
+.spline-watermark,
+[class*="spline-watermark"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  z-index: -9999 !important;
+}
