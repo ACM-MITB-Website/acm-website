@@ -48,7 +48,7 @@ const Navbar = memo(() => {
                 href="https://mitb.acm.org"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="fixed top-6 left-6 z-50 transition-transform duration-300 hover:scale-105 hidden xl:block"
+                className="fixed top-6 left-6 z-50 transition-transform duration-300 hover:scale-105"
                 aria-label="ACM MITB Home"
             >
                 <img
@@ -67,15 +67,7 @@ const Navbar = memo(() => {
                     : 'bg-transparent border border-transparent'
                     }`}>
 
-                    <div className="xl:hidden">
-                        <a href="https://mitb.acm.org" target="_blank" rel="noopener noreferrer">
-                            <img
-                                src={acmMitbLogo}
-                                alt="ACM MITB"
-                                className="h-8 w-auto object-contain"
-                            />
-                        </a>
-                    </div>
+
 
                     <div className="hidden md:flex items-center space-x-6">
                         {navLinks.map((link) => (
@@ -98,12 +90,7 @@ const Navbar = memo(() => {
                             BECOME A MEMBER
                         </Link>
 
-                        <a
-                            href="#contact"
-                            className="text-xs font-medium text-gray-300 hover:text-white whitespace-nowrap hidden lg:block"
-                        >
-                            CONTACT US
-                        </a>
+
 
                         <AuthButton />
 

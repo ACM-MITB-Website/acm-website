@@ -39,14 +39,14 @@ function AuthButton({ className = "" }) {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       console.log('🔐 [AuthButton] Auth state changed:', currentUser ? 'Logged in' : 'Logged out');
       setUser(currentUser);
-      
+
       if (currentUser) {
         // Fetch user data from Firebase
         try {
           console.log('📥 [AuthButton] Fetching user data for UID:', currentUser.uid);
           const userDocRef = doc(db, "users", currentUser.uid);
           const userDocSnap = await getDoc(userDocRef);
-          
+
           if (userDocSnap.exists()) {
             const data = userDocSnap.data();
             console.log('✅ [AuthButton] User data fetched:', data);
@@ -64,7 +64,7 @@ function AuthButton({ className = "" }) {
       } else {
         setUserData(null);
       }
-      
+
       setLoading(false);
     });
     return () => unsubscribe();
@@ -87,7 +87,7 @@ function AuthButton({ className = "" }) {
       {user ? (
         <>
           {/* Profile Pill - Clickable */}
-          <button 
+          <button
             onClick={() => setShowProfileModal(!showProfileModal)}
             className="profile-trigger inline-flex items-center gap-3 bg-gray-800 px-5 py-2.5 rounded-full shadow-md md:border md:border-white/10 hover:bg-gray-700 hover:md:border-white/20 transition-all duration-200 min-w-fit"
           >
@@ -99,10 +99,10 @@ function AuthButton({ className = "" }) {
 
           {/* Profile Modal */}
           {showProfileModal && (
-            <div className="profile-modal fixed top-20 right-6 z-50 w-80 bg-gray-900 md:border md:border-white/20 rounded-2xl shadow-2xl overflow-hidden animate-[slideDown_0.2s_ease-out]">
+            <div className="profile-modal fixed top-20 right-6 z-50 w-80 bg-gray-900 md:border md:border-white/20 rounded-2xl shadow-2xl overflow-y-auto max-h-[80vh] scrollbar-thin animate-[slideDown_0.2s_ease-out]">
               {/* Header */}
               <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 relative">
-                <button 
+                <button
                   onClick={() => setShowProfileModal(false)}
                   className="absolute top-3 right-3 text-white/80 hover:text-white transition-colors"
                 >
@@ -124,7 +124,7 @@ function AuthButton({ className = "" }) {
                     <p className="text-sm font-medium">{userData?.name || user.displayName || 'Not provided'}</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start gap-3 text-gray-300">
                   <Mail size={18} className="mt-1 text-blue-400" />
                   <div>
@@ -189,8 +189,8 @@ function AuthButton({ className = "" }) {
                     </a>
                   </>
                 )}
-                
-                <button 
+
+                <button
                   onClick={handleLogout}
                   className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-colors duration-200"
                 >
