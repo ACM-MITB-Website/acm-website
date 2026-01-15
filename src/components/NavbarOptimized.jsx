@@ -44,69 +44,73 @@ const Navbar = memo(() => {
 
     return (
         <>
-            <a
-                href="https://mitb.acm.org"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="fixed top-6 left-6 z-50 transition-transform duration-300 hover:scale-105"
-                aria-label="ACM MITB Home"
-            >
-                <img
-                    src={acmMitbLogo}
-                    alt="ACM MITB"
-                    className="h-10 w-auto md:h-12 object-contain drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]"
-                    loading="eager"
-                    width="auto"
-                    height="48"
-                />
-            </a>
+            {/* Unified Fixed Header Container */}
+            <header className="fixed top-0 left-0 w-full z-50 p-6 flex items-start justify-between pointer-events-none">
 
-            <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] md:w-auto transition-all duration-300">
-                <div className={`transition-all duration-300 rounded-full px-6 py-3 flex items-center justify-between md:justify-start md:space-x-6 ${isScrolled
-                    ? 'bg-black/80 backdrop-blur-xl md:border md:border-white/10 shadow-[0_0_20px_rgba(34,197,94,0.1)]'
-                    : 'bg-transparent border border-transparent'
-                    }`}>
+                {/* Logo - First Flex Item */}
+                <a
+                    href="https://mitb.acm.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="pointer-events-auto transition-transform duration-300 hover:scale-105 flex-shrink-0"
+                    aria-label="ACM MITB Home"
+                >
+                    <img
+                        src={acmMitbLogo}
+                        alt="ACM MITB"
+                        className="h-10 w-auto md:h-12 object-contain drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]"
+                        loading="eager"
+                        width="auto"
+                        height="48"
+                    />
+                </a>
 
+                {/* Navbar - Second Flex Item */}
+                <nav className="pointer-events-auto w-auto">
+                    <div className={`transition-all duration-300 rounded-full px-6 py-3 flex items-center justify-between md:justify-start md:space-x-6 ${isScrolled
+                        ? 'bg-black/80 backdrop-blur-xl md:border md:border-white/10 shadow-[0_0_20px_rgba(34,197,94,0.1)]'
+                        : 'bg-transparent border border-transparent'
+                        }`}>
 
+                        {/* Mobile Menu Button is handled by the nav structure logic below */}
 
-                    <div className="hidden md:flex items-center space-x-6">
-                        {navLinks.map((link) => (
+                        <div className="hidden md:flex items-center space-x-6">
+                            {navLinks.map((link) => (
+                                <Link
+                                    key={link.name}
+                                    to={link.href}
+                                    className="group relative text-sm font-medium text-gray-300 hover:text-white transition-colors uppercase tracking-wider whitespace-nowrap"
+                                >
+                                    {link.name}
+                                    <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-acm-teal transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+                                </Link>
+                            ))}
+                        </div>
+
+                        <div className="flex items-center space-x-4 md:pl-4 md:border-l md:border-white/10">
                             <Link
-                                key={link.name}
-                                to={link.href}
-                                className="group relative text-sm font-medium text-gray-300 hover:text-white transition-colors uppercase tracking-wider whitespace-nowrap"
+                                to="/membership"
+                                className="px-3 py-1.5 bg-transparent border border-acm-teal text-acm-teal text-xs font-bold rounded-full hover:bg-acm-teal hover:text-black transition duration-200 whitespace-nowrap hidden lg:block"
                             >
-                                {link.name}
-                                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-acm-teal transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+                                BECOME A MEMBER
                             </Link>
-                        ))}
-                    </div>
 
-                    <div className="flex items-center space-x-4 md:pl-4 md:border-l md:border-white/10">
-                        <Link
-                            to="/membership"
-                            className="px-3 py-1.5 bg-transparent border border-acm-teal text-acm-teal text-xs font-bold rounded-full hover:bg-acm-teal hover:text-black transition duration-200 whitespace-nowrap hidden lg:block"
-                        >
-                            BECOME A MEMBER
-                        </Link>
+                            <AuthButton />
 
-
-
-                        <AuthButton />
-
-                        <div className="md:hidden pl-2 border-l border-white/10 ml-2">
-                            <button
-                                onClick={toggleMenu}
-                                className="text-gray-300 hover:text-white focus:outline-none flex items-center"
-                                aria-label={isOpen ? 'Close menu' : 'Open menu'}
-                                aria-expanded={isOpen}
-                            >
-                                {isOpen ? <X size={24} /> : <Menu size={24} />}
-                            </button>
+                            <div className="md:hidden pl-2 border-l border-white/10 ml-2">
+                                <button
+                                    onClick={toggleMenu}
+                                    className="text-gray-300 hover:text-white focus:outline-none flex items-center"
+                                    aria-label={isOpen ? 'Close menu' : 'Open menu'}
+                                    aria-expanded={isOpen}
+                                >
+                                    {isOpen ? <X size={24} /> : <Menu size={24} />}
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </nav>
+                </nav>
+            </header>
 
             {isOpen && (
                 <div
