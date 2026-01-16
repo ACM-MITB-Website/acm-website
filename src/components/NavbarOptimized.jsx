@@ -45,14 +45,14 @@ const Navbar = memo(() => {
     return (
         <>
             {/* Unified Fixed Header Container */}
-            <header className="fixed top-0 left-0 w-full z-50 p-6 flex items-start justify-between pointer-events-none">
+            <header className="fixed top-0 left-0 w-full z-50 p-6 flex items-center justify-end xl:justify-center pointer-events-none">
 
-                {/* Logo - First Flex Item */}
+                {/* Logo - Positioned Absolutely to left */}
                 <a
                     href="https://mitb.acm.org"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="pointer-events-auto transition-transform duration-300 hover:scale-105 flex-shrink-0"
+                    className="absolute left-6 pointer-events-auto transition-transform duration-300 hover:scale-105"
                     aria-label="ACM MITB Home"
                 >
                     <img
@@ -65,16 +65,15 @@ const Navbar = memo(() => {
                     />
                 </a>
 
-                {/* Navbar - Second Flex Item */}
+                {/* Navbar - Centered Flex Item */}
                 <nav className="pointer-events-auto w-auto">
-                    <div className={`transition-all duration-300 rounded-full px-6 py-3 flex items-center justify-between md:justify-start md:space-x-6 ${isScrolled
+                    <div className={`transition-all duration-300 rounded-full px-6 py-3 flex items-center justify-between xl:justify-start xl:space-x-6 ${isScrolled
                         ? 'bg-black/80 backdrop-blur-xl md:border md:border-white/10 shadow-[0_0_20px_rgba(34,197,94,0.1)]'
                         : 'bg-transparent border border-transparent'
                         }`}>
 
-                        {/* Mobile Menu Button is handled by the nav structure logic below */}
-
-                        <div className="hidden md:flex items-center space-x-6">
+                        {/* Desktop Links (Hidden on Tablet < xl) */}
+                        <div className="hidden xl:flex items-center space-x-6">
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.name}
@@ -87,17 +86,18 @@ const Navbar = memo(() => {
                             ))}
                         </div>
 
-                        <div className="flex items-center space-x-4 md:pl-4 md:border-l md:border-white/10">
+                        <div className="flex items-center space-x-4 xl:pl-4 xl:border-l xl:border-white/10">
                             <Link
                                 to="/membership"
-                                className="px-3 py-1.5 bg-transparent border border-acm-teal text-acm-teal text-xs font-bold rounded-full hover:bg-acm-teal hover:text-black transition duration-200 whitespace-nowrap hidden lg:block"
+                                className="px-3 py-1.5 bg-transparent border border-acm-teal text-acm-teal text-xs font-bold rounded-full hover:bg-acm-teal hover:text-black transition duration-200 whitespace-nowrap hidden xl:block"
                             >
                                 BECOME A MEMBER
                             </Link>
 
                             <AuthButton />
 
-                            <div className="md:hidden pl-2 border-l border-white/10 ml-2">
+                            {/* Mobile/Tablet Menu Button (Visible < xl) */}
+                            <div className="xl:hidden pl-2 border-l border-white/10 ml-2">
                                 <button
                                     onClick={toggleMenu}
                                     className="text-gray-300 hover:text-white focus:outline-none flex items-center"
@@ -112,12 +112,13 @@ const Navbar = memo(() => {
                 </nav>
             </header>
 
+            {/* Mobile/Tablet Menu Overlay */}
             {isOpen && (
                 <div
-                    className="fixed inset-0 bg-black/95 backdrop-blur-lg z-40 md:hidden"
+                    className="fixed inset-0 bg-black/95 backdrop-blur-lg z-40 xl:hidden overflow-y-auto"
                     onClick={closeMenu}
                 >
-                    <div className="flex flex-col items-center justify-center h-full space-y-8 pt-20">
+                    <div className="flex flex-col items-center justify-start min-h-screen space-y-8 pt-32 pb-10">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
