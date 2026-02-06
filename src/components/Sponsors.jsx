@@ -64,15 +64,15 @@ const Sponsors = React.memo(() => {
                 <div className="h-px w-20 bg-acm-teal/50 mx-auto"></div>
             </div>
 
-            <div className="relative w-full overflow-hidden min-h-[200px]">
-                <div className="flex w-max sponsors-scroll">
+            <div className="relative w-full overflow-hidden min-h-[300px]">
+                <div className="flex w-max sponsors-scroll py-10">
                     {/* First set of sponsors */}
                     {allSponsors.map((sponsor, index) => (
                         <div
                             key={`set1-${sponsor.id}-${index}`}
-                            className="flex-shrink-0 mx-8 w-48 h-32 flex flex-col items-center justify-center group"
+                            className="flex-shrink-0 mx-8 w-52 h-40 flex flex-col items-center justify-center group"
                         >
-                            <div className="relative w-full h-full flex items-center justify-center bg-white/5 rounded-xl md:border md:border-white/10 p-6 transition-all duration-300 hover:bg-white/10 hover:scale-105">
+                            <div className="relative w-full flex-1 flex items-center justify-center bg-white/5 rounded-xl md:border md:border-white/10 p-6 transition-all duration-300 hover:bg-white/10 hover:scale-105">
                                 <img
                                     src={sponsor.logo}
                                     alt={sponsor.name}
@@ -89,9 +89,9 @@ const Sponsors = React.memo(() => {
                     {allSponsors.map((sponsor, index) => (
                         <div
                             key={`set2-${sponsor.id}-${index}`}
-                            className="flex-shrink-0 mx-8 w-48 h-32 flex flex-col items-center justify-center group"
+                            className="flex-shrink-0 mx-8 w-52 h-40 flex flex-col items-center justify-center group"
                         >
-                            <div className="relative w-full h-full flex items-center justify-center bg-white/5 rounded-xl md:border md:border-white/10 p-6 transition-all duration-300 hover:bg-white/10 hover:scale-105">
+                            <div className="relative w-full flex-1 flex items-center justify-center bg-white/5 rounded-xl md:border md:border-white/10 p-6 transition-all duration-300 hover:bg-white/10 hover:scale-105">
                                 <img
                                     src={sponsor.logo}
                                     alt={sponsor.name}
@@ -107,7 +107,8 @@ const Sponsors = React.memo(() => {
                 </div>
             </div>
 
-            <style dangerouslySetInnerHTML={{__html: `
+            <style dangerouslySetInnerHTML={{
+                __html: `
                 @keyframes sponsorScroll {
                     0% {
                         transform: translateX(0);

@@ -60,10 +60,7 @@ const Footer = () => {
 
                 {/* Footer Bottom */}
                 <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-xs text-gray-600 font-mono">
-                    <p>&copy; {new Date().getFullYear()} ACM MITB. SYSTEM ONLINE.</p>
-                    <div className="flex space-x-6 mt-4 md:mt-0">
-                        <a href="#" className="hover:text-cyan-400 transition-colors">PRIVACY_PROTOCOL</a>
-                    </div>
+                    <p>&copy; {new Date().getFullYear()} ACM MITB.</p>
                 </div>
             </div>
         </footer>
